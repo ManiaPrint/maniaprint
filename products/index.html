@@ -1,0 +1,303 @@
+<!-- Products -->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Products — Mania Print</title>
+  <meta name="description" content="All products and standard offerings — Mania Print"/>
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="logo" href="../index.html">Mania Print</a>
+      <nav class="nav" id="nav">
+        <a href="../index.html#services">Services</a>
+        <a href="../index.html#gallery">Gallery</a>
+        <a href="../index.html#pricing">Pricing</a>
+        <a href="../index.html#contact">Contact</a>
+        <a href="index.html" class="nav-active">Products</a>
+      </nav>
+      <a class="cta" href="../index.html#contact">Get a Quote</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="tools-hero">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap;">
+        <div>
+          <h1>Products</h1>
+          <p class="small">Standard PLA prints, bundles and starter kits you can order straight away. Filter by type, search by name or details.</p>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <a class="btn primary" href="../index.html">Back to Home</a>
+        </div>
+      </div>
+
+      <div class="controls" style="margin-top:12px;">
+        <div class="search" role="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <input id="q" placeholder="Search products by name, size or color" />
+        </div>
+
+        <select id="sort" class="hidden">
+          <option value="alpha">Name (A → Z)</option>
+          <option value="alpha-desc">Name (Z → A)</option>
+          <option value="price-asc">Price (low → high)</option>
+          <option value="price-desc">Price (high → low)</option>
+        </select>
+
+        <div id="sort-dropdown" class="custom-select">
+          <button class="custom-select-button">Name (A → Z) ▾</button>
+          <div class="custom-select-options hidden">
+            <div class="custom-select-option" data-value="alpha">Name (A → Z)</div>
+            <div class="custom-select-option" data-value="alpha-desc">Name (Z → A)</div>
+            <div class="custom-select-option" data-value="price-asc">Price (low → high)</div>
+            <div class="custom-select-option" data-value="price-desc">Price (high → low)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chips" id="chips"></div>
+    </section>
+
+    <div id="grid" class="cards-grid" aria-live="polite"></div>
+    <div id="empty" class="small" style="margin-top:40px; display:none;">No products match your search.</div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>© Mania Print — made with filament & cookies 🍪</small>
+    </div>
+  </footer>
+
+  <script>
+  (function(){
+    const grid = document.getElementById('grid');
+    const chips = document.getElementById('chips');
+    const q = document.getElementById('q');
+    const sort = document.getElementById('sort');
+    const empty = document.getElementById('empty');
+    const sortBtn = document.querySelector('.custom-select-button');
+    const sortOpts = document.querySelector('.custom-select-options');
+
+    let products = [];
+    let activeType = null;
+
+    async function fetchProducts(){
+      const r = await fetch('products.json', {cache:'no-store'});
+      if (!r.ok) throw new Error('products.json not found');
+      return await r.json();
+    }
+
+    function escapeHtml(s){ 
+      if(!s && s !== 0) return ''; 
+      return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#39;"); 
+    }
+
+    function makeIcon(title, type){
+      const initial = title && title[0] ? title[0].toUpperCase() : '?';
+      const colors = {
+        'Standard': 'background: linear-gradient(180deg, rgba(91,224,192,0.12), rgba(107,140,255,0.04));',
+        'Premium': 'background: linear-gradient(180deg, rgba(107,140,255,0.12), rgba(91,224,192,0.04));',
+        'Bundle': 'background: linear-gradient(180deg, rgba(224,91,255,0.12), rgba(140,107,255,0.04));',
+        'Custom': 'background: linear-gradient(180deg, rgba(255,224,91,0.12), rgba(255,107,140,0.04));'
+      };
+      const color = colors[type] || 'background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));';
+      return `<div class="icon" style="${color}">${initial}</div>`;
+    }
+
+    function renderCard(item) {
+      const priceDisplay = (typeof item.price === 'number') ? `$${item.price.toFixed(2)}` : (item.price || 'Quote');
+      const tagsHtml = (item.tags || []).map(t => `<span class="chip" style="font-size:0.75rem; padding:4px 8px; background:rgba(255,255,255,0.04); border-radius:6px; display:inline-block;">${escapeHtml(t)}</span>`).join(' ');
+      
+      let iconHtml = '';
+      if(item.image) {
+        iconHtml = `<div class="icon"><img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" style="width:100%; height:100%; object-fit:cover;"></div>`;
+      } else {
+        iconHtml = makeIcon(item.title, item.type);
+      }
+
+      return `<article class="tool-card" data-title="${escapeHtml(item.title)}" data-desc="${escapeHtml(item.description || '')}" data-type="${escapeHtml(item.type || '')}" data-tags="${escapeHtml((item.tags || []).join(','))}">
+        <div class="card-top">
+          ${iconHtml}
+          <div style="min-width:0;flex:1;">
+            <h3 style="margin:0 0 6px 0;">${escapeHtml(item.title)}</h3>
+            <p class="card-desc">${escapeHtml(item.description || '')}</p>
+            <div class="card-tags" style="margin-top:2px;">${tagsHtml}</div>
+          </div>
+        </div>
+        <div class="card-actions" style="margin-top:2px;">
+          <a class="btn small primary" href="../index.html#contact">Order</a>
+          <button class="btn small ghost view-details" data-id="${escapeHtml(item.id || '')}">Details</button>
+          <div style="margin-left:auto; font-weight:800; color:var(--accent);">${priceDisplay}</div>
+        </div>
+      </article>`;
+    }
+
+    function renderList(list){
+      if (!list || list.length === 0) {
+        grid.innerHTML = ''; 
+        empty.style.display = 'block'; 
+        return;
+      }
+      empty.style.display = 'none';
+      grid.innerHTML = list.map(renderCard).join('');
+      attachDetailHandlers();
+    }
+
+    function gatherTypes(list){
+      const s = new Set();
+      list.forEach(it => {
+        if(it.type) s.add(it.type);
+      });
+      return Array.from(s).sort();
+    }
+
+    function buildChips(allTypes){
+      chips.innerHTML = '';
+
+      const btnAll = document.createElement('button');
+      btnAll.className = 'chip' + (activeType === null ? ' active' : '');
+      btnAll.textContent = 'All';
+      btnAll.addEventListener('click', ()=>{ 
+        activeType = null; 
+        applyFilters(); 
+        updateChips(); 
+      });
+      chips.appendChild(btnAll);
+
+      allTypes.forEach(type=>{
+        const b = document.createElement('button');
+        b.className = 'chip' + (activeType === type ? ' active' : '');
+        b.textContent = type;
+        b.addEventListener('click', ()=> {
+          activeType = (activeType === type) ? null : type;
+          applyFilters();
+          updateChips();
+        });
+        chips.appendChild(b);
+      });
+    }
+
+    function updateChips(){
+      document.querySelectorAll('.chip').forEach(el => {
+        el.classList.remove('active');
+        if (
+          (activeType === null && el.textContent === 'All') || 
+          (activeType !== null && el.textContent === activeType)
+        ) {
+          el.classList.add('active');
+        }
+      });
+    }
+
+    function applyFilters(){
+      const qv = (q.value || '').trim().toLowerCase();
+      let filtered = products.slice();
+
+      if (activeType) {
+        filtered = filtered.filter(it => it.type === activeType);
+      }
+
+      if (qv) {
+        filtered = filtered.filter(it => (
+          ((it.title||'') + ' ' + (it.description||'') + ' ' + (it.tags||[]).join(' '))
+            .toLowerCase()
+            .includes(qv)
+        ));
+      }
+
+      if (sort.value === 'alpha') {
+        filtered.sort((a,b)=>a.title.localeCompare(b.title));
+      } else if (sort.value === 'alpha-desc') {
+        filtered.sort((a,b)=>b.title.localeCompare(a.title));
+      } else if (sort.value === 'price-asc') {
+        filtered.sort((a,b)=> (a.price||0) - (b.price||0));
+      } else if (sort.value === 'price-desc') {
+        filtered.sort((a,b)=> (b.price||0) - (a.price||0));
+      }
+
+      renderList(filtered);
+    }
+
+    function attachDetailHandlers(){
+      document.querySelectorAll('.view-details').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          const id = e.currentTarget.getAttribute('data-id');
+          const p = products.find(x => String(x.id) === String(id));
+          if (!p) return showModal('Product not found');
+          
+          const tagsHtml = (p.tags || []).map(t => `<span style="background:rgba(255,255,255,0.04); padding:4px 8px; border-radius:6px; font-size:0.85rem; display:inline-block; margin-right:6px;">${escapeHtml(t)}</span>`).join('');
+          const priceDisplay = (typeof p.price === 'number') ? `$${p.price.toFixed(2)}` : (p.price || 'Contact for quote');
+          
+          showModal(`
+            <h2 style="margin:0 0 12px 0;">${escapeHtml(p.title)}</h2>
+            <p style="color:var(--muted); margin:0 0 12px 0;">${escapeHtml(p.description||'')}</p>
+            <div style="margin-bottom:12px;">${tagsHtml}</div>
+            <p style="margin:0;"><strong>Type:</strong> ${escapeHtml(p.type||'N/A')}</p>
+            <p style="margin:8px 0 0 0;"><strong>Price:</strong> <span style="color:var(--accent); font-weight:800;">${priceDisplay}</span></p>
+            ${p.details ? `<p style="margin-top:12px; color:var(--muted); font-size:0.9rem;">${escapeHtml(p.details)}</p>` : ''}
+          `);
+        });
+      });
+    }
+
+    function showModal(html){
+      let m = document.getElementById('simple-modal');
+      if (!m) {
+        m = document.createElement('div');
+        m.id = 'simple-modal';
+        m.style.cssText = 'position:fixed; left:0; top:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); z-index:9999; padding:20px;';
+        m.innerHTML = `<div style="max-width:600px; width:100%; background:var(--panel); padding:24px; border-radius:16px; border:1px solid rgba(255,255,255,0.06); box-shadow:0 8px 32px rgba(0,0,0,0.4);"><div id="simple-modal-content"></div><div style="text-align:right; margin-top:18px;"><button id="closeModal" class="btn ghost">Close</button></div></div>`;
+        document.body.appendChild(m);
+        document.getElementById('closeModal').addEventListener('click', ()=>m.remove());
+        m.addEventListener('click', (e)=>{ if(e.target === m) m.remove(); });
+      }
+      document.getElementById('simple-modal-content').innerHTML = html;
+    }
+
+    async function loadAll(){
+      try {
+        const raw = await fetchProducts();
+        products = raw;
+        const types = gatherTypes(products);
+        buildChips(types);
+        applyFilters();
+      } catch (err){
+        grid.innerHTML = `<div style="color:var(--muted); padding:18px;">Failed to load products. Make sure products.json exists in /products/ folder.<br><small>${escapeHtml(String(err))}</small></div>`;
+        empty.style.display='none';
+        console.error(err);
+      }
+    }
+
+    // Custom dropdown
+    if(sortBtn){
+      sortBtn.addEventListener('click', ()=> sortOpts.classList.toggle('hidden'));
+      document.querySelectorAll('.custom-select-option').forEach(o=>{
+        o.addEventListener('click', ()=>{
+          sort.value = o.getAttribute('data-value');
+          sortBtn.textContent = o.textContent + ' ▾';
+          sortOpts.classList.add('hidden');
+          applyFilters();
+        });
+      });
+    }
+
+    let debounce;
+    q.addEventListener('input', ()=>{ 
+      clearTimeout(debounce); 
+      debounce = setTimeout(applyFilters, 200);
+    });
+    sort.addEventListener('change', applyFilters);
+
+    loadAll();
+  })();
+  </script>
+</body>
+</html>
