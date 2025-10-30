@@ -5,113 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Mania Print — 3D Printing Studio</title>
   <meta name="description" content="Mania Print — professional 3D printing services: prototyping, small-batch production, repairs, finishing and custom design." />
-  <style>
-:root{
-  --bg:#0a1628; --panel:#0f1f3a; --muted:#8b9dc3; --text:#e8f0ff;
-  --accent:#4fc3f7; --accent-2:#2196f3; --accent-light:#64b5f6;
-  --glass: rgba(79,195,247,0.08);
-  --radius:16px; --maxw:1200px; --pad:20px; --transition:200ms ease;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-}
-*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
-html,body{height:100%;margin:0;background:linear-gradient(135deg, #0a1628 0%, #0d1b33 100%);color:var(--text);-webkit-font-smoothing:antialiased}
-.container{max-width:var(--maxw);margin:0 auto;padding:32px var(--pad)}
-
-/* Remove text selection cursor on non-editable content */
-h1,h2,h3,h4,h5,h6,p,span,div,a,button,label,.small,.note{user-select:none;cursor:default}
-a,button,.cta,.btn,.chip{cursor:pointer !important}
-input,textarea{user-select:text;cursor:text}
-
-/* header */
-header.site-header{position:sticky;top:0;background:rgba(10,22,40,0.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(79,195,247,0.15);z-index:50;box-shadow:0 2px 20px rgba(0,0,0,0.3)}
-header .container{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px var(--pad)}
-.logo-container{display:flex;align-items:center;gap:12px}
-.logo-img{width:36px;height:36px;object-fit:contain}
-.logo{font-weight:900;letter-spacing:-0.03em;color:var(--text);text-decoration:none;font-size:1.5rem;background:linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.nav{display:flex;gap:14px}
-.nav a{color:var(--muted);text-decoration:none;padding:10px 14px;border-radius:10px;font-weight:600;transition:var(--transition)}
-.nav a:hover{color:var(--text);background:rgba(79,195,247,0.1)}
-.nav a.nav-active{color:var(--text);background:rgba(79,195,247,0.15);box-shadow:0 0 20px rgba(79,195,247,0.2)}
-.cta{background:linear-gradient(135deg,var(--accent-light),var(--accent));color:#0a1628;padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none;border:none;outline:none;cursor:pointer;transition:var(--transition);box-shadow:0 4px 15px rgba(79,195,247,0.3)}
-.cta:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(79,195,247,0.4)}
-.cta.topmargin{display:inline-block;margin-top:10px}
-.cta.ghost{background:transparent;border:1px solid rgba(79,195,247,0.3);color:var(--accent-light);box-shadow:none}
-.cta.ghost:hover{background:rgba(79,195,247,0.1);border-color:var(--accent)}
-
-/* hero - centered and higher */
-.hero{margin:40px auto;padding:48px 40px;border-radius:20px;background:linear-gradient(135deg,rgba(79,195,247,0.08),rgba(33,150,243,0.05));border:1px solid rgba(79,195,247,0.2);display:grid;grid-template-columns:1fr 420px;gap:32px;align-items:center;box-shadow:0 8px 32px rgba(0,0,0,0.2)}
-.hero h1{margin:0;font-size:2.3rem;letter-spacing:-0.03em;line-height:1.2}
-.hero p.lead{color:var(--muted);margin:14px 0 0;font-size:1.05rem;line-height:1.6}
-.hero .kpis{display:flex;gap:14px;margin-top:24px}
-.kpi{background:rgba(79,195,247,0.06);padding:14px;border-radius:14px;border:1px solid rgba(79,195,247,0.15);min-width:130px;text-align:center;transition:var(--transition)}
-.kpi:hover{background:rgba(79,195,247,0.1);border-color:rgba(79,195,247,0.25)}
-.kpi b{display:block;font-size:1.3rem;color:var(--accent-light)}
-
-/* cards */
-.card{background:linear-gradient(135deg,rgba(79,195,247,0.05),rgba(33,150,243,0.03));border-radius:14px;padding:20px;border:1px solid rgba(79,195,247,0.15);box-shadow:0 4px 16px rgba(0,0,0,0.1)}
-
-/* services */
-.services{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:24px}
-.service{transition:var(--transition)}
-.service:hover{transform:translateY(-2px);border-color:rgba(79,195,247,0.3);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
-.service h3{margin:0 0 10px 0;color:var(--accent-light)}
-.service p{margin:0;color:var(--muted);line-height:1.5}
-
-/* process + pricing */
-.split{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px}
-.steps{display:flex;flex-direction:column;gap:14px}
-.step{display:flex;gap:14px;align-items:flex-start;transition:var(--transition)}
-.step:hover{transform:translateX(4px)}
-.step .num{background:linear-gradient(135deg,var(--accent-light),var(--accent));padding:10px 14px;border-radius:12px;color:#0a1628;font-weight:800;box-shadow:0 2px 10px rgba(79,195,247,0.3)}
-
-.pricing{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
-.price{padding:20px;border-radius:14px;background:linear-gradient(135deg,rgba(79,195,247,0.05),rgba(33,150,243,0.03));border:1px solid rgba(79,195,247,0.15);transition:var(--transition)}
-.price:hover{border-color:rgba(79,195,247,0.3);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
-.price h4{margin:0 0 10px 0;color:var(--accent-light)}
-
-/* FAQ - better spacing */
-.faq{margin-top:28px}
-.faq details{background:rgba(79,195,247,0.05);padding:18px 20px;border-radius:14px;border:1px solid rgba(79,195,247,0.15);margin-bottom:12px;transition:var(--transition)}
-.faq details:hover{background:rgba(79,195,247,0.08);border-color:rgba(79,195,247,0.25)}
-.faq summary{font-weight:700;color:var(--text);cursor:pointer;padding:4px 0}
-.faq details[open] summary{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(79,195,247,0.15)}
-.faq details .small{line-height:1.6;color:var(--muted);padding-top:8px}
-
-/* contact */
-.contact{display:grid;grid-template-columns:1fr 360px;gap:24px;margin-top:28px}
-form.fieldset{display:flex;flex-direction:column;gap:12px}
-input,textarea,select{background:rgba(79,195,247,0.03);border:1px solid rgba(79,195,247,0.15);padding:12px;border-radius:10px;color:var(--text);outline:none;resize:none;transition:var(--transition)}
-input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,195,247,0.1)}
-input::placeholder,textarea::placeholder{color:var(--muted)}
-.note{color:var(--muted);font-size:0.95rem;line-height:1.5}
-
-/* custom select */
-.custom-select{position:relative;min-width:180px}
-.custom-select-button{background:rgba(79,195,247,0.03);border:1px solid rgba(79,195,247,0.15);color:var(--text);padding:10px 14px;border-radius:10px;cursor:pointer;width:100%;text-align:left;font-weight:600;font-size:0.9rem;transition:var(--transition)}
-.custom-select-button:hover{background:rgba(79,195,247,0.08);border-color:var(--accent)}
-.custom-select-options{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--panel);border:1px solid rgba(79,195,247,0.2);border-radius:12px;overflow:hidden;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
-.custom-select-options.hidden{display:none}
-.custom-select-option{padding:12px 14px;cursor:pointer;transition:var(--transition);font-size:0.9rem;color:var(--text)}
-.custom-select-option:hover{background:rgba(79,195,247,0.1)}
-.custom-select-option.disabled{color:var(--muted);opacity:0.5;cursor:not-allowed}
-.custom-select-option.disabled:hover{background:transparent}
-.hidden{display:none}
-
-/* footer */
-footer.container{margin-top:40px;padding:28px var(--pad);border-top:1px solid rgba(79,195,247,0.15)}
-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.small{color:var(--muted);font-size:0.9rem}
-
-/* Logo feature areas */
-.logo-watermark{position:fixed;bottom:20px;right:20px;opacity:0.03;width:120px;height:120px;pointer-events:none;z-index:1}
-
-/* responsive */
-@media (max-width:920px){
-  .hero{grid-template-columns:1fr;padding:32px 24px}
-  .contact{grid-template-columns:1fr}
-  .split{grid-template-columns:1fr}
-  .logo-watermark{width:80px;height:80px}
-}
   </style>
 </head>
 <body>
@@ -456,3 +349,4 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
   </script>
 </body>
 </html>
+
