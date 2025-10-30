@@ -38,7 +38,7 @@
     "tags": ["Large Format", "Custom", "Special Order"],
     "details": "Contact us for custom pricing on large format prints. Various materials available. Lead time depends on project complexity.",
     "image": ""
-  }
+  },
   {
     "id": "5",
     "title": "Mini dragon Keychain",
@@ -48,6 +48,7 @@
     "tags": ["Gift Idea", "Colourful", "Articulated"],
     "details": "Crafted from durable PLA plastic with flexible joints that move freely. 1-2 day turnaround",
     "image": ""
-  },
+  }
 ]
+
 
