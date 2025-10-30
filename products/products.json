@@ -24,7 +24,7 @@
     "title": "Custom Pet Nametags",
     "description": "Custom 3D-printed tags to keep your pet stylish, safe, and easy to identify.",
     "category": "PLA",
-    "price": 3",
+    "price": 3,
     "tags": ["Stylish", "Pet-Friendly", "Lightweight", "5 for $10"],
     "details": "Made from durable, lightweight PLA plastic with your choice of name and color including a keyring. 1-3 day turnaround.",
     "image": ""
@@ -50,6 +50,7 @@
     "image": ""
   }
 ]
+
 
 
 
