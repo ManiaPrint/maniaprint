@@ -4,18 +4,26 @@
 
 /* Theme & common vars (use the richer palette from main page) */
 :root{
-  --bg:#0b0f15;
-  --panel:#0f1419;
-  --muted:#97a6b9; 
-  --text:#e6eef6;
-  --accent:#46E0EA; 
-  --accent-2:#0D203D; 
-  --glass: rgba(255,255,255,0.03);
-  --radius:14px; 
-  --maxw:1200px;
-  --pad:20px;
-  --transition:200ms ease;
+  --bg: #0a1628;
+  --panel: #0f1f3a;
+  --muted: #8b9dc3;
+  --text: #e8f0ff;
+
+  /* darker blue palette (replaced the original lighter blues) */
+  --accent: #1e88e5;       /* primary accent — darker than previous */
+  --accent-2: #1565c0;     /* deeper accent for gradients / contrast */
+  --accent-light: #42a5f5; /* used for highlights — slightly darker than before */
+
+  /* glass / translucent glow tuned to match new accent */
+  --glass: rgba(30,136,229,0.08);
+
+  --radius: 16px;
+  --maxw: 1200px;
+  --pad: 20px;
+  --transition: 200ms ease;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
 
 /* Reset & base */
@@ -260,5 +268,6 @@ input::placeholder,textarea::placeholder{color:var(--muted)}
 
 /* small final overrides to ensure compact card-actions in mixed content */
 .card-actions{ margin-top: 2px !important; }
+
 
 
