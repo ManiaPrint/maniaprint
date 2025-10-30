@@ -4,7 +4,7 @@
     "title": "Custom PLA Print",
     "description": "Custom 3D printing made easy. Tell us your idea, wants and needs, and we’ll design and print with precision and care. Unique parts, prototypes, gifts, and more — all printed by ManiaPrint.",
     "category": "PLA",
-    "price": "Free Quoting Available",
+    "price": "Quote",
     "tags": ["Standard", "Unique", "Quick Turnaround"],
     "details": "Standard PLA material in various colors with fine finishing. Typical turnaround 2-3 days.",
     "image": ""
@@ -14,7 +14,7 @@
     "title": "Custom Nametags",
     "description": "Make your name stand out with a custom 3D-printed keychain! Ideal for birthdays, school bags, or team gifts. Each tag is personalized, durable, and printed locally by ManiaPrint.",
     "category": "PLA",
-    "price": "$3 each; 5pc Bundle $10",
+    "price": "$3 each/n5 for $10",
     "tags": ["Long-lasting", "Affordable", "Practical"],
     "details": "Printed using a range of colors and fonts to create your unique nametag. Around 1-3 day turnaround.",
     "image": ""
@@ -24,7 +24,7 @@
     "title": "Custom Pet Nametags",
     "description": "Custom 3D-printed tags to keep your pet stylish, safe, and easy to identify.",
     "category": "PLA",
-    "price": "$3 each; 5pc Bundle $10",
+    "price": "$3 each/n5 for $10",
     "tags": ["Stylish", "Pet-Friendly", "Lightweight"],
     "details": "Made from durable, lightweight PLA plastic with your choice of name and color including a keyring. 1-3 day turnaround.",
     "image": ""
@@ -44,11 +44,12 @@
     "title": "Mini dragon Keychain",
     "description": "Small 3D-printed flexi dragon keychain with movable joints. Fun, durable, and perfect for adding a playful touch to your keys or bag, or a cool unique gift.",
     "category": "PLA",
-    "price": 60.00,
+    "price": 5.00,
     "tags": ["Gift Idea", "Colourful", "Articulated"],
     "details": "Crafted from durable PLA plastic with flexible joints that move freely. 1-2 day turnaround",
     "image": ""
   }
 ]
+
 
 
