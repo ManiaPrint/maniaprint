@@ -1,52 +1,52 @@
 [
   {
     "id": "1",
-    "title": "Standard PLA Print",
-    "description": "Basic PLA print for everyday prototypes and models",
+    "title": "Custom PLA Print",
+    "description": "Custom 3D printing made easy. Tell us your idea, wants and needs, and we’ll design and print with precision and care. Unique parts, prototypes, gifts, and more — all printed by ManiaPrint.",
     "category": "PLA",
-    "price": 25.00,
-    "tags": ["Standard", "Budget-Friendly", "Quick Turnaround"],
-    "details": "Standard PLA material in various colors. 0.2mm layer height, 20% infill. Typical turnaround 2-3 days.",
+    "price": "Free Quoting Available",
+    "tags": ["Standard", "Unique", "Quick Turnaround"],
+    "details": "Standard PLA material in various colors with fine finishing. Typical turnaround 2-3 days.",
     "image": ""
   },
   {
     "id": "2",
-    "title": "Premium PETG Print",
-    "description": "Durable PETG prints for functional parts",
-    "category": "PETG",
-    "price": 45.00,
-    "tags": ["Durable", "Heat Resistant", "Professional"],
-    "details": "High-quality PETG material with excellent layer adhesion. 0.15mm layer height, 30% infill. 3-4 day turnaround.",
+    "title": "Custom Nametags",
+    "description": "Make your name stand out with a custom 3D-printed keychain! Ideal for birthdays, school bags, or team gifts. Each tag is personalized, durable, and printed locally by ManiaPrint.",
+    "category": "PLA",
+    "price": "$3 each; 5pc Bundle $10",
+    "tags": ["Long-lasting", "Affordable", "Practical"],
+    "details": "Printed using a range of colors and fonts to create your unique nametag. Around 1-3 day turnaround.",
     "image": ""
   },
   {
     "id": "3",
-    "title": "Resin Detail Print",
-    "description": "Ultra-detailed resin prints for miniatures and jewelry",
-    "category": "Resin",
-    "price": 65.00,
-    "tags": ["High Detail", "Smooth Finish", "Miniatures"],
-    "details": "8K resin printing with 0.05mm layer resolution. Perfect for detailed models. Washed and UV-cured. 4-5 day turnaround.",
+    "title": "Custom Pet Nametags",
+    "description": "Custom 3D-printed tags to keep your pet stylish, safe, and easy to identify.,
+    "category": "PLA",
+    "price": "$3 each; 5pc Bundle $10",
+    "tags": ["Stylish", "Pet-Friendly", "Lightweight"],
+    "details": "Made from durable, lightweight PLA plastic with your choice of name and color including a keyring. 1-3 day turnaround.",
     "image": ""
   },
   {
     "id": "4",
-    "title": "Starter Bundle",
-    "description": "Get started with 3 basic PLA prints and consultation",
-    "category": "Bundle",
-    "price": 60.00,
-    "tags": ["Bundle", "Beginner", "Value Pack"],
-    "details": "Includes three standard PLA prints (up to 100g each) plus a 30-minute design consultation. Save 20% compared to individual pricing.",
-    "image": ""
-  },
-  {
-    "id": "5",
-    "title": "Custom Large Format Print",
-    "description": "Large format prints up to 300x300x400mm",
+    "title": "Phone Stand",
+    "description": "Sleek 3D-printed phone stand designed for everyday use. Ideal for watching videos, video calls, or displaying your phone — compact, stable, and stylish.",
     "category": "PLA",
     "price": "Quote",
     "tags": ["Large Format", "Custom", "Special Order"],
     "details": "Contact us for custom pricing on large format prints. Various materials available. Lead time depends on project complexity.",
     "image": ""
   }
+  {
+    "id": "5",
+    "title": "Mini dragon Keychain",
+    "description": "Small 3D-printed flexi dragon keychain with movable joints. Fun, durable, and perfect for adding a playful touch to your keys or bag, or a cool unique gift.",
+    "category": "PLA",
+    "price": 60.00,
+    "tags": ["Gift Idea", "Colourful", "Articulated"],
+    "details": "Crafted from durable PLA plastic with flexible joints that move freely. 1-2 day turnaround",
+    "image": ""
+  },
 ]
