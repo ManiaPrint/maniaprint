@@ -1,4 +1,5 @@
 <!doctype html>
+
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -6,8 +7,6 @@
   <title>Mania Print — 3D Printing Studio</title>
   <meta name="description" content="Mania Print — professional 3D printing services: prototyping, small-batch production, repairs, finishing and custom design." />
   <link rel="stylesheet" href="styles.css">
-  <link rel="icon" type="image/png" href="images/logo.png">
-  <link rel="shortcut icon" href="images/logo.png" type="image/png">
 </head>
 <body>
   <header class="site-header">
@@ -33,176 +32,180 @@
         <h1>Mania Print — 3D printing that turns imagination to reality</h1>
         <p class="lead">Fast prototyping, high-detail miniatures, functional parts and small-batch production. We handle design checks, print, post-processing and finishing — so you get parts that actually work.</p>
 
-        <div class="kpis">
-          <div class="kpi card"><b>48h</b><span class="small">Typical prototype turnaround</span></div>
-          <div class="kpi card"><b>Infinite</b><span class="small">Possible designs and prints</span></div>
-          <div class="kpi card"><b>99%</b><span class="small">First-print success</span></div>
-        </div>
+```
+    <div class="kpis">
+      <div class="kpi card"><b>48h</b><span class="small">Typical prototype turnaround</span></div>
+      <div class="kpi card"><b>Infinite</b><span class="small">Possible designs and prints</span></div>
+      <div class="kpi card"><b>99%</b><span class="small">First-print success</span></div>
+    </div>
 
-        <div style="margin-top:30px;display:flex;gap:12px;flex-wrap:wrap">
-          <a class="cta" href="#get-quote">Request a quote</a>
-          <a class="cta ghost" href="products">Products</a>
-        </div>
-      </div>
+    <div class="hero-actions">
+      <a class="cta" href="#get-quote">Request a quote</a>
+      <a class="cta ghost" href="products">Products</a>
+    </div>
+  </div>
 
-      <aside class="card">
-        <h3>Quick order</h3>
-        <p class="note">Upload a file and we'll respond with a printability check & estimate. No account required.</p>
+  <aside class="card">
+    <h3>Quick order</h3>
+    <p class="note">Upload a file and we'll respond with a printability check & estimate. No account required.</p>
 
-        <form id="uploadForm" action="https://getform.io/f/bqoelodb" method="POST" enctype="multipart/form-data" class="fieldset">
-          <label class="note">Your name</label>
-          <input id="uploadName" name="name" placeholder="Your name" required />
+    <form id="uploadForm" action="https://getform.io/f/bqoelodb" method="POST" enctype="multipart/form-data" class="fieldset">
+      <label class="note">Your name</label>
+      <input id="uploadName" name="name" placeholder="Your name" required />
 
-          <label class="note">Your email</label>
-          <input id="uploadEmail" name="email" type="email" placeholder="you@example.com" required />
+      <label class="note">Your email</label>
+      <input id="uploadEmail" name="email" type="email" placeholder="you@example.com" required />
 
-          <label class="note">Material</label>
-          <select id="uploadMaterial" name="material" required class="hidden">
-            <option value="PLA">PLA</option>
-          </select>
-          
-          <div id="material-dropdown" class="custom-select">
-            <button type="button" class="custom-select-button">PLA ▾</button>
-            <div class="custom-select-options hidden">
-              <div class="custom-select-option" data-value="PLA">PLA</div>
-              <div class="custom-select-option disabled" data-value="">More Coming Soon!</div>
-            </div>
-          </div>
-
-          <label class="note">Upload file</label>
-          <input id="uploadFile" name="file" type="file" accept=".stl,.obj,.step,.stp,.3mf" />
-
-          <small class="note">Files are sent securely to our inbox.</small>
-          <button class="cta" id="uploadSubmit" type="submit">Send request</button>
-
-          <div id="uploadStatus" class="note" style="display:none;margin-top:8px"></div>
-        </form>
-      </aside>
-    </section>
-
-    <section id="services">
-      <h2>Services</h2>
-      <div class="services">
-        <div class="service card">
-          <h3>Rapid Prototyping</h3>
-          <p>Fast-turn, iterative printing for product development — low cost, high feedback speed.</p>
-        </div>
-        <div class="service card">
-          <h3>High-detail Resin</h3>
-          <p>Cast-quality miniatures, jewellery patterns and models with smooth surfaces and fine features.</p>
-        </div>
-        <div class="service card">
-          <h3>Functional Parts</h3>
-          <p>Load-bearing and fit-critical parts using engineering-grade materials and tuned print settings.</p>
-        </div>
-        <div class="service card">
-          <h3>Finishing & Assembly</h3>
-          <p>Sanding, priming, painting, solvent smoothing, epoxy coating and assembled sub-assemblies delivered ready to use.</p>
-        </div>
-      </div>
-    </section>
-
-    <section id="pricing" class="split">
-      <div>
-        <h2>How it works</h2>
-        <div class="steps">
-          <div class="step card">
-            <div class="num">1</div>
-            <div>
-              <strong>Upload</strong>
-              <div class="small">Send file with instructions. We check printability in 24 hours.</div>
-            </div>
-          </div>
-
-          <div class="step card">
-            <div class="num">2</div>
-            <div>
-              <strong>Estimate</strong>
-              <div class="small">We quote material, time and finish options. You approve and pay.</div>
-            </div>
-          </div>
-
-          <div class="step card">
-            <div class="num">3</div>
-            <div>
-              <strong>Print & finish</strong>
-              <div class="small">We print, test-fit and apply requested post-processing.</div>
-            </div>
-          </div>
-
-          <div class="step card">
-            <div class="num">4</div>
-            <div>
-              <strong>Deliver or pickup</strong>
-              <div class="small">Local pickup or delivery.</div>
-            </div>
-          </div>
+      <label class="note">Material</label>
+      <select id="uploadMaterial" name="material" required class="hidden">
+        <option value="PLA">PLA</option>
+      </select>
+      
+      <div id="material-dropdown" class="custom-select">
+        <button type="button" class="custom-select-button">PLA ▾</button>
+        <div class="custom-select-options hidden">
+          <div class="custom-select-option" data-value="PLA">PLA</div>
+          <div class="custom-select-option disabled" data-value="">More Coming Soon!</div>
         </div>
       </div>
 
-      <aside>
-        <h2>Pricing (starter)</h2>
-        <div class="pricing">
-          <div class="price card">
-            <h4>Small</h4>
-            <div class="small">Starter prints & prototypes</div>
-            <div class="small">Volume-based discounts available.</div>
-            <a class="cta topmargin" href="#get-quote">Estimate</a>
-          </div>
+      <label class="note">Upload file</label>
+      <input id="uploadFile" name="file" type="file" accept=".stl,.obj,.step,.stp,.3mf" />
 
-          <div class="price card">
-            <h4>Medium</h4>
-            <div class="small">Small-batch production</div>
-            <a class="cta topmargin" href="#get-quote">Estimate</a>
-          </div>
+      <small class="note">Files are sent securely to our inbox.</small>
+      <button class="cta" id="uploadSubmit" type="submit">Send request</button>
 
-          <div class="price card">
-            <h4>Big</h4>
-            <div class="small">Larger runs & assemblies</div>
-            <a class="cta topmargin" href="#get-quote">Estimate</a>
-          </div>
+      <div id="uploadStatus" class="note upload-status"></div>
+    </form>
+  </aside>
+</section>
+
+<section id="services">
+  <h2>Services</h2>
+  <div class="services">
+    <div class="service card">
+      <h3>Rapid Prototyping</h3>
+      <p>Fast-turn, iterative printing for product development — low cost, high feedback speed.</p>
+    </div>
+    <div class="service card">
+      <h3>High-detail Resin</h3>
+      <p>Cast-quality miniatures, jewellery patterns and models with smooth surfaces and fine features.</p>
+    </div>
+    <div class="service card">
+      <h3>Functional Parts</h3>
+      <p>Load-bearing and fit-critical parts using engineering-grade materials and tuned print settings.</p>
+    </div>
+    <div class="service card">
+      <h3>Finishing & Assembly</h3>
+      <p>Sanding, priming, painting, solvent smoothing, epoxy coating and assembled sub-assemblies delivered ready to use.</p>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" class="split">
+  <div>
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step card">
+        <div class="num">1</div>
+        <div>
+          <strong>Upload</strong>
+          <div class="small">Send file with instructions. We check printability in 24 hours.</div>
         </div>
-
-        <div style="margin-top:14px" class="card">
-          <strong>Bulk & subscription</strong>
-          <p class="small">Repeat orders and monthly partner pricing for designers and small manufacturers. Contact us for SLAs.</p>
-        </div>
-      </aside>
-    </section>
-
-    <section class="faq">
-      <h2>FAQ</h2>
-      <details><summary>What file types do you accept?</summary><div class="small">We accept .stl, .obj, .3mf, STEP/IGES for assemblies.</div></details>
-      <details><summary>How will you deliver it</summary><div class="small">Pick up or local delivery; we can also ship nationwide at cost.</div></details>
-      <details><summary>Do you offer design help?</summary><div class="small">Yes — CAD tweaks and design-for-manufacturability (DFM) available.</div></details>
-    </section>
-
-    <section id="contact" class="contact">
-      <div class="card">
-        <h2>Contact & quote</h2>
-        <p class="note">Email <a href="mailto:contact@maniaprint.online" style="color:var(--accent);cursor:pointer">contact@maniaprint.online</a> or use the quick order above.</p>
-        <p class="note"><strong>Location:</strong> Brisbane, QLD — local pickup available.</p>
-        <p class="note">Instagram - <a href="https://instagram.com/ManiaPrint3D" target="_blank" style="color:var(--accent);cursor:pointer">@ManiaPrint3D</a><br>TikTok - <a href="https://tiktok.com/@ManiaPrint3D" target="_blank" style="color:var(--accent);cursor:pointer">@ManiaPrint3D</a></p>
       </div>
 
-      <aside class="card">
-        <h3>Send a message</h3>
-        <form id="contactForm" action="https://getform.io/f/bqoelodb" method="POST" class="fieldset">
-          <input id="name" name="name" placeholder="Your name" required />
-          <input id="contactEmail" name="email" type="email" placeholder="you@example.com" required />
-          <input id="subject" name="subject" placeholder="Subject (e.g. Quote for 3 parts)" />
-          <textarea id="message" name="message" rows="5" placeholder="Give a short description: material, color, finish, quantity"></textarea>
-          <button class="cta" id="contactSubmit" type="submit">Send</button>
-          <div id="contactStatus" class="note" style="display:none;margin-top:8px"></div>
-        </form>
-      </aside>
-    </section>
+      <div class="step card">
+        <div class="num">2</div>
+        <div>
+          <strong>Estimate</strong>
+          <div class="small">We quote material, time and finish options. You approve and pay.</div>
+        </div>
+      </div>
+
+      <div class="step card">
+        <div class="num">3</div>
+        <div>
+          <strong>Print & finish</strong>
+          <div class="small">We print, test-fit and apply requested post-processing.</div>
+        </div>
+      </div>
+
+      <div class="step card">
+        <div class="num">4</div>
+        <div>
+          <strong>Deliver or pickup</strong>
+          <div class="small">Local pickup or delivery.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <aside>
+    <h2>Pricing (starter)</h2>
+    <div class="pricing">
+      <div class="price card">
+        <h4>Small</h4>
+        <div class="small">Starter prints & prototypes</div>
+        <div class="small">Volume-based discounts available.</div>
+        <a class="cta topmargin" href="#get-quote">Estimate</a>
+      </div>
+
+      <div class="price card">
+        <h4>Medium</h4>
+        <div class="small">Small-batch production</div>
+        <a class="cta topmargin" href="#get-quote">Estimate</a>
+      </div>
+
+      <div class="price card">
+        <h4>Big</h4>
+        <div class="small">Larger runs & assemblies</div>
+        <a class="cta topmargin" href="#get-quote">Estimate</a>
+      </div>
+    </div>
+
+    <div class="card pricing-extra">
+      <strong>Bulk & subscription</strong>
+      <p class="small">Repeat orders and monthly partner pricing for designers and small manufacturers. Contact us for SLAs.</p>
+    </div>
+  </aside>
+</section>
+
+<section class="faq">
+  <h2>FAQ</h2>
+  <details><summary>What file types do you accept?</summary><div class="small">We accept .stl, .obj, .3mf, STEP/IGES for assemblies.</div></details>
+  <details><summary>How will you deliver it</summary><div class="small">Pick up or local delivery; we can also ship nationwide at cost.</div></details>
+  <details><summary>Do you offer design help?</summary><div class="small">Yes — CAD tweaks and design-for-manufacturability (DFM) available.</div></details>
+</section>
+
+<section id="contact" class="contact">
+  <div class="card">
+    <h2>Contact & quote</h2>
+    <p class="note">Email <a href="mailto:contact@maniaprint.online" class="contact-link">contact@maniaprint.online</a> or use the quick order above.</p>
+    <p class="note"><strong>Location:</strong> Brisbane, QLD — local pickup available.</p>
+    <p class="note">Instagram - <a href="https://instagram.com/ManiaPrint3D" target="_blank" class="contact-link">@ManiaPrint3D</a><br>TikTok - <a href="https://tiktok.com/@ManiaPrint3D" target="_blank" class="contact-link">@ManiaPrint3D</a></p>
+  </div>
+
+  <aside class="card">
+    <h3>Send a message</h3>
+    <form id="contactForm" action="https://getform.io/f/bqoelodb" method="POST" class="fieldset">
+      <input id="name" name="name" placeholder="Your name" required />
+      <input id="contactEmail" name="email" type="email" placeholder="you@example.com" required />
+      <input id="subject" name="subject" placeholder="Subject (e.g. Quote for 3 parts)" />
+      <textarea id="message" name="message" rows="5" placeholder="Give a short description: material, color, finish, quantity"></textarea>
+      <button class="cta" id="contactSubmit" type="submit">Send</button>
+      <div id="contactStatus" class="note upload-status"></div>
+    </form>
+  </aside>
+</section>
+```
 
   </main>
 
   <footer class="container">
-    <div class="small">© Mania Print — made with filament & cookies 🍪</div>
-    <div class="small">Terms • Privacy</div>
+    <div class="footer-content">
+      <div class="small">© Mania Print — made with filament & cookies 🍪</div>
+      <div class="small">Terms • Privacy</div>
+    </div>
   </footer>
 
   <img src="images/logo-transparent.png" alt="" class="logo-watermark" onerror="this.style.display='none'">
@@ -349,11 +352,6 @@
       }
     });
   </script>
+
 </body>
 </html>
-
-
-
-
-
-
