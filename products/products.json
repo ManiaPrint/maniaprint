@@ -14,8 +14,8 @@
     "title": "Custom Nametags",
     "description": "Make your name stand out with a custom 3D-printed keychain! Ideal for birthdays, school bags, or team gifts. Each tag is personalized, durable, and printed locally by ManiaPrint.",
     "category": "PLA",
-    "price": "$3 each\n5 for $10",
-    "tags": ["Long-lasting", "Affordable", "Practical"],
+    "price": 3,
+    "tags": ["Long-lasting", "Affordable", "Practical", "5 for $10"],
     "details": "Printed using a range of colors and fonts to create your unique nametag. Around 1-3 day turnaround.",
     "image": ""
   },
@@ -24,8 +24,8 @@
     "title": "Custom Pet Nametags",
     "description": "Custom 3D-printed tags to keep your pet stylish, safe, and easy to identify.",
     "category": "PLA",
-    "price": "$3 each\n5 for $10",
-    "tags": ["Stylish", "Pet-Friendly", "Lightweight"],
+    "price": 3",
+    "tags": ["Stylish", "Pet-Friendly", "Lightweight", "5 for $10"],
     "details": "Made from durable, lightweight PLA plastic with your choice of name and color including a keyring. 1-3 day turnaround.",
     "image": ""
   },
@@ -50,6 +50,7 @@
     "image": ""
   }
 ]
+
 
 
 
