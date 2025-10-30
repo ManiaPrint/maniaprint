@@ -177,7 +177,7 @@
     <section id="contact" class="contact">
       <div class="card">
         <h2>Contact & quote</h2>
-        <p class="note">Email mania_print@outlook.com or use the quick order above. For urgent jobs call +61 493 827 550</p>
+        <p class="note">Email contact@maniaprint.online or use the quick order above.</p>
         <p class="note"><strong>Location:</strong> Brisbane, QLD — local pickup available.</p>
         <p class="note">Follow us: Instagram @maniaprint | LinkedIn Mania Print</p>
       </div>
@@ -278,7 +278,7 @@
       if (file && file.size > MAX_FILE_SIZE) {
         uploadStatus.style.display = 'block';
         uploadStatus.style.color = 'red';
-        uploadStatus.textContent = `⚠️ File too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Please email files over 5MB to mania_print@outlook.com`;
+        uploadStatus.textContent = `⚠️ File too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Please email files over 5MB to contact@maniaprint.online`;
         uploadFile.value = '';
       } else {
         uploadStatus.style.display = 'none';
@@ -293,7 +293,7 @@
       if (file && file.size > MAX_FILE_SIZE) {
         uploadStatus.style.display = 'block';
         uploadStatus.style.color = 'red';
-        uploadStatus.textContent = '⚠️ File too large. Email large files to mania_print@outlook.com';
+        uploadStatus.textContent = '⚠️ File too large. Email large files to contact@maniaprint.online';
         return;
       }
 
@@ -324,7 +324,7 @@
           throw new Error('Failed to send');
         }
       } catch (error) {
-        uploadStatus.textContent = '❌ Upload failed. Please email your file directly to mania_print@outlook.com';
+        uploadStatus.textContent = '❌ Upload failed. Please email your file directly to contact@maniaprint.online';
         uploadStatus.style.color = 'red';
       } finally {
         submitBtn.disabled = false;
@@ -360,7 +360,7 @@
           throw new Error('Failed to send');
         }
       } catch (error) {
-        contactStatus.textContent = '❌ Failed to send. Email us at mania_print@outlook.com instead.';
+        contactStatus.textContent = '❌ Failed to send. Email us at contact@maniaprint.online instead.';
         contactStatus.style.color = 'red';
       } finally {
         submitBtn.disabled = false;
@@ -371,4 +371,5 @@
 </body>
 
 </html>
+
 
