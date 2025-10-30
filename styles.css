@@ -8,11 +8,10 @@
   --panel:#0f1419;
   --muted:#97a6b9; 
   --text:#e6eef6;
-  --accent:#4fc3f7;
-  --accent-2:#2196f3;
-  --accent-light:#64b5f6;
-  --glass: rgba(79,195,247,0.08);
-  --radius:16px;
+  --accent:#46E0EA; 
+  --accent-2:#0D203D; 
+  --glass: rgba(255,255,255,0.03);
+  --radius:14px; 
   --maxw:1200px;
   --pad:20px;
   --transition:200ms ease;
@@ -261,4 +260,5 @@ input::placeholder,textarea::placeholder{color:var(--muted)}
 
 /* small final overrides to ensure compact card-actions in mixed content */
 .card-actions{ margin-top: 2px !important; }
+
 
