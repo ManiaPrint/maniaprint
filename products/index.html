@@ -1,5 +1,3 @@
-<!-- Products -->
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -7,12 +5,107 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Products — Mania Print</title>
   <meta name="description" content="All products and standard offerings — Mania Print"/>
-  <link rel="stylesheet" href="../styles.css" />
+  <style>
+:root{
+  --bg:#0a1628; --panel:#0f1f3a; --muted:#8b9dc3; --text:#e8f0ff;
+  --accent:#4fc3f7; --accent-2:#2196f3; --accent-light:#64b5f6;
+  --glass: rgba(79,195,247,0.08);
+  --radius:16px; --maxw:1200px; --pad:20px; --transition:200ms ease;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:linear-gradient(135deg, #0a1628 0%, #0d1b33 100%);color:var(--text);-webkit-font-smoothing:antialiased}
+.container{max-width:var(--maxw);margin:0 auto;padding:32px var(--pad)}
+
+h1,h2,h3,h4,h5,h6,p,span,div,label,.small{user-select:none;cursor:default}
+a,button,.btn,.chip{cursor:pointer !important}
+input{user-select:text;cursor:text}
+
+header.site-header{position:sticky;top:0;background:rgba(10,22,40,0.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(79,195,247,0.15);z-index:50;box-shadow:0 2px 20px rgba(0,0,0,0.3)}
+header .container{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px var(--pad)}
+.logo-container{display:flex;align-items:center;gap:12px}
+.logo-img{width:36px;height:36px;object-fit:contain}
+.logo{font-weight:900;letter-spacing:-0.03em;color:var(--text);text-decoration:none;font-size:1.5rem;background:linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav{display:flex;gap:14px}
+.nav a{color:var(--muted);text-decoration:none;padding:10px 14px;border-radius:10px;font-weight:600;transition:var(--transition)}
+.nav a:hover{color:var(--text);background:rgba(79,195,247,0.1)}
+.nav a.nav-active{color:var(--text);background:rgba(79,195,247,0.15);box-shadow:0 0 20px rgba(79,195,247,0.2)}
+.cta{background:linear-gradient(135deg,var(--accent-light),var(--accent));color:#0a1628;padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none;border:none;outline:none;cursor:pointer;transition:var(--transition);box-shadow:0 4px 15px rgba(79,195,247,0.3)}
+.cta:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(79,195,247,0.4)}
+
+.tools-hero{margin-top:20px}
+.tools-hero h1{margin:0 0 8px 0;font-size:2.2rem;letter-spacing:-0.03em}
+.tools-hero .small{color:var(--muted);margin:0;font-size:1rem;line-height:1.5}
+
+/* Subtle back button */
+.btn.back{background:transparent;border:none;color:var(--muted);font-size:0.9rem;padding:8px 12px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:var(--transition)}
+.btn.back:hover{color:var(--text);background:rgba(79,195,247,0.08)}
+.btn.back::before{content:'←';font-size:1.1rem}
+
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:20px}
+.search{position:relative;flex:1;min-width:280px;display:flex;align-items:center;background:rgba(79,195,247,0.03);border:1px solid rgba(79,195,247,0.15);border-radius:12px;padding:10px 14px;transition:var(--transition)}
+.search:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,195,247,0.1)}
+.search svg{color:var(--muted);margin-right:10px;flex-shrink:0}
+.search input{background:transparent;border:none;outline:none;color:var(--text);flex:1;font-size:0.95rem}
+.search input::placeholder{color:var(--muted)}
+
+.custom-select{position:relative;min-width:200px}
+.custom-select-button{background:rgba(79,195,247,0.03);border:1px solid rgba(79,195,247,0.15);color:var(--text);padding:10px 14px;border-radius:10px;cursor:pointer;width:100%;text-align:left;font-weight:600;font-size:0.9rem;transition:var(--transition)}
+.custom-select-button:hover{background:rgba(79,195,247,0.08);border-color:var(--accent)}
+.custom-select-options{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--panel);border:1px solid rgba(79,195,247,0.2);border-radius:12px;overflow:hidden;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+.custom-select-options.hidden{display:none}
+.custom-select-option{padding:12px 14px;cursor:pointer;transition:var(--transition);font-size:0.9rem;color:var(--text)}
+.custom-select-option:hover{background:rgba(79,195,247,0.1)}
+.hidden{display:none}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.chip{background:rgba(79,195,247,0.05);border:1px solid rgba(79,195,247,0.15);padding:8px 14px;border-radius:10px;color:var(--muted);font-weight:600;font-size:0.85rem;cursor:pointer;transition:var(--transition);border:none;outline:none}
+.chip:hover{background:rgba(79,195,247,0.1);color:var(--text)}
+.chip.active{background:linear-gradient(135deg,var(--accent-light),var(--accent));color:#0a1628;box-shadow:0 2px 10px rgba(79,195,247,0.3)}
+
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-top:24px}
+
+/* Product cards - better spacing */
+.tool-card{background:linear-gradient(135deg,rgba(79,195,247,0.05),rgba(33,150,243,0.03));border:1px solid rgba(79,195,247,0.15);border-radius:16px;padding:20px;transition:var(--transition);display:flex;flex-direction:column;min-height:320px}
+.tool-card:hover{border-color:rgba(79,195,247,0.3);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,0.3)}
+.card-top{display:flex;gap:14px;align-items:flex-start;flex:1}
+.icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.3rem;flex-shrink:0;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.tool-card h3{margin:0 0 12px 0;font-size:1.15rem;color:var(--accent-light)}
+.card-desc{margin:0 0 14px 0;color:var(--muted);font-size:0.93rem;line-height:1.5}
+.card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:8px}
+.card-tags .chip{font-size:0.75rem;padding:5px 10px;background:rgba(79,195,247,0.08);border:1px solid rgba(79,195,247,0.1);cursor:default}
+.card-actions{display:flex;gap:10px;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid rgba(79,195,247,0.1)}
+
+.btn{padding:9px 15px;border-radius:9px;font-weight:700;text-decoration:none;border:none;outline:none;cursor:pointer;transition:var(--transition);font-size:0.88rem;display:inline-block}
+.btn.primary{background:linear-gradient(135deg,var(--accent-light),var(--accent));color:#0a1628;box-shadow:0 2px 10px rgba(79,195,247,0.3)}
+.btn.primary:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(79,195,247,0.4)}
+.btn.ghost{background:transparent;border:1px solid rgba(79,195,247,0.2);color:var(--accent-light)}
+.btn.ghost:hover{background:rgba(79,195,247,0.08);border-color:var(--accent)}
+.btn.small{padding:7px 12px;font-size:0.82rem}
+
+.card-actions .price{margin-left:auto;font-weight:800;color:var(--accent-light);font-size:1.1rem}
+
+.site-footer{margin-top:48px;padding:28px 0;border-top:1px solid rgba(79,195,247,0.15)}
+.site-footer .container{display:flex;justify-content:center;align-items:center}
+.site-footer small{color:var(--muted);font-size:0.9rem}
+
+.logo-watermark{position:fixed;bottom:20px;right:20px;opacity:0.03;width:120px;height:120px;pointer-events:none;z-index:1}
+
+@media (max-width:920px){
+  .cards-grid{grid-template-columns:1fr}
+  .controls{flex-direction:column;align-items:stretch}
+  .search{min-width:100%}
+  .logo-watermark{width:80px;height:80px}
+}
+  </style>
 </head>
 <body>
   <header class="site-header">
     <div class="container">
-      <a class="logo" href="..">Mania Print</a>
+      <div class="logo-container">
+        <img src="../images/logo-transparent.png" alt="Mania Print Logo" class="logo-img" onerror="this.style.display='none'">
+        <a class="logo" href="..">Mania Print</a>
+      </div>
       <nav class="nav" id="nav">
         <a href="../#services">Services</a>
         <a href="../#gallery">Gallery</a>
@@ -20,7 +113,7 @@
         <a href="../#contact">Contact</a>
         <a href="#" class="nav-active">Products</a>
       </nav>
-      <a class="cta" href="..#contact">Get a Quote</a>
+      <a class="cta" href="../#contact">Get a Quote</a>
     </div>
   </header>
 
@@ -31,12 +124,10 @@
           <h1>Products</h1>
           <p class="small">Standard PLA prints, bundles and starter kits you can order straight away. Filter by type, search by name or details.</p>
         </div>
-        <div style="display:flex; gap:10px; align-items:center;">
-          <a class="btn primary" href="../">Back to Home</a>
-        </div>
+        <a class="btn back" href="../">Back to Home</a>
       </div>
 
-      <div class="controls" style="margin-top:12px;">
+      <div class="controls">
         <div class="search" role="search">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
             <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -67,7 +158,7 @@
     </section>
 
     <div id="grid" class="cards-grid" aria-live="polite"></div>
-    <div id="empty" class="small" style="margin-top:40px; display:none;">No products match your search.</div>
+    <div id="empty" class="small" style="margin-top:40px;text-align:center;color:var(--muted);display:none;">No products match your search.</div>
   </main>
 
   <footer class="site-footer">
@@ -75,6 +166,8 @@
       <small>© Mania Print — made with filament & cookies 🍪</small>
     </div>
   </footer>
+
+  <img src="../images/logo-transparent.png" alt="" class="logo-watermark" onerror="this.style.display='none'">
 
   <script>
   (function(){
@@ -103,18 +196,18 @@
     function makeIcon(title, type){
       const initial = title && title[0] ? title[0].toUpperCase() : '?';
       const colors = {
-        'Standard': 'background: linear-gradient(180deg, rgba(91,224,192,0.12), rgba(107,140,255,0.04));',
-        'Premium': 'background: linear-gradient(180deg, rgba(107,140,255,0.12), rgba(91,224,192,0.04));',
-        'Bundle': 'background: linear-gradient(180deg, rgba(224,91,255,0.12), rgba(140,107,255,0.04));',
-        'Custom': 'background: linear-gradient(180deg, rgba(255,224,91,0.12), rgba(255,107,140,0.04));'
+        'Standard': 'background: linear-gradient(135deg, rgba(79,195,247,0.2), rgba(33,150,243,0.1));',
+        'Premium': 'background: linear-gradient(135deg, rgba(100,181,246,0.25), rgba(79,195,247,0.15));',
+        'Bundle': 'background: linear-gradient(135deg, rgba(79,195,247,0.3), rgba(33,150,243,0.2));',
+        'Custom': 'background: linear-gradient(135deg, rgba(100,181,246,0.2), rgba(79,195,247,0.1));'
       };
-      const color = colors[type] || 'background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));';
+      const color = colors[type] || 'background: linear-gradient(135deg, rgba(79,195,247,0.15), rgba(33,150,243,0.08));';
       return `<div class="icon" style="${color}">${initial}</div>`;
     }
 
     function renderCard(item) {
       const priceDisplay = (typeof item.price === 'number') ? `$${item.price.toFixed(2)}` : (item.price || 'Quote');
-      const tagsHtml = (item.tags || []).map(t => `<span class="chip" style="font-size:0.75rem; padding:4px 8px; background:rgba(255,255,255,0.04); border-radius:6px; display:inline-block;">${escapeHtml(t)}</span>`).join(' ');
+      const tagsHtml = (item.tags || []).map(t => `<span class="chip">${escapeHtml(t)}</span>`).join(' ');
       
       let iconHtml = '';
       if(item.image) {
@@ -126,16 +219,16 @@
       return `<article class="tool-card" data-title="${escapeHtml(item.title)}" data-desc="${escapeHtml(item.description || '')}" data-type="${escapeHtml(item.type || '')}" data-tags="${escapeHtml((item.tags || []).join(','))}">
         <div class="card-top">
           ${iconHtml}
-          <div style="min-width:0;flex:1;">
-            <h3 style="margin:0 0 6px 0;">${escapeHtml(item.title)}</h3>
+          <div style="min-width:0;flex:1;display:flex;flex-direction:column;">
+            <h3>${escapeHtml(item.title)}</h3>
             <p class="card-desc">${escapeHtml(item.description || '')}</p>
-            <div class="card-tags" style="margin-top:2px;">${tagsHtml}</div>
+            <div class="card-tags">${tagsHtml}</div>
           </div>
         </div>
-        <div class="card-actions" style="margin-top:2px;">
+        <div class="card-actions">
           <a class="btn small primary" href="../#contact">Order</a>
           <button class="btn small ghost view-details" data-id="${escapeHtml(item.id || '')}">Details</button>
-          <div style="margin-left:auto; font-weight:800; color:var(--accent);">${priceDisplay}</div>
+          <div class="price">${priceDisplay}</div>
         </div>
       </article>`;
     }
@@ -197,6 +290,12 @@
       });
     }
 
+    function getPriceValue(item) {
+      // Treat non-numeric prices (like "Quote") as highest value for sorting
+      if (typeof item.price === 'number') return item.price;
+      return Infinity; // Non-numeric prices are treated as most expensive
+    }
+
     function applyFilters(){
       const qv = (q.value || '').trim().toLowerCase();
       let filtered = products.slice();
@@ -218,9 +317,9 @@
       } else if (sort.value === 'alpha-desc') {
         filtered.sort((a,b)=>b.title.localeCompare(a.title));
       } else if (sort.value === 'price-asc') {
-        filtered.sort((a,b)=> (a.price||0) - (b.price||0));
+        filtered.sort((a,b)=> getPriceValue(a) - getPriceValue(b));
       } else if (sort.value === 'price-desc') {
-        filtered.sort((a,b)=> (b.price||0) - (a.price||0));
+        filtered.sort((a,b)=> getPriceValue(b) - getPriceValue(a));
       }
 
       renderList(filtered);
@@ -233,16 +332,16 @@
           const p = products.find(x => String(x.id) === String(id));
           if (!p) return showModal('Product not found');
           
-          const tagsHtml = (p.tags || []).map(t => `<span style="background:rgba(255,255,255,0.04); padding:4px 8px; border-radius:6px; font-size:0.85rem; display:inline-block; margin-right:6px;">${escapeHtml(t)}</span>`).join('');
+          const tagsHtml = (p.tags || []).map(t => `<span style="background:rgba(79,195,247,0.08); padding:6px 12px; border-radius:8px; font-size:0.85rem; display:inline-block; margin-right:8px;">${escapeHtml(t)}</span>`).join('');
           const priceDisplay = (typeof p.price === 'number') ? `$${p.price.toFixed(2)}` : (p.price || 'Contact for quote');
           
           showModal(`
-            <h2 style="margin:0 0 12px 0;">${escapeHtml(p.title)}</h2>
-            <p style="color:var(--muted); margin:0 0 12px 0;">${escapeHtml(p.description||'')}</p>
-            <div style="margin-bottom:12px;">${tagsHtml}</div>
+            <h2 style="margin:0 0 16px 0;color:var(--accent-light);">${escapeHtml(p.title)}</h2>
+            <p style="color:var(--muted); margin:0 0 16px 0;line-height:1.6;">${escapeHtml(p.description||'')}</p>
+            <div style="margin-bottom:16px;">${tagsHtml}</div>
             <p style="margin:0;"><strong>Type:</strong> ${escapeHtml(p.type||'N/A')}</p>
-            <p style="margin:8px 0 0 0;"><strong>Price:</strong> <span style="color:var(--accent); font-weight:800;">${priceDisplay}</span></p>
-            ${p.details ? `<p style="margin-top:12px; color:var(--muted); font-size:0.9rem;">${escapeHtml(p.details)}</p>` : ''}
+            <p style="margin:12px 0 0 0;"><strong>Price:</strong> <span style="color:var(--accent-light); font-weight:800; font-size:1.15rem;">${priceDisplay}</span></p>
+            ${p.details ? `<p style="margin-top:16px; color:var(--muted); font-size:0.95rem;line-height:1.6;">${escapeHtml(p.details)}</p>` : ''}
           `);
         });
       });
@@ -253,8 +352,8 @@
       if (!m) {
         m = document.createElement('div');
         m.id = 'simple-modal';
-        m.style.cssText = 'position:fixed; left:0; top:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); z-index:9999; padding:20px;';
-        m.innerHTML = `<div style="max-width:600px; width:100%; background:var(--panel); padding:24px; border-radius:16px; border:1px solid rgba(255,255,255,0.06); box-shadow:0 8px 32px rgba(0,0,0,0.4);"><div id="simple-modal-content"></div><div style="text-align:right; margin-top:18px;"><button id="closeModal" class="btn ghost">Close</button></div></div>`;
+        m.style.cssText = 'position:fixed; left:0; top:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.8); z-index:9999; padding:20px;';
+        m.innerHTML = `<div style="max-width:600px; width:100%; background:var(--panel); padding:32px; border-radius:18px; border:1px solid rgba(79,195,247,0.2); box-shadow:0 12px 48px rgba(0,0,0,0.5);"><div id="simple-modal-content"></div><div style="text-align:right; margin-top:24px;"><button id="closeModal" class="btn ghost">Close</button></div></div>`;
         document.body.appendChild(m);
         document.getElementById('closeModal').addEventListener('click', ()=>m.remove());
         m.addEventListener('click', (e)=>{ if(e.target === m) m.remove(); });
@@ -270,13 +369,12 @@
         buildChips(types);
         applyFilters();
       } catch (err){
-        grid.innerHTML = `<div style="color:var(--muted); padding:18px;">Failed to load products. Make sure products.json exists in /products/ folder.<br><small>${escapeHtml(String(err))}</small></div>`;
+        grid.innerHTML = `<div style="color:var(--muted); padding:24px; text-align:center;">Failed to load products. Make sure products.json exists in /products/ folder.<br><small style="display:block;margin-top:12px;">${escapeHtml(String(err))}</small></div>`;
         empty.style.display='none';
         console.error(err);
       }
     }
 
-    // Custom dropdown
     if(sortBtn){
       sortBtn.addEventListener('click', ()=> sortOpts.classList.toggle('hidden'));
       document.querySelectorAll('.custom-select-option').forEach(o=>{
@@ -286,6 +384,11 @@
           sortOpts.classList.add('hidden');
           applyFilters();
         });
+      });
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('#sort-dropdown')) {
+          sortOpts.classList.add('hidden');
+        }
       });
     }
 
