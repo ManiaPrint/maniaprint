@@ -4,10 +4,10 @@
 
 /* Theme & common vars (use the richer palette from main page) */
 :root{
-  --bg:#0a1628;
-  --panel:#0f1f3a;
-  --muted:#8b9dc3;
-  --text:#e8f0ff;
+  --bg:#0b0f15;
+  --panel:#0f1419;
+  --muted:#97a6b9; 
+  --text:#e6eef6;
   --accent:#4fc3f7;
   --accent-2:#2196f3;
   --accent-light:#64b5f6;
@@ -261,3 +261,4 @@ input::placeholder,textarea::placeholder{color:var(--muted)}
 
 /* small final overrides to ensure compact card-actions in mixed content */
 .card-actions{ margin-top: 2px !important; }
+
