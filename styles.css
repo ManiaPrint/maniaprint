@@ -1,27 +1,22 @@
-/* Mania Print — styles.css */
+/* Mania Print — merged styles.css
+   Merged from inline styles in index.html (main) + products page + existing styles.css
+*/
 
 /* Theme & common vars (use the richer palette from main page) */
 :root{
-  --bg: #0a1628;
-  --panel: #0f1f3a;
-  --muted: #8b9dc3;
-  --text: #e8f0ff;
-
-  /* darker blue palette (replaced the original lighter blues) */
-  --accent: #1e88e5;       /* primary accent — darker than previous */
-  --accent-2: #1565c0;     /* deeper accent for gradients / contrast */
-  --accent-light: #42a5f5; /* used for highlights — slightly darker than before */
-
-  /* glass / translucent glow tuned to match new accent */
-  --glass: rgba(30,136,229,0.08);
-
-  --radius: 16px;
-  --maxw: 1200px;
-  --pad: 20px;
-  --transition: 200ms ease;
+  --bg:#0a1628;
+  --panel:#0f1f3a;
+  --muted:#8b9dc3;
+  --text:#e8f0ff;
+  --accent:#4fc3f7;
+  --accent-2:#2196f3;
+  --accent-light:#64b5f6;
+  --glass: rgba(79,195,247,0.08);
+  --radius:16px;
+  --maxw:1200px;
+  --pad:20px;
+  --transition:200ms ease;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-}
-font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
 
 /* Reset & base */
@@ -46,7 +41,7 @@ header.site-header{
 }
 header .container{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px var(--pad)}
 .logo-container{display:flex;align-items:center;gap:12px}
-.logo-img{width:100px;height:75px;object-fit:contain}
+.logo-img{width:36px;height:36px;object-fit:contain}
 .logo{font-weight:900;letter-spacing:-0.03em;color:var(--text);text-decoration:none;font-size:1.5rem;background:linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .nav{display:flex;gap:14px}
 .nav a{color:var(--muted);text-decoration:none;padding:10px 14px;border-radius:10px;font-weight:600;transition:var(--transition)}
@@ -266,10 +261,3 @@ input::placeholder,textarea::placeholder{color:var(--muted)}
 
 /* small final overrides to ensure compact card-actions in mixed content */
 .card-actions{ margin-top: 2px !important; }
-
-
-
-
-
-
-
