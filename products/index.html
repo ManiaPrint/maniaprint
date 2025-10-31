@@ -1,12 +1,11 @@
 <!doctype html>
-
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Products — Mania Print</title>
   <meta name="description" content="All products and standard offerings — Mania Print"/>
-  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
   <header class="site-header">
@@ -28,7 +27,7 @@
 
   <main class="container">
     <section class="tools-hero">
-      <div class="tools-hero-header">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap;">
         <div>
           <h1>Products</h1>
           <p class="small">Standard PLA prints, bundles and starter kits you can order straight away. Filter by type, search by name or details.</p>
@@ -36,41 +35,38 @@
         <a class="btn back" href="../">Back to Home</a>
       </div>
 
-```
-  <div class="controls">
-    <div class="search" role="search">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-        <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="2"/>
-      </svg>
-      <input id="q" placeholder="Search products by name, size or color" />
-    </div>
+      <div class="controls">
+        <div class="search" role="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <input id="q" placeholder="Search products by name, size or color" />
+        </div>
 
-    <select id="sort" class="hidden">
-      <option value="alpha">Name (A → Z)</option>
-      <option value="alpha-desc">Name (Z → A)</option>
-      <option value="price-asc">Price (low → high)</option>
-      <option value="price-desc">Price (high → low)</option>
-    </select>
+        <select id="sort" class="hidden">
+          <option value="alpha">Name (A → Z)</option>
+          <option value="alpha-desc">Name (Z → A)</option>
+          <option value="price-asc">Price (low → high)</option>
+          <option value="price-desc">Price (high → low)</option>
+        </select>
 
-    <div id="sort-dropdown" class="custom-select">
-      <button class="custom-select-button">Name (A → Z) ▾</button>
-      <div class="custom-select-options hidden">
-        <div class="custom-select-option" data-value="alpha">Name (A → Z)</div>
-        <div class="custom-select-option" data-value="alpha-desc">Name (Z → A)</div>
-        <div class="custom-select-option" data-value="price-asc">Price (low → high)</div>
-        <div class="custom-select-option" data-value="price-desc">Price (high → low)</div>
+        <div id="sort-dropdown" class="custom-select">
+          <button class="custom-select-button">Name (A → Z) ▾</button>
+          <div class="custom-select-options hidden">
+            <div class="custom-select-option" data-value="alpha">Name (A → Z)</div>
+            <div class="custom-select-option" data-value="alpha-desc">Name (Z → A)</div>
+            <div class="custom-select-option" data-value="price-asc">Price (low → high)</div>
+            <div class="custom-select-option" data-value="price-desc">Price (high → low)</div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <div class="chips" id="chips"></div>
-</section>
+      <div class="chips" id="chips"></div>
+    </section>
 
-<div id="grid" class="cards-grid" aria-live="polite"></div>
-<div id="empty" class="empty-state">No products match your search.</div>
-```
-
+    <div id="grid" class="cards-grid" aria-live="polite"></div>
+    <div id="empty" class="small" style="margin-top:40px;text-align:center;color:var(--muted);display:none;">No products match your search.</div>
   </main>
 
   <footer class="site-footer">
@@ -123,7 +119,7 @@
       
       let iconHtml = '';
       if(item.image) {
-        iconHtml = `<div class="icon"><img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}"></div>`;
+        iconHtml = `<div class="icon"><img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" style="width:100%; height:100%; object-fit:cover;"></div>`;
       } else {
         iconHtml = makeIcon(item.title, item.type);
       }
@@ -131,7 +127,7 @@
       return `<article class="tool-card" data-title="${escapeHtml(item.title)}" data-desc="${escapeHtml(item.description || '')}" data-type="${escapeHtml(item.type || '')}" data-tags="${escapeHtml((item.tags || []).join(','))}">
         <div class="card-top">
           ${iconHtml}
-          <div class="card-content">
+          <div style="min-width:0;flex:1;display:flex;flex-direction:column;">
             <h3>${escapeHtml(item.title)}</h3>
             <p class="card-desc">${escapeHtml(item.description || '')}</p>
             <div class="card-tags">${tagsHtml}</div>
@@ -203,8 +199,9 @@
     }
 
     function getPriceValue(item) {
+      // Treat non-numeric prices (like "Quote") as highest value for sorting
       if (typeof item.price === 'number') return item.price;
-      return Infinity;
+      return Infinity; // Non-numeric prices are treated as most expensive
     }
 
     function applyFilters(){
@@ -243,16 +240,16 @@
           const p = products.find(x => String(x.id) === String(id));
           if (!p) return showModal('Product not found');
           
-          const tagsHtml = (p.tags || []).map(t => `<span class="modal-tag">${escapeHtml(t)}</span>`).join('');
+          const tagsHtml = (p.tags || []).map(t => `<span style="background:rgba(79,195,247,0.08); padding:6px 12px; border-radius:8px; font-size:0.85rem; display:inline-block; margin-right:8px;">${escapeHtml(t)}</span>`).join('');
           const priceDisplay = (typeof p.price === 'number') ? `$${p.price.toFixed(2)}` : (p.price || 'Contact for quote');
           
           showModal(`
-            <h2>${escapeHtml(p.title)}</h2>
-            <p>${escapeHtml(p.description||'')}</p>
-            <div class="modal-tags">${tagsHtml}</div>
-            <p><strong>Type:</strong> ${escapeHtml(p.type||'N/A')}</p>
-            <p><strong>Price:</strong> <span class="modal-price">${priceDisplay}</span></p>
-            ${p.details ? `<p>${escapeHtml(p.details)}</p>` : ''}
+            <h2 style="margin:0 0 16px 0;color:var(--accent-light);">${escapeHtml(p.title)}</h2>
+            <p style="color:var(--muted); margin:0 0 16px 0;line-height:1.6;">${escapeHtml(p.description||'')}</p>
+            <div style="margin-bottom:16px;">${tagsHtml}</div>
+            <p style="margin:0;"><strong>Type:</strong> ${escapeHtml(p.type||'N/A')}</p>
+            <p style="margin:12px 0 0 0;"><strong>Price:</strong> <span style="color:var(--accent-light); font-weight:800; font-size:1.15rem;">${priceDisplay}</span></p>
+            ${p.details ? `<p style="margin-top:16px; color:var(--muted); font-size:0.95rem;line-height:1.6;">${escapeHtml(p.details)}</p>` : ''}
           `);
         });
       });
@@ -263,8 +260,8 @@
       if (!m) {
         m = document.createElement('div');
         m.id = 'simple-modal';
-        m.className = 'modal-overlay';
-        m.innerHTML = `<div class="modal-content"><div id="simple-modal-content" class="modal-body"></div><div class="modal-footer"><button id="closeModal" class="btn ghost">Close</button></div></div>`;
+        m.style.cssText = 'position:fixed; left:0; top:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.8); z-index:9999; padding:20px;';
+        m.innerHTML = `<div style="max-width:600px; width:100%; background:var(--panel); padding:32px; border-radius:18px; border:1px solid rgba(79,195,247,0.2); box-shadow:0 12px 48px rgba(0,0,0,0.5);"><div id="simple-modal-content"></div><div style="text-align:right; margin-top:24px;"><button id="closeModal" class="btn ghost">Close</button></div></div>`;
         document.body.appendChild(m);
         document.getElementById('closeModal').addEventListener('click', ()=>m.remove());
         m.addEventListener('click', (e)=>{ if(e.target === m) m.remove(); });
@@ -280,7 +277,7 @@
         buildChips(types);
         applyFilters();
       } catch (err){
-        grid.innerHTML = `<div class="empty-state" style="display:block;"><p>Failed to load products. Make sure products.json exists in /products/ folder.</p><small>${escapeHtml(String(err))}</small></div>`;
+        grid.innerHTML = `<div style="color:var(--muted); padding:24px; text-align:center;">Failed to load products. Make sure products.json exists in /products/ folder.<br><small style="display:block;margin-top:12px;">${escapeHtml(String(err))}</small></div>`;
         empty.style.display='none';
         console.error(err);
       }
@@ -313,6 +310,5 @@
     loadAll();
   })();
   </script>
-
 </body>
 </html>
