@@ -1,1 +1,97 @@
-s
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Terms of Service — Mania Print</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-container">
+      <div class="logo-container">
+        <img src="images/logo-transparent.png" alt="Mania Print Logo" class="logo-img" onerror="this.style.display='none'">
+        <a class="logo" href="index.html">Mania Print</a>
+      </div>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="products">Products</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+      <a class="cta" href="index.html#contact">Get a Quote</a>
+    </div>
+  </header>
+
+  <main class="container" style="max-width:900px">
+    <h1>Terms of Service</h1>
+    <p class="small" style="margin-bottom:32px">Last updated: October 31, 2025</p>
+
+    <section style="margin-bottom:32px">
+      <h2>1. Service Overview</h2>
+      <p>Mania Print provides 3D printing services including prototyping, small-batch production, custom design, finishing, and assembly. By placing an order, you agree to these terms.</p>
+    </section>
+
+    <section style="margin-bottom:32px">
+      <h2>2. Orders & Quotes</h2>
+      <p>All quotes are estimates based on the information provided. Final pricing may vary if design modifications are required for printability. Orders are confirmed upon payment receipt.</p>
+    </section>
+
+    <section style="margin-bottom:32px">
+      <h2>3. Files & Intellectual Property</h2>
+      <p>You retain all rights to files you submit. We will not share, sell, or reproduce your designs without explicit permission. Files are stored securely and deleted after project completion unless otherwise requested.</p>
+    </section>
+
+    <section style="margin-bottom:32px">
+      <h2>4. Turnaround Times</h2>
+      <p>Typical turnaround is 48 hours for prototypes, but times may vary based on complexity and queue. Rush orders may be available for an additional fee. We'll notify you of any delays.</p>
+    </section>
+
+    <section style="margin-bottom:32px">
+      <h2>5. Quality & Acceptance</h2>
+      <p>We perform quality checks on all prints. Minor variations in color, texture, and layer lines are inherent to 3D printing. If a print fails to meet functional specifications, we'll reprint at no charge.</p>
+    </section>
+
+    <section style="margin-bottom:32px">
+      <h2>6. Modifications & Cancellations</h2>
+      <p>Order changes must be requested before printing begins. Cancellations made after printing has started are subject to material and labor charges. Full refunds are available for cancellations before work begins.</p>
+    </section>
+
+    <section style="margin-bottom:32px">
+      <h2>7. Delivery & Pickup</h2>
+      <p>Local pickup is available in Brisbane, QLD. Delivery and shipping are available at cost. Risk of loss transfers to you upon pickup or handoff to carrier.</p>
+    </section>
+
+    <section style="margin-bottom:32px">
+      <h2>8. Limitation of Liability</h2>
+      <p>Mania Print is not liable for indirect, incidental, or consequential damages arising from the use of our products. Our liability is limited to the amount paid for the specific order.</p>
+    </section>
+
+    <section style="margin-bottom:32px">
+      <h2>9. Prohibited Uses</h2>
+      <p>We reserve the right to refuse orders for items that are illegal, dangerous, infringe on intellectual property, or violate our ethical standards.</p>
+    </section>
+
+    <section style="margin-bottom:32px">
+      <h2>10. Changes to Terms</h2>
+      <p>We may update these terms at any time. Continued use of our services after changes constitutes acceptance of the updated terms.</p>
+    </section>
+
+    <section style="margin-bottom:32px">
+      <h2>Contact</h2>
+      <p>Questions about these terms? Email us at <a href="mailto:contact@maniaprint.online" style="color:var(--accent)">contact@maniaprint.online</a></p>
+    </section>
+
+    <div style="margin-top:48px">
+      <a class="btn ghost" href="index.html">← Back to Home</a>
+    </div>
+  </main>
+
+  <footer class="container">
+    <div class="small">© Mania Print — made with filament & cookies 🍪</div>
+    <div class="small">
+      <a href="terms.html" style="color:var(--accent);text-decoration:none">Terms</a> • 
+      <a href="privacy.html" style="color:var(--muted);text-decoration:none">Privacy</a>
+    </div>
+  </footer>
+</body>
+</html>
