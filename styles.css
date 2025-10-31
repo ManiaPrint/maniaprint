@@ -1,8 +1,5 @@
-/* Mania Print — merged styles.css
-   Merged from inline styles in index.html (main) + products page + existing styles.css
-*/
+/* Mania Print — merged styles.css*/
 
-/* Theme & common vars (use the richer palette from main page) */
 :root{
   --bg:#0a1628;
   --panel:#0f1f3a;
@@ -261,5 +258,6 @@ input::placeholder,textarea::placeholder{color:var(--muted)}
 
 /* small final overrides to ensure compact card-actions in mixed content */
 .card-actions{ margin-top: 2px !important; }
+
 
 
