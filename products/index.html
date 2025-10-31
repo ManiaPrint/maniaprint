@@ -75,8 +75,6 @@
     </div>
   </footer>
 
-  <img src="../images/logo-transparent.png" alt="" class="logo-watermark" onerror="this.style.display='none'">
-
   <script>
   (function(){
     const grid = document.getElementById('grid');
@@ -199,9 +197,8 @@
     }
 
     function getPriceValue(item) {
-      // Treat non-numeric prices (like "Quote") as highest value for sorting
       if (typeof item.price === 'number') return item.price;
-      return Infinity; // Non-numeric prices are treated as most expensive
+      return Infinity;
     }
 
     function applyFilters(){
