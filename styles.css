@@ -10,8 +10,8 @@
   --accent-light:#64b5f6;
   --glass: rgba(79,195,247,0.08);
   --radius:16px;
-  --maxw:1400px;
-  --pad:24px;
+  --maxw:100%;
+  --pad:40px;
   --transition:200ms ease;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
@@ -36,12 +36,12 @@ header.site-header{
   z-index:50;
   box-shadow:0 2px 20px rgba(0,0,0,0.3);
 }
-header .container{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:12px var(--pad)}
+header .container{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:16px var(--pad)}
 .logo-container{display:flex;align-items:center;gap:8px;flex:0 0 auto}
-.logo-img{width:48px;height:48px;object-fit:contain}
+.logo-img{width:56px;height:56px;object-fit:contain}
 .logo{font-weight:900;letter-spacing:-0.03em;color:var(--text);text-decoration:none;font-size:1.5rem;background:linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap}
 .nav{display:flex;gap:4px;flex:1;justify-content:center}
-.nav a{color:var(--muted);text-decoration:none;padding:10px 16px;border-radius:10px;font-weight:600;transition:var(--transition);white-space:nowrap}
+.nav a{color:var(--muted);text-decoration:none;padding:12px 16px;border-radius:10px;font-weight:600;transition:var(--transition);white-space:nowrap}
 .nav a:hover{color:var(--text);background:rgba(79,195,247,0.1)}
 .nav a.nav-active{color:var(--text);background:rgba(79,195,247,0.15);box-shadow:0 0 20px rgba(79,195,247,0.2)}
 
@@ -219,7 +219,7 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
 
 /* Mobile & Tablet responsive */
 @media (max-width:1024px){
-  :root{--pad:20px}
+  :root{--pad:30px}
   .container{padding:24px var(--pad)}
   .hero{grid-template-columns:1fr;padding:32px 24px;gap:24px}
   .hero h1{font-size:2rem}
@@ -229,13 +229,12 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
 }
 
 @media (max-width:768px){
-  :root{--pad:16px}
+  :root{--pad:20px}
   .container{padding:20px var(--pad)}
-  header .container{flex-wrap:wrap;padding:10px var(--pad);gap:12px}
+  header .container{flex-wrap:wrap;padding:12px var(--pad);gap:12px}
   .logo-container{order:1}
-  .nav{order:3;width:100%;justify-content:flex-start;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:8px;padding:8px 0}
-  .nav a{padding:8px 14px;font-size:0.9rem}
-  .cta{order:2;font-size:0.85rem;padding:8px 14px}
+  .nav{order:2;width:100%;justify-content:flex-start;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:8px;padding:8px 0}
+  .nav a{padding:10px 14px;font-size:0.9rem}
   .hero{padding:24px 20px;gap:20px}
   .hero h1{font-size:1.7rem}
   .hero p.lead{font-size:0.95rem}
@@ -249,10 +248,10 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
 }
 
 @media (max-width:480px){
-  :root{--pad:12px}
+  :root{--pad:16px}
   .container{padding:16px var(--pad)}
   .logo{font-size:1.2rem}
-  .logo-img{width:36px;height:36px}
+  .logo-img{width:42px;height:42px}
   .hero h1{font-size:1.5rem}
   .hero p.lead{font-size:0.9rem}
   .tool-card{min-height:auto}
