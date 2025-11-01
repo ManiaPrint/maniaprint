@@ -26,7 +26,7 @@ h1,h2,h3,h4,h5,h6,p,span,div,a,button,label,.small,.note{user-select:none;cursor
 a,button,.cta,.btn,.chip{cursor:pointer !important}
 input,textarea{user-select:text;cursor:text}
 
-/* Header - Updated to be skinnier and align items */
+/* Header - Updated logo size without increasing nav height */
 header.site-header{
   position:sticky;
   top:0;
@@ -41,7 +41,7 @@ header .container{
   align-items:center;
   justify-content:space-between;
   gap:24px;
-  padding:8px var(--pad);
+  padding:10px var(--pad);
 }
 .header-container{
   display:flex;
@@ -55,8 +55,8 @@ header .container{
   flex:0 0 auto;
 }
 .logo-img{
-  width:56px;
-  height:56px;
+  width:72px;
+  height:72px;
   object-fit:contain;
 }
 .logo{
@@ -64,7 +64,7 @@ header .container{
   letter-spacing:-0.03em;
   color:var(--text);
   text-decoration:none;
-  font-size:1.6rem;
+  font-size:2rem;
   background:linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
@@ -120,9 +120,9 @@ header .container{
 .cta.ghost{background:transparent;border:1px solid rgba(79,195,247,0.3);color:var(--accent-light);box-shadow:none}
 .cta.ghost:hover{background:rgba(79,195,247,0.1);border-color:var(--accent)}
 
-/* Hero - Reduced spacing between elements */
+/* Hero - Adjusted spacing */
 .hero{
-  margin:20px auto;
+  margin:12px auto 0;
   padding:40px 36px;
   border-radius:20px;
   background:var(--panel);
@@ -133,9 +133,9 @@ header .container{
   align-items:center;
   box-shadow:0 8px 32px rgba(0,0,0,0.2);
 }
-.hero h1{margin:0;font-size:2.3rem;letter-spacing:-0.03em;line-height:1.2}
-.hero p.lead{color:var(--muted);margin:10px 0 0;font-size:1.05rem;line-height:1.6}
-.hero .kpis{display:flex;gap:12px;margin-top:18px}
+.hero h1{margin:0 0 16px 0;font-size:2.3rem;letter-spacing:-0.03em;line-height:1.2}
+.hero p.lead{color:var(--muted);margin:0 0 24px 0;font-size:1.05rem;line-height:1.6}
+.hero .kpis{display:flex;gap:12px;margin-top:0;margin-bottom:0}
 .kpi{background:rgba(79,195,247,0.06);padding:12px;border-radius:14px;border:1px solid rgba(79,195,247,0.15);min-width:130px;text-align:center;transition:var(--transition)}
 .kpi:hover{background:rgba(79,195,247,0.1);border-color:rgba(79,195,247,0.25)}
 .kpi b{display:block;font-size:1.3rem;color:var(--accent-light)}
@@ -150,25 +150,29 @@ header .container{
 .service h3{margin:0 0 10px 0;color:var(--accent-light)}
 .service p{margin:0;color:var(--muted);line-height:1.5}
 
-/* Process + quote calculator */
+/* Process + quote calculator - Updated to match heights */
 .split{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px}
-.steps{display:flex;flex-direction:column;gap:14px}
+.steps{display:flex;flex-direction:column;gap:14px;height:100%}
 .step{display:flex;gap:14px;align-items:flex-start;transition:var(--transition)}
 .step:hover{transform:translateX(4px)}
 .step .num{background:linear-gradient(135deg,var(--accent-light),var(--accent));padding:10px 14px;border-radius:12px;color:#0a1628;font-weight:800;box-shadow:0 2px 10px rgba(79,195,247,0.3)}
 
-/* Quote Calculator */
+/* Quote Calculator - Resized to match How it Works */
 .quote-calculator{
   background:var(--panel);
   border:1px solid rgba(79,195,247,0.2);
   border-radius:14px;
   padding:24px;
+  height:100%;
+  display:flex;
+  flex-direction:column;
 }
 .calculator-form{
   display:flex;
   flex-direction:column;
   gap:14px;
   margin-top:16px;
+  flex:1;
 }
 .form-group{
   display:flex;
@@ -292,7 +296,7 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
 .btn.small{padding:7px 12px;font-size:0.82rem}
 .card-actions .price{margin-left:auto;font-weight:800;color:var(--accent-light);font-size:1.1rem}
 
-/* 3D Viewer Modal */
+/* 3D Viewer Modal - Updated with color picker */
 #viewer-modal{
   position:fixed;
   left:0; top:0; right:0; bottom:0;
@@ -349,6 +353,8 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
   padding:12px 16px;
   border-radius:12px;
   border:1px solid rgba(79,195,247,0.2);
+  flex-wrap:wrap;
+  justify-content:center;
 }
 .viewer-controls button{
   background:rgba(79,195,247,0.1);
@@ -364,6 +370,27 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
 .viewer-controls button:hover{
   background:rgba(79,195,247,0.2);
   border-color:var(--accent);
+}
+.color-picker-container{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.color-swatch{
+  width:32px;
+  height:32px;
+  border-radius:6px;
+  border:2px solid rgba(79,195,247,0.3);
+  cursor:pointer;
+  transition:var(--transition);
+}
+.color-swatch:hover{
+  border-color:var(--accent);
+  transform:scale(1.1);
+}
+.color-swatch.active{
+  border-color:var(--accent-light);
+  box-shadow:0 0 10px rgba(79,195,247,0.5);
 }
 .viewer-loading{
   position:absolute;
@@ -413,6 +440,8 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
   .container{padding:20px var(--pad)}
   header .container{flex-wrap:wrap;padding:8px var(--pad);gap:12px}
   .logo-container{order:1}
+  .logo{font-size:1.6rem}
+  .logo-img{width:56px;height:56px}
   .nav{order:2;width:100%;justify-content:flex-start;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:8px;padding:8px 0;margin-left:0}
   .nav a{padding:8px 12px;font-size:0.85rem}
   .hero{padding:24px 20px;gap:20px}
@@ -432,8 +461,8 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
 @media (max-width:480px){
   :root{--pad:16px}
   .container{padding:16px var(--pad)}
-  .logo{font-size:1.3rem}
-  .logo-img{width:48px;height:48px}
+  .logo{font-size:1.4rem}
+  .logo-img{width:52px;height:52px}
   .hero h1{font-size:1.5rem}
   .hero p.lead{font-size:0.9rem}
   .tool-card{min-height:auto}
