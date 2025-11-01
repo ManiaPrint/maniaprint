@@ -273,7 +273,7 @@
         buildChips(types);
         applyFilters();
       } catch (err){
-        grid.innerHTML = `<div style="color:var(--muted); padding:24px; text-align:center;">Failed to load products. Make sure products.json exists in /products/ folder.<br><small style="display:block;margin-top:12px;">${escapeHtml(String(err))}</small></div>`;
+        grid.innerHTML = `<div style="color:var(--muted); padding:24px; text-align:center;">Failed to load products. Make sure products.json exists in /products folder.<br><small style="display:block;margin-top:12px;">${escapeHtml(String(err))}</small></div>`;
         empty.style.display='none';
         console.error(err);
       }
