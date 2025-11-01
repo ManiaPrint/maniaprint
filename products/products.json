@@ -45,14 +45,18 @@
     "description": "Small 3D-printed flexi dragon keychain with movable joints. Fun, durable, and perfect for adding a playful touch to your keys or bag, or a cool unique gift.",
     "category": "PLA",
     "price": 5.00,
-    "tags": ["Gift Idea", "Colourful", "Articulated"],
+    "tags": ["Bag attachment", "Colourful", "Articulated"],
     "details": "Crafted from durable PLA plastic with flexible joints that move freely. 1-2 day turnaround",
-    "image": ""
+    "image": "",
+  }
+  {
+    "id": "6",
+    "title": "MAGSAFE Phone Stand",
+    "description": "iPhone magsafe phone stand to charge on your desk - charger not included.",
+    "category": "PLA",
+    "price": 10.00,
+    "tags": ["Aesthetic", "Useful", "Cheap"],
+    "details": "Crafted from durable PLA plastic to use easily with an apple magsafe charger. 1-2 day turnaround",
+    "image": "",
   }
 ]
-
-
-
-
-
-
