@@ -37,7 +37,7 @@
           <div class="kpi card"><b>99%</b><span class="small">First-print success</span></div>
         </div>
 
-        <div style="margin-top:30px;display:flex;gap:12px;flex-wrap:wrap">
+        <div style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap">
           <a class="cta" href="#get-quote">Request a quote</a>
           <a class="cta ghost" href="products">Products</a>
         </div>
@@ -139,25 +139,53 @@
       </div>
 
       <aside>
-        <h2>Pricing (starter)</h2>
-        <div class="pricing">
-          <div class="price card">
-            <h4>Small</h4>
-            <div class="small">Starter prints & prototypes</div>
-            <div class="small">Volume-based discounts available.</div>
-            <a class="cta topmargin" href="#get-quote">Estimate</a>
+        <div class="quote-calculator">
+          <h2>Quick Quote Calculator</h2>
+          <p class="note">Get an instant estimate for your print</p>
+          
+          <div class="calculator-form">
+            <div class="form-group">
+              <label for="calc-size">Print Size</label>
+              <select id="calc-size">
+                <option value="10">Small (up to 5cm) - $10 base</option>
+                <option value="25">Medium (5-15cm) - $25 base</option>
+                <option value="50">Large (15-25cm) - $50 base</option>
+                <option value="100">Extra Large (25cm+) - $100 base</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="calc-material">Material</label>
+              <select id="calc-material">
+                <option value="1">PLA (Standard)</option>
+                <option value="1.5">PLA+ (Premium) +50%</option>
+                <option value="2">PETG +100%</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="calc-finish">Finishing</label>
+              <select id="calc-finish">
+                <option value="1">None</option>
+                <option value="1.3">Basic sanding +30%</option>
+                <option value="1.6">Prime & paint +60%</option>
+                <option value="2">Premium finish +100%</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="calc-qty">Quantity</label>
+              <input type="number" id="calc-qty" min="1" max="100" value="1" />
+            </div>
+
+            <button class="cta" onclick="calculateQuote()">Calculate</button>
           </div>
 
-          <div class="price card">
-            <h4>Medium</h4>
-            <div class="small">Small-batch production</div>
-            <a class="cta topmargin" href="#get-quote">Estimate</a>
-          </div>
-
-          <div class="price card">
-            <h4>Big</h4>
-            <div class="small">Larger runs & assemblies</div>
-            <a class="cta topmargin" href="#get-quote">Estimate</a>
+          <div id="calculator-result" class="calculator-result" style="display:none">
+            <div class="small">Estimated Cost</div>
+            <div class="estimate" id="estimate-amount">$0</div>
+            <p class="note">This is a rough estimate. Contact us for accurate pricing based on your specific design.</p>
+            <a class="cta topmargin" href="#contact" style="display:inline-block">Get Accurate Quote</a>
           </div>
         </div>
 
@@ -201,11 +229,12 @@
   <footer class="container">
     <div class="small">© Mania Print — made with filament & cookies 🍪</div>
     <div class="small">
-      <a href="terms" style="color:var(--muted);text-decoration:none">Terms</a> 
+      <a href="terms" style="color:var(--muted);text-decoration:none">Terms of Service</a> 
     </div>
   </footer>
 
   <script>
+    // Navigation active state
     document.addEventListener('DOMContentLoaded', () => {
       const currentPath = window.location.pathname;
       const currentHash = window.location.hash;
@@ -230,6 +259,22 @@
       });
     });
 
+    // Quote Calculator
+    function calculateQuote() {
+      const size = parseFloat(document.getElementById('calc-size').value);
+      const material = parseFloat(document.getElementById('calc-material').value);
+      const finish = parseFloat(document.getElementById('calc-finish').value);
+      const qty = parseInt(document.getElementById('calc-qty').value);
+
+      const basePrice = size * material * finish;
+      const bulkDiscount = qty >= 5 ? 0.9 : qty >= 10 ? 0.8 : 1;
+      const total = basePrice * qty * bulkDiscount;
+
+      document.getElementById('estimate-amount').textContent = '$' + total.toFixed(2);
+      document.getElementById('calculator-result').style.display = 'block';
+    }
+
+    // Material dropdown
     const materialBtn = document.querySelector('#material-dropdown .custom-select-button');
     const materialOpts = document.querySelector('#material-dropdown .custom-select-options');
     const materialSelect = document.getElementById('uploadMaterial');
@@ -254,6 +299,7 @@
       });
     }
 
+    // Upload form
     const uploadForm = document.getElementById('uploadForm');
     const contactForm = document.getElementById('contactForm');
     const uploadStatus = document.getElementById('uploadStatus');
@@ -349,8 +395,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
