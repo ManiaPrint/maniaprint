@@ -36,12 +36,12 @@ header.site-header{
   z-index:50;
   box-shadow:0 2px 20px rgba(0,0,0,0.3);
 }
-header .container{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:12px var(--pad)}
+header .container{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:16px var(--pad)}
 .logo-container{display:flex;align-items:center;gap:8px;flex:0 0 auto}
-.logo-img{width:48px;height:48px;object-fit:contain;border-radius:8px}
+.logo-img{width:112px;height:112px}
 .logo{font-weight:900;letter-spacing:-0.03em;color:var(--text);text-decoration:none;font-size:1.5rem;background:linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap}
 .nav{display:flex;gap:4px;flex:1;justify-content:center;align-items:center}
-.nav a{color:var(--muted);text-decoration:none;padding:10px 16px;border-radius:10px;font-weight:600;transition:var(--transition);white-space:nowrap}
+.nav a{color:var(--muted);text-decoration:none;padding:12px 16px;border-radius:10px;font-weight:600;transition:var(--transition);white-space:nowrap}
 .nav a:hover{color:var(--text);background:rgba(79,195,247,0.1)}
 .nav a.nav-active{color:var(--text);background:rgba(79,195,247,0.15);box-shadow:0 0 20px rgba(79,195,247,0.2)}
 
@@ -263,5 +263,6 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
 /* Accessibility */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--panel);border:1px solid rgba(79,195,247,0.06);padding:12px 18px;border-radius:10px;color:var(--text);font-weight:600;z-index:10000;opacity:0;transform:translateY(10px);transition:all 0.3s ease;pointer-events:none}
 .toast.show{opacity:1;transform:translateY(0);pointer-events:auto}
+
 
 
