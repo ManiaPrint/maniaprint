@@ -302,10 +302,11 @@
         iconHtml = makeIcon(item.title, item.type);
       }
 
+      // Check if 3D file exists and is valid
       const has3D = item['3Dfile'] && item['3Dfile'].trim() !== '';
       const viewBtn = has3D 
         ? `<button class="btn small ghost view-3d" data-id="${escapeHtml(item.id || '')}" data-file="${escapeHtml(item['3Dfile'])}" data-title="${escapeHtml(item.title)}" data-colours='${JSON.stringify(item.colours || [])}'>View in 3D</button>`
-        : `<button class="btn small ghost" disabled style="opacity:0.5;">No 3D Model</button>`;
+        : `<button class="btn small ghost" disabled>3D View Unavailable</button>`;
 
       return `<article class="tool-card" data-title="${escapeHtml(item.title)}" data-desc="${escapeHtml(item.description || '')}" data-type="${escapeHtml(item.type || '')}" data-tags="${escapeHtml((item.tags || []).join(','))}">
         <div class="card-top">
@@ -508,8 +509,6 @@
       directionalLight2.position.set(-5, -5, -5);
       scene.add(directionalLight2);
       
-      // NO GRID HELPER - REMOVED
-      
       let model = null;
       let isDragging = false;
       let previousMousePosition = { x: 0, y: 0 };
@@ -520,7 +519,7 @@
         defaultColor = parseInt(colours[0].replace('#', '0x'));
       }
       
-      // Check if modelFile has a value and load it, otherwise show placeholder
+      // Check if modelFile has a value and load it
       if (modelFile && modelFile.trim() !== '') {
         // Load STL model from products/models/ directory
         const loader = new THREE.STLLoader();
@@ -567,43 +566,16 @@
             loading.textContent = `Loading model... ${percent}%`;
           },
           function (error) {
-            loading.textContent = 'Error loading STL file. Showing placeholder cube.';
-            loading.style.color = '#ff9800';
+            loading.textContent = '3D model file could not be loaded.';
+            loading.style.color = '#ff5252';
             console.error('STL loading error:', error);
             
-            // Show placeholder cube on error
+            // Don't show controls or placeholder - just show error
             setTimeout(()=>{
-              createPlaceholderCube(defaultColor);
-              loading.style.display = 'none';
-              controls.style.display = 'flex';
-              
-              // Show color picker even for placeholder
-              if (colours && colours.length > 1) {
-                setupColorPicker(model, colours, colorPicker);
-              }
-            }, 2000);
+              loading.textContent = '3D View Unavailable - File not found or invalid.';
+            }, 1500);
           }
         );
-      } else {
-        // No 3D file specified, show placeholder cube
-        loading.textContent = 'No 3D model file. Showing placeholder cube.';
-        loading.style.color = '#ff9800';
-        setTimeout(()=>{
-          createPlaceholderCube(defaultColor);
-          loading.style.display = 'none';
-          controls.style.display = 'flex';
-        }, 1500);
-      }
-      
-      function createPlaceholderCube(color) {
-        const geometry = new THREE.BoxGeometry(1, 1, 1);
-        const material = new THREE.MeshPhongMaterial({ 
-          color: color,
-          shininess: 80,
-          specular: 0x64b5f6
-        });
-        model = new THREE.Mesh(geometry, material);
-        scene.add(model);
       }
       
       function setupColorPicker(modelMesh, colorOptions, pickerContainer) {
