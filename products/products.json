@@ -8,7 +8,7 @@
     "tags": ["Standard", "Unique", "Quick Turnaround"],
     "details": "Standard PLA material in various colors with fine finishing. Typical turnaround 2-3 days.",
     "image": "",
-    "3Dfile": "models/custom-print.stl",
+    "3Dfile": "",
     "colours": ["#4fc3f7", "#2196f3", "#ff5252", "#4caf50", "#ffc107"]
   },
   {
@@ -20,7 +20,7 @@
     "tags": ["Long-lasting", "Affordable", "Practical", "5 for $10"],
     "details": "Printed using a range of colors and fonts to create your unique nametag. Around 1-3 day turnaround.",
     "image": "",
-    "3Dfile": "models/nametag.stl",
+    "3Dfile": "",
     "colours": ["#4fc3f7", "#ff5252", "#4caf50", "#ffc107", "#9c27b0", "#ffffff"]
   },
   {
@@ -32,7 +32,7 @@
     "tags": ["Stylish", "Pet-Friendly", "Lightweight", "5 for $10"],
     "details": "Made from durable, lightweight PLA plastic with your choice of name and color including a keyring. 1-3 day turnaround.",
     "image": "",
-    "3Dfile": "models/pet-tag.stl",
+    "3Dfile": "",
     "colours": ["#2196f3", "#ff5252", "#4caf50", "#ffc107"]
   },
   {
@@ -44,7 +44,7 @@
     "tags": ["Large Format", "Custom", "Special Order"],
     "details": "Contact us for custom pricing on large format prints. Various materials available. Lead time depends on project complexity.",
     "image": "",
-    "3Dfile": "models/phone-stand.stl",
+    "3Dfile": "",
     "colours": ["#ffffff"]
   },
   {
@@ -56,7 +56,7 @@
     "tags": ["Bag attachment", "Colourful", "Articulated"],
     "details": "Crafted from durable PLA plastic with flexible joints that move freely. 1-2 day turnaround",
     "image": "",
-    "3Dfile": "models/dragon-keychain.stl",
+    "3Dfile": "",
     "colours": ["#4fc3f7", "#ff5252", "#4caf50", "#ffc107", "#9c27b0"]
   },
   {
@@ -72,3 +72,4 @@
     "colours": ["#ffffff", "#000000", "#4fc3f7"]
   }
 ]
+
