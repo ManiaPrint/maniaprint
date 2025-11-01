@@ -1,13 +1,14 @@
-  [
+[
   {
     "id": "1",
     "title": "Custom PLA Print",
-    "description": "Custom 3D printing made easy. Tell us your idea, wants and needs, and we’ll design and print with precision and care. Unique parts, prototypes, gifts, and more — all printed by ManiaPrint.",
+    "description": "Custom 3D printing made easy. Tell us your idea, wants and needs, and we'll design and print with precision and care. Unique parts, prototypes, gifts, and more — all printed by ManiaPrint.",
     "category": "PLA",
     "price": "Quote",
     "tags": ["Standard", "Unique", "Quick Turnaround"],
     "details": "Standard PLA material in various colors with fine finishing. Typical turnaround 2-3 days.",
-    "image": ""
+    "image": "",
+    "3Dfile": ""
   },
   {
     "id": "2",
@@ -17,7 +18,8 @@
     "price": 3,
     "tags": ["Long-lasting", "Affordable", "Practical", "5 for $10"],
     "details": "Printed using a range of colors and fonts to create your unique nametag. Around 1-3 day turnaround.",
-    "image": ""
+    "image": "",
+    "3Dfile": "models/nametag.stl"
   },
   {
     "id": "3",
@@ -27,7 +29,8 @@
     "price": 3,
     "tags": ["Stylish", "Pet-Friendly", "Lightweight", "5 for $10"],
     "details": "Made from durable, lightweight PLA plastic with your choice of name and color including a keyring. 1-3 day turnaround.",
-    "image": ""
+    "image": "",
+    "3Dfile": "models/pet-tag.stl"
   },
   {
     "id": "4",
@@ -37,7 +40,8 @@
     "price": "Quote",
     "tags": ["Large Format", "Custom", "Special Order"],
     "details": "Contact us for custom pricing on large format prints. Various materials available. Lead time depends on project complexity.",
-    "image": ""
+    "image": "",
+    "3Dfile": ""
   },
   {
     "id": "5",
@@ -47,7 +51,8 @@
     "price": 5.00,
     "tags": ["Bag attachment", "Colourful", "Articulated"],
     "details": "Crafted from durable PLA plastic with flexible joints that move freely. 1-2 day turnaround",
-    "image": ""
+    "image": "",
+    "3Dfile": ""
   },
   {
     "id": "6",
@@ -57,9 +62,7 @@
     "price": 10.00,
     "tags": ["Aesthetic", "Useful", "Cheap"],
     "details": "Crafted from durable PLA plastic to use easily with an apple magsafe charger. 1-2 day turnaround",
-    "image": ""
+    "image": "",
+    "3Dfile": ""
   }
 ]
-
-
-
