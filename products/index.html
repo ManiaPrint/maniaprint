@@ -292,7 +292,7 @@
     }
 
     function renderCard(item) {
-      const priceDisplay = (typeof item.price === 'number') ? `$${item.price.toFixed(2)}` : (item.price || 'Quote');
+      const priceDisplay = (typeof item.price === 'number') ? `${item.price.toFixed(2)}` : (item.price || 'Quote');
       const tagsHtml = (item.tags || []).map(t => `<span class="chip">${escapeHtml(t)}</span>`).join(' ');
       
       let iconHtml = '';
@@ -304,7 +304,7 @@
 
       const has3D = item['3Dfile'] && item['3Dfile'].trim() !== '';
       const viewBtn = has3D 
-        ? `<button class="btn small ghost view-3d" data-id="${escapeHtml(item.id || '')}" data-file="${escapeHtml(item['3Dfile'])}" data-title="${escapeHtml(item.title)}">View in 3D</button>`
+        ? `<button class="btn small ghost view-3d" data-id="${escapeHtml(item.id || '')}" data-file="${escapeHtml(item['3Dfile'])}" data-title="${escapeHtml(item.title)}" data-colours='${JSON.stringify(item.colours || [])}'>View in 3D</button>`
         : `<button class="btn small ghost" disabled style="opacity:0.5;">No 3D Model</button>`;
 
       return `<article class="tool-card" data-title="${escapeHtml(item.title)}" data-desc="${escapeHtml(item.description || '')}" data-type="${escapeHtml(item.type || '')}" data-tags="${escapeHtml((item.tags || []).join(','))}">
@@ -421,14 +421,21 @@
         btn.addEventListener('click', (e)=>{
           const file = e.currentTarget.getAttribute('data-file');
           const title = e.currentTarget.getAttribute('data-title');
+          const coloursStr = e.currentTarget.getAttribute('data-colours');
+          let colours = [];
+          try {
+            colours = JSON.parse(coloursStr || '[]');
+          } catch(err) {
+            colours = [];
+          }
           if (!file) return;
           
-          open3DViewer(title, file);
+          open3DViewer(title, file, colours);
         });
       });
     }
 
-    function open3DViewer(title, modelFile){
+    function open3DViewer(title, modelFile, colours){
       const modal = document.createElement('div');
       modal.id = 'viewer-modal';
       modal.innerHTML = `
@@ -444,6 +451,7 @@
               <button id="reset-view">Reset View</button>
               <button id="zoom-in">Zoom In</button>
               <button id="zoom-out">Zoom Out</button>
+              <div class="color-picker-container" id="color-picker" style="display:none;"></div>
             </div>
           </div>
         </div>
@@ -463,14 +471,15 @@
         }
       });
 
-      init3DViewer(modelFile);
+      init3DViewer(modelFile, colours);
     }
 
-    function init3DViewer(modelFile){
+    function init3DViewer(modelFile, colours){
       const container = document.getElementById('viewer-canvas-container');
       const canvas = document.getElementById('viewer-canvas');
       const loading = document.getElementById('viewer-loading');
       const controls = document.getElementById('viewer-controls');
+      const colorPicker = document.getElementById('color-picker');
       
       const scene = new THREE.Scene();
       scene.background = new THREE.Color(0x0a1628);
@@ -499,15 +508,17 @@
       directionalLight2.position.set(-5, -5, -5);
       scene.add(directionalLight2);
       
-      // Grid helper
-      const gridHelper = new THREE.GridHelper(10, 10, 0x4fc3f7, 0x2196f3);
-      gridHelper.material.opacity = 0.2;
-      gridHelper.material.transparent = true;
-      scene.add(gridHelper);
+      // NO GRID HELPER - REMOVED
       
       let model = null;
       let isDragging = false;
       let previousMousePosition = { x: 0, y: 0 };
+      
+      // Determine default color
+      let defaultColor = 0xffffff;
+      if (colours && colours.length > 0) {
+        defaultColor = parseInt(colours[0].replace('#', '0x'));
+      }
       
       // Check if modelFile has a value and load it, otherwise show placeholder
       if (modelFile && modelFile.trim() !== '') {
@@ -519,7 +530,7 @@
           filePath,
           function (geometry) {
             const material = new THREE.MeshPhongMaterial({ 
-              color: 0x4fc3f7,
+              color: defaultColor,
               shininess: 80,
               specular: 0x64b5f6
             });
@@ -544,6 +555,11 @@
             setTimeout(()=>{
               loading.style.display = 'none';
               controls.style.display = 'flex';
+              
+              // Show color picker if multiple colors available
+              if (colours && colours.length > 1) {
+                setupColorPicker(model, colours, colorPicker);
+              }
             }, 1000);
           },
           function (xhr) {
@@ -557,9 +573,14 @@
             
             // Show placeholder cube on error
             setTimeout(()=>{
-              createPlaceholderCube();
+              createPlaceholderCube(defaultColor);
               loading.style.display = 'none';
               controls.style.display = 'flex';
+              
+              // Show color picker even for placeholder
+              if (colours && colours.length > 1) {
+                setupColorPicker(model, colours, colorPicker);
+              }
             }, 2000);
           }
         );
@@ -568,21 +589,50 @@
         loading.textContent = 'No 3D model file. Showing placeholder cube.';
         loading.style.color = '#ff9800';
         setTimeout(()=>{
-          createPlaceholderCube();
+          createPlaceholderCube(defaultColor);
           loading.style.display = 'none';
           controls.style.display = 'flex';
         }, 1500);
       }
       
-      function createPlaceholderCube() {
+      function createPlaceholderCube(color) {
         const geometry = new THREE.BoxGeometry(1, 1, 1);
         const material = new THREE.MeshPhongMaterial({ 
-          color: 0x4fc3f7,
+          color: color,
           shininess: 80,
           specular: 0x64b5f6
         });
         model = new THREE.Mesh(geometry, material);
         scene.add(model);
+      }
+      
+      function setupColorPicker(modelMesh, colorOptions, pickerContainer) {
+        if (!modelMesh || !colorOptions || colorOptions.length <= 1) return;
+        
+        pickerContainer.style.display = 'flex';
+        pickerContainer.innerHTML = '';
+        
+        colorOptions.forEach((hexColor, index) => {
+          const swatch = document.createElement('div');
+          swatch.className = 'color-swatch' + (index === 0 ? ' active' : '');
+          swatch.style.backgroundColor = hexColor;
+          swatch.setAttribute('data-color', hexColor);
+          
+          swatch.addEventListener('click', () => {
+            // Remove active from all swatches
+            pickerContainer.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+            // Add active to clicked swatch
+            swatch.classList.add('active');
+            
+            // Change model color
+            if (modelMesh && modelMesh.material) {
+              const newColor = parseInt(hexColor.replace('#', '0x'));
+              modelMesh.material.color.setHex(newColor);
+            }
+          });
+          
+          pickerContainer.appendChild(swatch);
+        });
       }
       
       // Mouse controls
