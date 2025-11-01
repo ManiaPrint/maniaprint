@@ -55,8 +55,8 @@ header .container{
   flex:0 0 auto;
 }
 .logo-img{
-  width:1800px;
-  height:1800px;
+  width:360px;
+  height:360px;
 }
 .logo{
   font-weight:900;
@@ -492,6 +492,7 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
 /* Accessibility */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--panel);border:1px solid rgba(79,195,247,0.06);padding:12px 18px;border-radius:10px;color:var(--text);font-weight:600;z-index:10000;opacity:0;transform:translateY(10px);transition:all 0.3s ease;pointer-events:none}
 .toast.show{opacity:1;transform:translateY(0);pointer-events:auto}
+
 
 
 
