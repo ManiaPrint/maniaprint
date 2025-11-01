@@ -11,7 +11,7 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^products$ /products/index.html [L]
 
-# Handle /terms without extension
+# Handle /terms without extension - redirect to terms.html
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^terms$ /terms/terms.html [L]
