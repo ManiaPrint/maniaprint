@@ -73,7 +73,7 @@ header .container{
 }
 .nav{
   display:flex;
-  gap:4px;
+  gap:1px;
   flex:1;
   justify-content:flex-start;
   align-items:center;
@@ -493,3 +493,4 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
 /* Accessibility */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--panel);border:1px solid rgba(79,195,247,0.06);padding:12px 18px;border-radius:10px;color:var(--text);font-weight:600;z-index:10000;opacity:0;transform:translateY(10px);transition:all 0.3s ease;pointer-events:none}
 .toast.show{opacity:1;transform:translateY(0);pointer-events:auto}
+
