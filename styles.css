@@ -67,7 +67,7 @@ header .container{display:flex;align-items:center;justify-content:space-between;
 
 /* Hero */
 .hero{
-  margin:40px auto;
+  margin:20px auto;
   padding:48px 40px;
   border-radius:20px;
   background:var(--panel);
@@ -263,6 +263,7 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
 /* Accessibility */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--panel);border:1px solid rgba(79,195,247,0.06);padding:12px 18px;border-radius:10px;color:var(--text);font-weight:600;z-index:10000;opacity:0;transform:translateY(10px);transition:all 0.3s ease;pointer-events:none}
 .toast.show{opacity:1;transform:translateY(0);pointer-events:auto}
+
 
 
 
