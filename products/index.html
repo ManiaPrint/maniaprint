@@ -509,49 +509,81 @@
       let isDragging = false;
       let previousMousePosition = { x: 0, y: 0 };
       
-      // Load STL model
-      const loader = new THREE.STLLoader();
-      loader.load(
-        modelFile,
-        function (geometry) {
-          const material = new THREE.MeshPhongMaterial({ 
-            color: 0x4fc3f7,
-            shininess: 80,
-            specular: 0x64b5f6
-          });
-          model = new THREE.Mesh(geometry, material);
-          
-          // Center the model
-          geometry.computeBoundingBox();
-          const center = new THREE.Vector3();
-          geometry.boundingBox.getCenter(center);
-          geometry.center();
-          
-          // Scale to reasonable size
-          const box = new THREE.Box3().setFromObject(model);
-          const size = box.getSize(new THREE.Vector3());
-          const maxDim = Math.max(size.x, size.y, size.z);
-          const scale = 3 / maxDim;
-          model.scale.setScalar(scale);
-          
-          scene.add(model);
-          
-          loading.textContent = 'Model loaded! Drag to rotate, scroll to zoom';
-          setTimeout(()=>{
-            loading.style.display = 'none';
-            controls.style.display = 'flex';
-          }, 1000);
-        },
-        function (xhr) {
-          const percent = Math.round((xhr.loaded / xhr.total) * 100);
-          loading.textContent = `Loading model... ${percent}%`;
-        },
-        function (error) {
-          loading.textContent = 'Error loading model. File may not exist or is invalid.';
-          loading.style.color = '#ff5252';
-          console.error('STL loading error:', error);
-        }
-      );
+      // Check if modelFile has a value and load it, otherwise show placeholder
+      if (modelFile && modelFile.trim() !== '') {
+        // Load STL model from products/models/ directory
+        const loader = new THREE.STLLoader();
+        const filePath = modelFile.startsWith('models/') ? modelFile : 'models/' + modelFile;
+        
+        loader.load(
+          filePath,
+          function (geometry) {
+            const material = new THREE.MeshPhongMaterial({ 
+              color: 0x4fc3f7,
+              shininess: 80,
+              specular: 0x64b5f6
+            });
+            model = new THREE.Mesh(geometry, material);
+            
+            // Center the model
+            geometry.computeBoundingBox();
+            const center = new THREE.Vector3();
+            geometry.boundingBox.getCenter(center);
+            geometry.center();
+            
+            // Scale to reasonable size
+            const box = new THREE.Box3().setFromObject(model);
+            const size = box.getSize(new THREE.Vector3());
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const scale = 3 / maxDim;
+            model.scale.setScalar(scale);
+            
+            scene.add(model);
+            
+            loading.textContent = 'Model loaded! Drag to rotate, scroll to zoom';
+            setTimeout(()=>{
+              loading.style.display = 'none';
+              controls.style.display = 'flex';
+            }, 1000);
+          },
+          function (xhr) {
+            const percent = Math.round((xhr.loaded / xhr.total) * 100);
+            loading.textContent = `Loading model... ${percent}%`;
+          },
+          function (error) {
+            loading.textContent = 'Error loading STL file. Showing placeholder cube.';
+            loading.style.color = '#ff9800';
+            console.error('STL loading error:', error);
+            
+            // Show placeholder cube on error
+            setTimeout(()=>{
+              createPlaceholderCube();
+              loading.style.display = 'none';
+              controls.style.display = 'flex';
+            }, 2000);
+          }
+        );
+      } else {
+        // No 3D file specified, show placeholder cube
+        loading.textContent = 'No 3D model file. Showing placeholder cube.';
+        loading.style.color = '#ff9800';
+        setTimeout(()=>{
+          createPlaceholderCube();
+          loading.style.display = 'none';
+          controls.style.display = 'flex';
+        }, 1500);
+      }
+      
+      function createPlaceholderCube() {
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
+        const material = new THREE.MeshPhongMaterial({ 
+          color: 0x4fc3f7,
+          shininess: 80,
+          specular: 0x64b5f6
+        });
+        model = new THREE.Mesh(geometry, material);
+        scene.add(model);
+      }
       
       // Mouse controls
       canvas.addEventListener('mousedown', (e)=>{
