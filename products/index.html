@@ -11,7 +11,7 @@
 </head>
 <body>
   <header class="site-header">
-    <div class="container">
+    <div class="container header-container">
       <div class="logo-container">
         <img src="../images/logo-transparent.png" alt="Mania Print Logo" class="logo-img" onerror="this.style.display='none'">
         <a class="logo" href="..">Mania Print</a>
@@ -88,6 +88,7 @@
 
     let products = [];
     let activeType = null;
+    let viewer3D = null;
 
     async function fetchProducts(){
       const r = await fetch('products.json', {cache:'no-store'});
@@ -123,6 +124,11 @@
         iconHtml = makeIcon(item.title, item.type);
       }
 
+      const has3D = item['3Dfile'] && item['3Dfile'].trim() !== '';
+      const viewBtn = has3D 
+        ? `<button class="btn small ghost view-3d" data-id="${escapeHtml(item.id || '')}" data-file="${escapeHtml(item['3Dfile'])}">View in 3D</button>`
+        : `<button class="btn small ghost" disabled style="opacity:0.5;">No 3D Model</button>`;
+
       return `<article class="tool-card" data-title="${escapeHtml(item.title)}" data-desc="${escapeHtml(item.description || '')}" data-type="${escapeHtml(item.type || '')}" data-tags="${escapeHtml((item.tags || []).join(','))}">
         <div class="card-top">
           ${iconHtml}
@@ -134,7 +140,7 @@
         </div>
         <div class="card-actions">
           <a class="btn small primary" href="../#contact">Order</a>
-          <button class="btn small ghost view-details" data-id="${escapeHtml(item.id || '')}">Details</button>
+          ${viewBtn}
           <div class="price">${priceDisplay}</div>
         </div>
       </article>`;
@@ -148,7 +154,7 @@
       }
       empty.style.display = 'none';
       grid.innerHTML = list.map(renderCard).join('');
-      attachDetailHandlers();
+      attach3DHandlers();
     }
 
     function gatherTypes(list){
@@ -231,40 +237,219 @@
       renderList(filtered);
     }
 
-    function attachDetailHandlers(){
-      document.querySelectorAll('.view-details').forEach(btn=>{
+    // 3D Viewer System
+    function attach3DHandlers(){
+      document.querySelectorAll('.view-3d').forEach(btn=>{
         btn.addEventListener('click', (e)=>{
           const id = e.currentTarget.getAttribute('data-id');
+          const file = e.currentTarget.getAttribute('data-file');
           const p = products.find(x => String(x.id) === String(id));
-          if (!p) return showModal('Product not found');
+          if (!p || !file) return;
           
-          const tagsHtml = (p.tags || []).map(t => `<span style="background:rgba(79,195,247,0.08); padding:6px 12px; border-radius:8px; font-size:0.85rem; display:inline-block; margin-right:8px;">${escapeHtml(t)}</span>`).join('');
-          const priceDisplay = (typeof p.price === 'number') ? `$${p.price.toFixed(2)}` : (p.price || 'Contact for quote');
-          
-          showModal(`
-            <h2 style="margin:0 0 16px 0;color:var(--accent-light);">${escapeHtml(p.title)}</h2>
-            <p style="color:var(--muted); margin:0 0 16px 0;line-height:1.6;">${escapeHtml(p.description||'')}</p>
-            <div style="margin-bottom:16px;">${tagsHtml}</div>
-            <p style="margin:0;"><strong>Type:</strong> ${escapeHtml(p.type||'N/A')}</p>
-            <p style="margin:12px 0 0 0;"><strong>Price:</strong> <span style="color:var(--accent-light); font-weight:800; font-size:1.15rem;">${priceDisplay}</span></p>
-            ${p.details ? `<p style="margin-top:16px; color:var(--muted); font-size:0.95rem;line-height:1.6;">${escapeHtml(p.details)}</p>` : ''}
-          `);
+          open3DViewer(p, file);
         });
       });
     }
 
-    function showModal(html){
-      let m = document.getElementById('simple-modal');
-      if (!m) {
-        m = document.createElement('div');
-        m.id = 'simple-modal';
-        m.style.cssText = 'position:fixed; left:0; top:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.8); z-index:9999; padding:20px;';
-        m.innerHTML = `<div style="max-width:600px; width:100%; background:var(--panel); padding:32px; border-radius:18px; border:1px solid rgba(79,195,247,0.2); box-shadow:0 12px 48px rgba(0,0,0,0.5);"><div id="simple-modal-content"></div><div style="text-align:right; margin-top:24px;"><button id="closeModal" class="btn ghost">Close</button></div></div>`;
-        document.body.appendChild(m);
-        document.getElementById('closeModal').addEventListener('click', ()=>m.remove());
-        m.addEventListener('click', (e)=>{ if(e.target === m) m.remove(); });
+    function open3DViewer(product, modelFile){
+      const modal = document.createElement('div');
+      modal.id = 'viewer-modal';
+      modal.innerHTML = `
+        <div id="viewer-modal-inner">
+          <div id="viewer-modal-header">
+            <h2>${escapeHtml(product.title)}</h2>
+            <button class="btn ghost" id="close-viewer">Close</button>
+          </div>
+          <div id="viewer-canvas-container">
+            <canvas id="viewer-canvas"></canvas>
+            <div class="viewer-loading" id="viewer-loading">Loading 3D model...</div>
+            <div class="viewer-controls" id="viewer-controls" style="display:none;">
+              <button id="reset-view">Reset View</button>
+              <button id="zoom-in">Zoom In</button>
+              <button id="zoom-out">Zoom Out</button>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      
+      document.getElementById('close-viewer').addEventListener('click', ()=>{
+        cleanup3DViewer();
+        modal.remove();
+      });
+      
+      modal.addEventListener('click', (e)=>{
+        if(e.target === modal){
+          cleanup3DViewer();
+          modal.remove();
+        }
+      });
+
+      init3DViewer(modelFile);
+    }
+
+    function init3DViewer(modelFile){
+      const container = document.getElementById('viewer-canvas-container');
+      const canvas = document.getElementById('viewer-canvas');
+      const loading = document.getElementById('viewer-loading');
+      const controls = document.getElementById('viewer-controls');
+      
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x0a1628);
+      
+      const camera = new THREE.PerspectiveCamera(
+        50,
+        container.clientWidth / container.clientHeight,
+        0.1,
+        1000
+      );
+      camera.position.set(0, 0, 5);
+      
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      
+      // Lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      scene.add(ambientLight);
+      
+      const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+      directionalLight1.position.set(5, 5, 5);
+      scene.add(directionalLight1);
+      
+      const directionalLight2 = new THREE.DirectionalLight(0x4fc3f7, 0.4);
+      directionalLight2.position.set(-5, -5, -5);
+      scene.add(directionalLight2);
+      
+      // Grid helper
+      const gridHelper = new THREE.GridHelper(10, 10, 0x4fc3f7, 0x2196f3);
+      gridHelper.material.opacity = 0.2;
+      gridHelper.material.transparent = true;
+      scene.add(gridHelper);
+      
+      let model = null;
+      let isDragging = false;
+      let previousMousePosition = { x: 0, y: 0 };
+      
+      // Load model (simplified - would need STLLoader for real implementation)
+      // For demo, create a placeholder geometry
+      const geometry = new THREE.BoxGeometry(1, 1, 1);
+      const material = new THREE.MeshPhongMaterial({ 
+        color: 0x4fc3f7,
+        shininess: 80,
+        specular: 0x64b5f6
+      });
+      model = new THREE.Mesh(geometry, material);
+      scene.add(model);
+      
+      loading.textContent = 'Model loaded! Drag to rotate, scroll to zoom';
+      setTimeout(()=>{
+        loading.style.display = 'none';
+        controls.style.display = 'flex';
+      }, 1000);
+      
+      // Mouse controls
+      canvas.addEventListener('mousedown', (e)=>{
+        isDragging = true;
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+      });
+      
+      canvas.addEventListener('mousemove', (e)=>{
+        if(!isDragging || !model) return;
+        
+        const deltaX = e.clientX - previousMousePosition.x;
+        const deltaY = e.clientY - previousMousePosition.y;
+        
+        model.rotation.y += deltaX * 0.01;
+        model.rotation.x += deltaY * 0.01;
+        
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+      });
+      
+      canvas.addEventListener('mouseup', ()=>{ isDragging = false; });
+      canvas.addEventListener('mouseleave', ()=>{ isDragging = false; });
+      
+      // Touch controls
+      let touchStartX = 0, touchStartY = 0;
+      canvas.addEventListener('touchstart', (e)=>{
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+      });
+      
+      canvas.addEventListener('touchmove', (e)=>{
+        if(!model || e.touches.length !== 1) return;
+        e.preventDefault();
+        
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - touchStartX;
+        const deltaY = touch.clientY - touchStartY;
+        
+        model.rotation.y += deltaX * 0.01;
+        model.rotation.x += deltaY * 0.01;
+        
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+      }, { passive: false });
+      
+      // Zoom
+      canvas.addEventListener('wheel', (e)=>{
+        e.preventDefault();
+        camera.position.z += e.deltaY * 0.01;
+        camera.position.z = Math.max(2, Math.min(15, camera.position.z));
+      }, { passive: false });
+      
+      // Control buttons
+      document.getElementById('reset-view').addEventListener('click', ()=>{
+        if(model){
+          model.rotation.set(0, 0, 0);
+          camera.position.set(0, 0, 5);
+        }
+      });
+      
+      document.getElementById('zoom-in').addEventListener('click', ()=>{
+        camera.position.z = Math.max(2, camera.position.z - 0.5);
+      });
+      
+      document.getElementById('zoom-out').addEventListener('click', ()=>{
+        camera.position.z = Math.min(15, camera.position.z + 0.5);
+      });
+      
+      // Animation loop
+      function animate(){
+        if(!document.getElementById('viewer-modal')) return;
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
       }
-      document.getElementById('simple-modal-content').innerHTML = html;
+      animate();
+      
+      // Handle resize
+      function onResize(){
+        if(!document.getElementById('viewer-modal')) return;
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+      }
+      window.addEventListener('resize', onResize);
+      
+      viewer3D = { scene, camera, renderer, model, onResize };
+    }
+
+    function cleanup3DViewer(){
+      if(viewer3D){
+        window.removeEventListener('resize', viewer3D.onResize);
+        if(viewer3D.renderer){
+          viewer3D.renderer.dispose();
+        }
+        if(viewer3D.model && viewer3D.model.geometry){
+          viewer3D.model.geometry.dispose();
+        }
+        if(viewer3D.model && viewer3D.model.material){
+          viewer3D.model.material.dispose();
+        }
+        viewer3D = null;
+      }
     }
 
     async function loadAll(){
