@@ -7,7 +7,7 @@
     "price": "Quote",
     "tags": ["Standard", "Unique", "Quick Turnaround"],
     "details": "Standard PLA material in various colors with fine finishing. Typical turnaround 2-3 days.",
-    "image": ""
+    "image": "/images/logo.png"
   },
   {
     "id": "2",
@@ -60,4 +60,5 @@
     "image": ""
   }
 ]
+
 
