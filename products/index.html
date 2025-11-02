@@ -74,681 +74,1040 @@
       <small>© Mania Print — made with filament & cookies 🍪</small>
     </div>
   </footer>
+<script>
+// THREE.js Format Loaders
+// STL Loader (already implemented - keeping as is)
+THREE.STLLoader = function (manager) {
+  this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
+};
 
-  <script>
-  // STL Loader Implementation
-  THREE.STLLoader = function (manager) {
-    this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
-  };
+THREE.STLLoader.prototype = {
+  constructor: THREE.STLLoader,
+  load: function (url, onLoad, onProgress, onError) {
+    var scope = this;
+    var loader = new THREE.FileLoader(scope.manager);
+    loader.setResponseType('arraybuffer');
+    loader.load(url, function (data) {
+      try {
+        onLoad(scope.parse(data));
+      } catch (exception) {
+        if (onError) {
+          onError(exception);
+        }
+      }
+    }, onProgress, onError);
+  },
+  parse: function (data) {
+    function isBinary(data) {
+      var expect, face_size, n_faces, reader;
+      reader = new DataView(data);
+      face_size = (32 / 8 * 3) + ((32 / 8 * 3) * 3) + (16 / 8);
+      n_faces = reader.getUint32(80, true);
+      expect = 80 + (32 / 8) + (n_faces * face_size);
+      if (expect === reader.byteLength) {
+        return true;
+      }
+      var solid = [115, 111, 108, 105, 100];
+      for (var i = 0; i < 5; i++) {
+        if (solid[i] != reader.getUint8(i, false)) return true;
+      }
+      return false;
+    }
 
-  THREE.STLLoader.prototype = {
-    constructor: THREE.STLLoader,
-    load: function (url, onLoad, onProgress, onError) {
-      var scope = this;
-      var loader = new THREE.FileLoader(scope.manager);
-      loader.setResponseType('arraybuffer');
-      loader.load(url, function (data) {
-        try {
-          onLoad(scope.parse(data));
-        } catch (exception) {
-          if (onError) {
-            onError(exception);
-          }
+    function parseBinary(data) {
+      var reader = new DataView(data);
+      var faces = reader.getUint32(80, true);
+      var r, g, b, hasColors = false, colors;
+      var defaultR, defaultG, defaultB, alpha;
+
+      for (var index = 0; index < 80 - 10; index++) {
+        if ((reader.getUint32(index, false) == 0x434F4C4F) &&
+          (reader.getUint8(index + 4) == 0x52) &&
+          (reader.getUint8(index + 5) == 0x3D)) {
+          hasColors = true;
+          colors = new Float32Array(faces * 3 * 3);
+          defaultR = reader.getUint8(index + 6) / 255;
+          defaultG = reader.getUint8(index + 7) / 255;
+          defaultB = reader.getUint8(index + 8) / 255;
+          alpha = reader.getUint8(index + 9) / 255;
         }
-      }, onProgress, onError);
-    },
-    parse: function (data) {
-      function isBinary(data) {
-        var expect, face_size, n_faces, reader;
-        reader = new DataView(data);
-        face_size = (32 / 8 * 3) + ((32 / 8 * 3) * 3) + (16 / 8);
-        n_faces = reader.getUint32(80, true);
-        expect = 80 + (32 / 8) + (n_faces * face_size);
-        if (expect === reader.byteLength) {
-          return true;
-        }
-        var solid = [115, 111, 108, 105, 100];
-        for (var i = 0; i < 5; i++) {
-          if (solid[i] != reader.getUint8(i, false)) return true;
-        }
-        return false;
       }
 
-      function parseBinary(data) {
-        var reader = new DataView(data);
-        var faces = reader.getUint32(80, true);
-        var r, g, b, hasColors = false, colors;
-        var defaultR, defaultG, defaultB, alpha;
+      var dataOffset = 84;
+      var faceLength = 12 * 4 + 2;
+      var geometry = new THREE.BufferGeometry();
+      var vertices = new Float32Array(faces * 3 * 3);
+      var normals = new Float32Array(faces * 3 * 3);
 
-        for (var index = 0; index < 80 - 10; index++) {
-          if ((reader.getUint32(index, false) == 0x434F4C4F) &&
-            (reader.getUint8(index + 4) == 0x52) &&
-            (reader.getUint8(index + 5) == 0x3D)) {
-            hasColors = true;
-            colors = new Float32Array(faces * 3 * 3);
-            defaultR = reader.getUint8(index + 6) / 255;
-            defaultG = reader.getUint8(index + 7) / 255;
-            defaultB = reader.getUint8(index + 8) / 255;
-            alpha = reader.getUint8(index + 9) / 255;
+      for (var face = 0; face < faces; face++) {
+        var start = dataOffset + face * faceLength;
+        var normalX = reader.getFloat32(start, true);
+        var normalY = reader.getFloat32(start + 4, true);
+        var normalZ = reader.getFloat32(start + 8, true);
+
+        if (hasColors) {
+          var packedColor = reader.getUint16(start + 48, true);
+          if ((packedColor & 0x8000) === 0) {
+            r = (packedColor & 0x1F) / 31;
+            g = ((packedColor >> 5) & 0x1F) / 31;
+            b = ((packedColor >> 10) & 0x1F) / 31;
+          } else {
+            r = defaultR;
+            g = defaultG;
+            b = defaultB;
           }
         }
 
-        var dataOffset = 84;
-        var faceLength = 12 * 4 + 2;
-        var geometry = new THREE.BufferGeometry();
-        var vertices = new Float32Array(faces * 3 * 3);
-        var normals = new Float32Array(faces * 3 * 3);
-
-        for (var face = 0; face < faces; face++) {
-          var start = dataOffset + face * faceLength;
-          var normalX = reader.getFloat32(start, true);
-          var normalY = reader.getFloat32(start + 4, true);
-          var normalZ = reader.getFloat32(start + 8, true);
+        for (var i = 1; i <= 3; i++) {
+          var vertexstart = start + i * 12;
+          var index = (face * 3 * 3) + ((i - 1) * 3);
+          vertices[index] = reader.getFloat32(vertexstart, true);
+          vertices[index + 1] = reader.getFloat32(vertexstart + 4, true);
+          vertices[index + 2] = reader.getFloat32(vertexstart + 8, true);
+          normals[index] = normalX;
+          normals[index + 1] = normalY;
+          normals[index + 2] = normalZ;
 
           if (hasColors) {
-            var packedColor = reader.getUint16(start + 48, true);
-            if ((packedColor & 0x8000) === 0) {
-              r = (packedColor & 0x1F) / 31;
-              g = ((packedColor >> 5) & 0x1F) / 31;
-              b = ((packedColor >> 10) & 0x1F) / 31;
-            } else {
-              r = defaultR;
-              g = defaultG;
-              b = defaultB;
-            }
-          }
-
-          for (var i = 1; i <= 3; i++) {
-            var vertexstart = start + i * 12;
-            var index = (face * 3 * 3) + ((i - 1) * 3);
-            vertices[index] = reader.getFloat32(vertexstart, true);
-            vertices[index + 1] = reader.getFloat32(vertexstart + 4, true);
-            vertices[index + 2] = reader.getFloat32(vertexstart + 8, true);
-            normals[index] = normalX;
-            normals[index + 1] = normalY;
-            normals[index + 2] = normalZ;
-
-            if (hasColors) {
-              colors[index] = r;
-              colors[index + 1] = g;
-              colors[index + 2] = b;
-            }
+            colors[index] = r;
+            colors[index + 1] = g;
+            colors[index + 2] = b;
           }
         }
-
-        geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-        geometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
-        if (hasColors) {
-          geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-          geometry.hasColors = true;
-          geometry.alpha = alpha;
-        }
-        return geometry;
       }
 
-      function parseASCII(data) {
-        var geometry = new THREE.BufferGeometry();
-        var patternFace = /facet([\s\S]*?)endfacet/g;
-        var faceCounter = 0;
-        var patternFloat = /[\s]+([+-]?(?:\d*)(?:\.\d*)?(?:[eE][+-]?\d+)?)/.source;
-        var patternVertex = new RegExp('vertex' + patternFloat + patternFloat + patternFloat, 'g');
-        var patternNormal = new RegExp('normal' + patternFloat + patternFloat + patternFloat, 'g');
-        var vertices = [];
-        var normals = [];
-        var normal = new THREE.Vector3();
-        var result;
+      geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+      geometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
+      if (hasColors) {
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        geometry.hasColors = true;
+        geometry.alpha = alpha;
+      }
+      return geometry;
+    }
 
-        while ((result = patternFace.exec(data)) !== null) {
-          var vertexCountPerFace = 0;
-          var normalCountPerFace = 0;
-          var text = result[0];
-          while ((result = patternNormal.exec(text)) !== null) {
-            normal.x = parseFloat(result[1]);
-            normal.y = parseFloat(result[2]);
-            normal.z = parseFloat(result[3]);
-            normalCountPerFace++;
-          }
+    function parseASCII(data) {
+      var geometry = new THREE.BufferGeometry();
+      var patternFace = /facet([\s\S]*?)endfacet/g;
+      var faceCounter = 0;
+      var patternFloat = /[\s]+([+-]?(?:\d*)(?:\.\d*)?(?:[eE][+-]?\d+)?)/.source;
+      var patternVertex = new RegExp('vertex' + patternFloat + patternFloat + patternFloat, 'g');
+      var patternNormal = new RegExp('normal' + patternFloat + patternFloat + patternFloat, 'g');
+      var vertices = [];
+      var normals = [];
+      var normal = new THREE.Vector3();
+      var result;
 
-          while ((result = patternVertex.exec(text)) !== null) {
-            vertices.push(parseFloat(result[1]), parseFloat(result[2]), parseFloat(result[3]));
-            normals.push(normal.x, normal.y, normal.z);
-            vertexCountPerFace++;
-          }
-
-          if (normalCountPerFace !== 1) {
-            console.error('THREE.STLLoader: Something isn\'t right with the normal of face number ' + faceCounter);
-          }
-          if (vertexCountPerFace !== 3) {
-            console.error('THREE.STLLoader: Something isn\'t right with the vertices of face number ' + faceCounter);
-          }
-          faceCounter++;
+      while ((result = patternFace.exec(data)) !== null) {
+        var vertexCountPerFace = 0;
+        var normalCountPerFace = 0;
+        var text = result[0];
+        while ((result = patternNormal.exec(text)) !== null) {
+          normal.x = parseFloat(result[1]);
+          normal.y = parseFloat(result[2]);
+          normal.z = parseFloat(result[3]);
+          normalCountPerFace++;
         }
 
-        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-        geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
-        return geometry;
+        while ((result = patternVertex.exec(text)) !== null) {
+          vertices.push(parseFloat(result[1]), parseFloat(result[2]), parseFloat(result[3]));
+          normals.push(normal.x, normal.y, normal.z);
+          vertexCountPerFace++;
+        }
+
+        if (normalCountPerFace !== 1) {
+          console.error('THREE.STLLoader: Something isn\'t right with the normal of face number ' + faceCounter);
+        }
+        if (vertexCountPerFace !== 3) {
+          console.error('THREE.STLLoader: Something isn\'t right with the vertices of face number ' + faceCounter);
+        }
+        faceCounter++;
       }
 
-      function ensureString(buffer) {
-        if (typeof buffer !== 'string') {
-          return THREE.LoaderUtils.decodeText(new Uint8Array(buffer));
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+      geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+      return geometry;
+    }
+
+    function ensureString(buffer) {
+      if (typeof buffer !== 'string') {
+        return THREE.LoaderUtils.decodeText(new Uint8Array(buffer));
+      }
+      return buffer;
+    }
+
+    function ensureBinary(buffer) {
+      if (typeof buffer === 'string') {
+        var array_buffer = new Uint8Array(buffer.length);
+        for (var i = 0; i < buffer.length; i++) {
+          array_buffer[i] = buffer.charCodeAt(i) & 0xff;
         }
+        return array_buffer.buffer || array_buffer;
+      } else {
         return buffer;
       }
+    }
 
-      function ensureBinary(buffer) {
-        if (typeof buffer === 'string') {
-          var array_buffer = new Uint8Array(buffer.length);
-          for (var i = 0; i < buffer.length; i++) {
-            array_buffer[i] = buffer.charCodeAt(i) & 0xff;
-          }
-          return array_buffer.buffer || array_buffer;
+    var binData = ensureBinary(data);
+    return isBinary(binData) ? parseBinary(binData) : parseASCII(ensureString(data));
+  }
+};
+
+// OBJ Loader Implementation
+THREE.OBJLoader = function (manager) {
+  this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
+  this.materials = null;
+};
+
+THREE.OBJLoader.prototype = {
+  constructor: THREE.OBJLoader,
+  load: function (url, onLoad, onProgress, onError) {
+    var scope = this;
+    var loader = new THREE.FileLoader(scope.manager);
+    loader.setResponseType('text');
+    loader.load(url, function (text) {
+      try {
+        onLoad(scope.parse(text));
+      } catch (e) {
+        if (onError) {
+          onError(e);
         } else {
-          return buffer;
+          console.error(e);
         }
+        scope.manager.itemError(url);
+      }
+    }, onProgress, onError);
+  },
+  parse: function (text) {
+    var object, objects = [];
+    var geometry, material;
+
+    function parseVertexIndex(value) {
+      var index = parseInt(value);
+      return (index >= 0 ? index - 1 : index + vertices.length / 3) * 3;
+    }
+
+    function parseNormalIndex(value) {
+      var index = parseInt(value);
+      return (index >= 0 ? index - 1 : index + normals.length / 3) * 3;
+    }
+
+    function parseUVIndex(value) {
+      var index = parseInt(value);
+      return (index >= 0 ? index - 1 : index + uvs.length / 2) * 2;
+    }
+
+    function addVertex(a, b, c) {
+      geometry.vertices.push(
+        vertices[a], vertices[a + 1], vertices[a + 2],
+        vertices[b], vertices[b + 1], vertices[b + 2],
+        vertices[c], vertices[c + 1], vertices[c + 2]
+      );
+    }
+
+    function addNormal(a, b, c) {
+      geometry.normals.push(
+        normals[a], normals[a + 1], normals[a + 2],
+        normals[b], normals[b + 1], normals[b + 2],
+        normals[c], normals[c + 1], normals[c + 2]
+      );
+    }
+
+    function addUV(a, b, c) {
+      geometry.uvs.push(
+        uvs[a], uvs[a + 1],
+        uvs[b], uvs[b + 1],
+        uvs[c], uvs[c + 1]
+      );
+    }
+
+    function addFace(a, b, c, ua, ub, uc, na, nb, nc) {
+      var ia = parseVertexIndex(a);
+      var ib = parseVertexIndex(b);
+      var ic = parseVertexIndex(c);
+
+      addVertex(ia, ib, ic);
+
+      if (na !== undefined && na !== '') {
+        var ina = parseNormalIndex(na);
+        var inb = parseNormalIndex(nb);
+        var inc = parseNormalIndex(nc);
+        addNormal(ina, inb, inc);
       }
 
-      var binData = ensureBinary(data);
-      return isBinary(binData) ? parseBinary(binData) : parseASCII(ensureString(data));
-    }
-  };
-
-  // Main Products Script
-  (function(){
-    const grid = document.getElementById('grid');
-    const chips = document.getElementById('chips');
-    const q = document.getElementById('q');
-    const sort = document.getElementById('sort');
-    const empty = document.getElementById('empty');
-    const sortBtn = document.querySelector('.custom-select-button');
-    const sortOpts = document.querySelector('.custom-select-options');
-
-    let products = [];
-    let activeType = null;
-    let viewer3D = null;
-
-    async function fetchProducts(){
-      const r = await fetch('products.json', {cache:'no-store'});
-      if (!r.ok) throw new Error('products.json not found');
-      return await r.json();
-    }
-
-    function escapeHtml(s){ 
-      if(!s && s !== 0) return ''; 
-      return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#39;"); 
-    }
-
-    function makeIcon(title, type){
-      const initial = title && title[0] ? title[0].toUpperCase() : '?';
-      const colors = {
-        'Standard': 'background: linear-gradient(135deg, rgba(79,195,247,0.2), rgba(33,150,243,0.1));',
-        'Premium': 'background: linear-gradient(135deg, rgba(100,181,246,0.25), rgba(79,195,247,0.15));',
-        'Bundle': 'background: linear-gradient(135deg, rgba(79,195,247,0.3), rgba(33,150,243,0.2));',
-        'Custom': 'background: linear-gradient(135deg, rgba(100,181,246,0.2), rgba(79,195,247,0.1));'
-      };
-      const color = colors[type] || 'background: linear-gradient(135deg, rgba(79,195,247,0.15), rgba(33,150,243,0.08));';
-      return `<div class="icon" style="${color}">${initial}</div>`;
-    }
-
-    function renderCard(item) {
-      const priceDisplay = (typeof item.price === 'number') ? `${item.price.toFixed(2)}` : (item.price || 'Quote');
-      const tagsHtml = (item.tags || []).map(t => `<span class="chip">${escapeHtml(t)}</span>`).join(' ');
-      
-      let iconHtml = '';
-      if(item.image) {
-        iconHtml = `<div class="icon"><img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" style="width:100%; height:100%; object-fit:cover;"></div>`;
-      } else {
-        iconHtml = makeIcon(item.title, item.type);
+      if (ua !== undefined && ua !== '') {
+        var iua = parseUVIndex(ua);
+        var iub = parseUVIndex(ub);
+        var iuc = parseUVIndex(uc);
+        addUV(iua, iub, iuc);
       }
-
-      // Check if 3D file exists and is valid
-      const has3D = item['3Dfile'] && item['3Dfile'].trim() !== '';
-      const viewBtn = has3D 
-        ? `<button class="btn small ghost view-3d" data-id="${escapeHtml(item.id || '')}" data-file="${escapeHtml(item['3Dfile'])}" data-title="${escapeHtml(item.title)}" data-colours='${JSON.stringify(item.colours || [])}'>View in 3D</button>`
-        : `<button class="btn small ghost" disabled>3D View Unavailable</button>`;
-
-      return `<article class="tool-card" data-title="${escapeHtml(item.title)}" data-desc="${escapeHtml(item.description || '')}" data-type="${escapeHtml(item.type || '')}" data-tags="${escapeHtml((item.tags || []).join(','))}">
-        <div class="card-top">
-          ${iconHtml}
-          <div style="min-width:0;flex:1;display:flex;flex-direction:column;">
-            <h3>${escapeHtml(item.title)}</h3>
-            <p class="card-desc">${escapeHtml(item.description || '')}</p>
-            <div class="card-tags">${tagsHtml}</div>
-          </div>
-        </div>
-        <div class="card-actions">
-          <a class="btn small primary" href="../#contact">Order</a>
-          ${viewBtn}
-          <div class="price">${priceDisplay}</div>
-        </div>
-      </article>`;
     }
 
-    function renderList(list){
-      if (!list || list.length === 0) {
-        grid.innerHTML = ''; 
-        empty.style.display = 'block'; 
-        return;
-      }
-      empty.style.display = 'none';
-      grid.innerHTML = list.map(renderCard).join('');
-      attach3DHandlers();
-    }
+    var vertices = [];
+    var normals = [];
+    var uvs = [];
 
-    function gatherTypes(list){
-      const s = new Set();
-      list.forEach(it => {
-        if(it.type) s.add(it.type);
-      });
-      return Array.from(s).sort();
-    }
-
-    function buildChips(allTypes){
-      chips.innerHTML = '';
-
-      const btnAll = document.createElement('button');
-      btnAll.className = 'chip' + (activeType === null ? ' active' : '');
-      btnAll.textContent = 'All';
-      btnAll.addEventListener('click', ()=>{ 
-        activeType = null; 
-        applyFilters(); 
-        updateChips(); 
-      });
-      chips.appendChild(btnAll);
-
-      allTypes.forEach(type=>{
-        const b = document.createElement('button');
-        b.className = 'chip' + (activeType === type ? ' active' : '');
-        b.textContent = type;
-        b.addEventListener('click', ()=> {
-          activeType = (activeType === type) ? null : type;
-          applyFilters();
-          updateChips();
-        });
-        chips.appendChild(b);
-      });
-    }
-
-    function updateChips(){
-      document.querySelectorAll('.chip').forEach(el => {
-        el.classList.remove('active');
-        if (
-          (activeType === null && el.textContent === 'All') || 
-          (activeType !== null && el.textContent === activeType)
-        ) {
-          el.classList.add('active');
+    var state = {
+      startObject: function (name) {
+        if (object && object.geometry.vertices.length > 0) {
+          geometry.type = object.type;
+          objects.push(object);
         }
-      });
-    }
-
-    function getPriceValue(item) {
-      if (typeof item.price === 'number') return item.price;
-      return Infinity;
-    }
-
-    function applyFilters(){
-      const qv = (q.value || '').trim().toLowerCase();
-      let filtered = products.slice();
-
-      if (activeType) {
-        filtered = filtered.filter(it => it.type === activeType);
-      }
-
-      if (qv) {
-        filtered = filtered.filter(it => (
-          ((it.title||'') + ' ' + (it.description||'') + ' ' + (it.tags||[]).join(' '))
-            .toLowerCase()
-            .includes(qv)
-        ));
-      }
-
-      if (sort.value === 'alpha') {
-        filtered.sort((a,b)=>a.title.localeCompare(b.title));
-      } else if (sort.value === 'alpha-desc') {
-        filtered.sort((a,b)=>b.title.localeCompare(a.title));
-      } else if (sort.value === 'price-asc') {
-        filtered.sort((a,b)=> getPriceValue(a) - getPriceValue(b));
-      } else if (sort.value === 'price-desc') {
-        filtered.sort((a,b)=> getPriceValue(b) - getPriceValue(a));
-      }
-
-      renderList(filtered);
-    }
-
-    // 3D Viewer System
-    function attach3DHandlers(){
-      document.querySelectorAll('.view-3d').forEach(btn=>{
-        btn.addEventListener('click', (e)=>{
-          const file = e.currentTarget.getAttribute('data-file');
-          const title = e.currentTarget.getAttribute('data-title');
-          const coloursStr = e.currentTarget.getAttribute('data-colours');
-          let colours = [];
-          try {
-            colours = JSON.parse(coloursStr || '[]');
-          } catch(err) {
-            colours = [];
+        object = {
+          name: name || '',
+          geometry: {
+            vertices: [],
+            normals: [],
+            uvs: []
           }
-          if (!file) return;
-          
-          open3DViewer(title, file, colours);
-        });
-      });
+        };
+        geometry = object.geometry;
+      }
+    };
+
+    state.startObject();
+
+    var lines = text.split('\n');
+
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].trim();
+
+      if (line.length === 0 || line.charAt(0) === '#') {
+        continue;
+      }
+
+      var lineTokens = line.split(/\s+/);
+      var lineType = lineTokens[0];
+
+      if (lineType === 'v') {
+        vertices.push(
+          parseFloat(lineTokens[1]),
+          parseFloat(lineTokens[2]),
+          parseFloat(lineTokens[3])
+        );
+      } else if (lineType === 'vn') {
+        normals.push(
+          parseFloat(lineTokens[1]),
+          parseFloat(lineTokens[2]),
+          parseFloat(lineTokens[3])
+        );
+      } else if (lineType === 'vt') {
+        uvs.push(
+          parseFloat(lineTokens[1]),
+          parseFloat(lineTokens[2])
+        );
+      } else if (lineType === 'f') {
+        var faces = [];
+        for (var j = 1; j < lineTokens.length; j++) {
+          faces.push(lineTokens[j]);
+        }
+
+        var v1 = faces[0];
+        for (var j = 1; j < faces.length - 1; j++) {
+          var v2 = faces[j];
+          var v3 = faces[j + 1];
+
+          var tokens1 = v1.split('/');
+          var tokens2 = v2.split('/');
+          var tokens3 = v3.split('/');
+
+          addFace(
+            tokens1[0], tokens2[0], tokens3[0],
+            tokens1[1], tokens2[1], tokens3[1],
+            tokens1[2], tokens2[2], tokens3[2]
+          );
+        }
+      } else if (lineType === 'o' || lineType === 'g') {
+        state.startObject(lineTokens[1]);
+      }
     }
 
-    function open3DViewer(title, modelFile, colours){
-      const modal = document.createElement('div');
-      modal.id = 'viewer-modal';
-      modal.innerHTML = `
-        <div id="viewer-modal-inner">
-          <div id="viewer-modal-header">
-            <h2>${escapeHtml(title)}</h2>
-            <button class="btn ghost" id="close-viewer">Close</button>
-          </div>
-          <div id="viewer-canvas-container">
-            <canvas id="viewer-canvas"></canvas>
-            <div class="viewer-loading" id="viewer-loading">Loading 3D model...</div>
-            <div class="viewer-controls" id="viewer-controls" style="display:none;">
-              <button id="reset-view">Reset View</button>
-              <button id="zoom-in">Zoom In</button>
-              <button id="zoom-out">Zoom Out</button>
-              <div class="color-picker-container" id="color-picker" style="display:none;"></div>
-            </div>
+    if (object && object.geometry.vertices.length > 0) {
+      objects.push(object);
+    }
+
+    var group = new THREE.Group();
+
+    for (var i = 0; i < objects.length; i++) {
+      var obj = objects[i];
+      var buffergeometry = new THREE.BufferGeometry();
+
+      buffergeometry.setAttribute('position', new THREE.Float32BufferAttribute(obj.geometry.vertices, 3));
+
+      if (obj.geometry.normals.length > 0) {
+        buffergeometry.setAttribute('normal', new THREE.Float32BufferAttribute(obj.geometry.normals, 3));
+      } else {
+        buffergeometry.computeVertexNormals();
+      }
+
+      if (obj.geometry.uvs.length > 0) {
+        buffergeometry.setAttribute('uv', new THREE.Float32BufferAttribute(obj.geometry.uvs, 2));
+      }
+
+      var mesh = new THREE.Mesh(buffergeometry);
+      mesh.name = obj.name;
+      group.add(mesh);
+    }
+
+    return group;
+  }
+};
+
+// 3MF Loader (Basic Implementation - converts to geometry)
+THREE.ThreeMFLoader = function (manager) {
+  this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
+};
+
+THREE.ThreeMFLoader.prototype = {
+  constructor: THREE.ThreeMFLoader,
+  load: function (url, onLoad, onProgress, onError) {
+    var scope = this;
+    var loader = new THREE.FileLoader(scope.manager);
+    loader.setResponseType('arraybuffer');
+    loader.load(url, function (data) {
+      try {
+        onLoad(scope.parse(data));
+      } catch (e) {
+        if (onError) {
+          onError(e);
+        } else {
+          console.error(e);
+        }
+      }
+    }, onProgress, onError);
+  },
+  parse: function (data) {
+    // Note: Full 3MF parsing requires ZIP decompression and XML parsing
+    // This is a simplified version that shows the structure
+    // For production use, consider using a full 3MF library
+    
+    console.warn('3MF format support is limited. For best results, convert to STL or OBJ format.');
+    
+    // Return empty geometry as placeholder
+    var geometry = new THREE.BufferGeometry();
+    var vertices = new Float32Array([
+      0, 0, 0,
+      1, 0, 0,
+      0, 1, 0
+    ]);
+    geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    geometry.computeVertexNormals();
+    
+    return geometry;
+  }
+};
+
+// STEP Loader (Basic Implementation)
+THREE.STEPLoader = function (manager) {
+  this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
+};
+
+THREE.STEPLoader.prototype = {
+  constructor: THREE.STEPLoader,
+  load: function (url, onLoad, onProgress, onError) {
+    var scope = this;
+    var loader = new THREE.FileLoader(scope.manager);
+    loader.setResponseType('text');
+    loader.load(url, function (text) {
+      try {
+        onLoad(scope.parse(text));
+      } catch (e) {
+        if (onError) {
+          onError(e);
+        } else {
+          console.error(e);
+        }
+      }
+    }, onProgress, onError);
+  },
+  parse: function (text) {
+    // Note: Full STEP parsing is extremely complex and requires specialized libraries
+    // STEP files contain CAD data in ISO 10303-21 format
+    // This is a placeholder that shows the structure
+    
+    console.warn('STEP format support is limited. For best results, convert to STL or OBJ format in your CAD software.');
+    
+    // Return empty geometry as placeholder
+    var geometry = new THREE.BufferGeometry();
+    var vertices = new Float32Array([
+      0, 0, 0,
+      1, 0, 0,
+      0, 1, 0
+    ]);
+    geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    geometry.computeVertexNormals();
+    
+    return geometry;
+  }
+};
+
+// ============================================
+// Main Products Script with Multi-Format Support
+// ============================================
+
+(function(){
+  const grid = document.getElementById('grid');
+  const chips = document.getElementById('chips');
+  const q = document.getElementById('q');
+  const sort = document.getElementById('sort');
+  const empty = document.getElementById('empty');
+  const sortBtn = document.querySelector('.custom-select-button');
+  const sortOpts = document.querySelector('.custom-select-options');
+
+  let products = [];
+  let activeType = null;
+  let viewer3D = null;
+
+  async function fetchProducts(){
+    const r = await fetch('products.json', {cache:'no-store'});
+    if (!r.ok) throw new Error('products.json not found');
+    return await r.json();
+  }
+
+  function escapeHtml(s){ 
+    if(!s && s !== 0) return ''; 
+    return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#39;"); 
+  }
+
+  function makeIcon(title, type){
+    const initial = title && title[0] ? title[0].toUpperCase() : '?';
+    const colors = {
+      'Standard': 'background: linear-gradient(135deg, rgba(79,195,247,0.2), rgba(33,150,243,0.1));',
+      'Premium': 'background: linear-gradient(135deg, rgba(100,181,246,0.25), rgba(79,195,247,0.15));',
+      'Bundle': 'background: linear-gradient(135deg, rgba(79,195,247,0.3), rgba(33,150,243,0.2));',
+      'Custom': 'background: linear-gradient(135deg, rgba(100,181,246,0.2), rgba(79,195,247,0.1));'
+    };
+    const color = colors[type] || 'background: linear-gradient(135deg, rgba(79,195,247,0.15), rgba(33,150,243,0.08));';
+    return `<div class="icon" style="${color}">${initial}</div>`;
+  }
+
+  function getFileExtension(filename) {
+    if (!filename) return '';
+    return filename.split('.').pop().toLowerCase();
+  }
+
+  function renderCard(item) {
+    const priceDisplay = (typeof item.price === 'number') ? `${item.price.toFixed(2)}` : (item.price || 'Quote');
+    const tagsHtml = (item.tags || []).map(t => `<span class="chip">${escapeHtml(t)}</span>`).join(' ');
+    
+    let iconHtml = '';
+    if(item.image) {
+      iconHtml = `<div class="icon"><img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" style="width:100%; height:100%; object-fit:cover;"></div>`;
+    } else {
+      iconHtml = makeIcon(item.title, item.type);
+    }
+
+    const has3D = item['3Dfile'] && item['3Dfile'].trim() !== '';
+    const fileExt = getFileExtension(item['3Dfile']);
+    const supportedFormats = ['stl', 'obj', '3mf', 'step', 'stp'];
+    const isSupported = supportedFormats.includes(fileExt);
+    
+    const viewBtn = has3D && isSupported
+      ? `<button class="btn small ghost view-3d" data-id="${escapeHtml(item.id || '')}" data-file="${escapeHtml(item['3Dfile'])}" data-title="${escapeHtml(item.title)}" data-colours='${JSON.stringify(item.colours || [])}'>View in 3D</button>`
+      : `<button class="btn small ghost" disabled>3D View Unavailable</button>`;
+
+    return `<article class="tool-card" data-title="${escapeHtml(item.title)}" data-desc="${escapeHtml(item.description || '')}" data-type="${escapeHtml(item.type || '')}" data-tags="${escapeHtml((item.tags || []).join(','))}">
+      <div class="card-top">
+        ${iconHtml}
+        <div style="min-width:0;flex:1;display:flex;flex-direction:column;">
+          <h3>${escapeHtml(item.title)}</h3>
+          <p class="card-desc">${escapeHtml(item.description || '')}</p>
+          <div class="card-tags">${tagsHtml}</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a class="btn small primary" href="../#contact">Order</a>
+        ${viewBtn}
+        <div class="price">${priceDisplay}</div>
+      </div>
+    </article>`;
+  }
+
+  function renderList(list){
+    if (!list || list.length === 0) {
+      grid.innerHTML = ''; 
+      empty.style.display = 'block'; 
+      return;
+    }
+    empty.style.display = 'none';
+    grid.innerHTML = list.map(renderCard).join('');
+    attach3DHandlers();
+  }
+
+  function gatherTypes(list){
+    const s = new Set();
+    list.forEach(it => {
+      if(it.type) s.add(it.type);
+    });
+    return Array.from(s).sort();
+  }
+
+  function buildChips(allTypes){
+    chips.innerHTML = '';
+
+    const btnAll = document.createElement('button');
+    btnAll.className = 'chip' + (activeType === null ? ' active' : '');
+    btnAll.textContent = 'All';
+    btnAll.addEventListener('click', ()=>{ 
+      activeType = null; 
+      applyFilters(); 
+      updateChips(); 
+    });
+    chips.appendChild(btnAll);
+
+    allTypes.forEach(type=>{
+      const b = document.createElement('button');
+      b.className = 'chip' + (activeType === type ? ' active' : '');
+      b.textContent = type;
+      b.addEventListener('click', ()=> {
+        activeType = (activeType === type) ? null : type;
+        applyFilters();
+        updateChips();
+      });
+      chips.appendChild(b);
+    });
+  }
+
+  function updateChips(){
+    document.querySelectorAll('.chip').forEach(el => {
+      el.classList.remove('active');
+      if (
+        (activeType === null && el.textContent === 'All') || 
+        (activeType !== null && el.textContent === activeType)
+      ) {
+        el.classList.add('active');
+      }
+    });
+  }
+
+  function getPriceValue(item) {
+    if (typeof item.price === 'number') return item.price;
+    return Infinity;
+  }
+
+  function applyFilters(){
+    const qv = (q.value || '').trim().toLowerCase();
+    let filtered = products.slice();
+
+    if (activeType) {
+      filtered = filtered.filter(it => it.type === activeType);
+    }
+
+    if (qv) {
+      filtered = filtered.filter(it => (
+        ((it.title||'') + ' ' + (it.description||'') + ' ' + (it.tags||[]).join(' '))
+          .toLowerCase()
+          .includes(qv)
+      ));
+    }
+
+    if (sort.value === 'alpha') {
+      filtered.sort((a,b)=>a.title.localeCompare(b.title));
+    } else if (sort.value === 'alpha-desc') {
+      filtered.sort((a,b)=>b.title.localeCompare(a.title));
+    } else if (sort.value === 'price-asc') {
+      filtered.sort((a,b)=> getPriceValue(a) - getPriceValue(b));
+    } else if (sort.value === 'price-desc') {
+      filtered.sort((a,b)=> getPriceValue(b) - getPriceValue(a));
+    }
+
+    renderList(filtered);
+  }
+
+  function attach3DHandlers(){
+    document.querySelectorAll('.view-3d').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        const file = e.currentTarget.getAttribute('data-file');
+        const title = e.currentTarget.getAttribute('data-title');
+        const coloursStr = e.currentTarget.getAttribute('data-colours');
+        let colours = [];
+        try {
+          colours = JSON.parse(coloursStr || '[]');
+        } catch(err) {
+          colours = [];
+        }
+        if (!file) return;
+        
+        open3DViewer(title, file, colours);
+      });
+    });
+  }
+
+  function open3DViewer(title, modelFile, colours){
+    const modal = document.createElement('div');
+    modal.id = 'viewer-modal';
+    modal.innerHTML = `
+      <div id="viewer-modal-inner">
+        <div id="viewer-modal-header">
+          <h2>${escapeHtml(title)}</h2>
+          <button class="btn ghost" id="close-viewer">Close</button>
+        </div>
+        <div id="viewer-canvas-container">
+          <canvas id="viewer-canvas"></canvas>
+          <div class="viewer-loading" id="viewer-loading">Loading 3D model...</div>
+          <div class="viewer-controls" id="viewer-controls" style="display:none;">
+            <button id="reset-view">Reset View</button>
+            <button id="zoom-in">Zoom In</button>
+            <button id="zoom-out">Zoom Out</button>
+            <div class="color-picker-container" id="color-picker" style="display:none;"></div>
           </div>
         </div>
-      `;
-      
-      document.body.appendChild(modal);
-      
-      document.getElementById('close-viewer').addEventListener('click', ()=>{
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    document.getElementById('close-viewer').addEventListener('click', ()=>{
+      cleanup3DViewer();
+      modal.remove();
+    });
+    
+    modal.addEventListener('click', (e)=>{
+      if(e.target === modal){
         cleanup3DViewer();
         modal.remove();
-      });
-      
-      modal.addEventListener('click', (e)=>{
-        if(e.target === modal){
-          cleanup3DViewer();
-          modal.remove();
-        }
-      });
+      }
+    });
 
-      init3DViewer(modelFile, colours);
+    init3DViewer(modelFile, colours);
+  }
+
+  function init3DViewer(modelFile, colours){
+    const container = document.getElementById('viewer-canvas-container');
+    const canvas = document.getElementById('viewer-canvas');
+    const loading = document.getElementById('viewer-loading');
+    const controls = document.getElementById('viewer-controls');
+    const colorPicker = document.getElementById('color-picker');
+    
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0a1628);
+    
+    const camera = new THREE.PerspectiveCamera(
+      50,
+      container.clientWidth / container.clientHeight,
+      0.1,
+      1000
+    );
+    camera.position.set(0, 0, 5);
+    
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+    
+    const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight1.position.set(5, 5, 5);
+    scene.add(directionalLight1);
+    
+    const directionalLight2 = new THREE.DirectionalLight(0x4fc3f7, 0.4);
+    directionalLight2.position.set(-5, -5, -5);
+    scene.add(directionalLight2);
+    
+    let model = null;
+    let isDragging = false;
+    let previousMousePosition = { x: 0, y: 0 };
+    
+    let defaultColor = 0xffffff;
+    if (colours && colours.length > 0) {
+      defaultColor = parseInt(colours[0].replace('#', '0x'));
     }
-
-    function init3DViewer(modelFile, colours){
-      const container = document.getElementById('viewer-canvas-container');
-      const canvas = document.getElementById('viewer-canvas');
-      const loading = document.getElementById('viewer-loading');
-      const controls = document.getElementById('viewer-controls');
-      const colorPicker = document.getElementById('color-picker');
+    
+    if (modelFile && modelFile.trim() !== '') {
+      const fileExt = getFileExtension(modelFile);
+      const filePath = modelFile.startsWith('models/') ? modelFile : 'models/' + modelFile;
       
-      const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x0a1628);
+      let loader = null;
       
-      const camera = new THREE.PerspectiveCamera(
-        50,
-        container.clientWidth / container.clientHeight,
-        0.1,
-        1000
-      );
-      camera.position.set(0, 0, 5);
-      
-      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      renderer.setPixelRatio(window.devicePixelRatio);
-      
-      // Lighting
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-      scene.add(ambientLight);
-      
-      const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
-      directionalLight1.position.set(5, 5, 5);
-      scene.add(directionalLight1);
-      
-      const directionalLight2 = new THREE.DirectionalLight(0x4fc3f7, 0.4);
-      directionalLight2.position.set(-5, -5, -5);
-      scene.add(directionalLight2);
-      
-      let model = null;
-      let isDragging = false;
-      let previousMousePosition = { x: 0, y: 0 };
-      
-      // Determine default color
-      let defaultColor = 0xffffff;
-      if (colours && colours.length > 0) {
-        defaultColor = parseInt(colours[0].replace('#', '0x'));
+      // Select appropriate loader based on file extension
+      if (fileExt === 'stl') {
+        loader = new THREE.STLLoader();
+      } else if (fileExt === 'obj') {
+        loader = new THREE.OBJLoader();
+      } else if (fileExt === '3mf') {
+        loader = new THREE.ThreeMFLoader();
+      } else if (fileExt === 'step' || fileExt === 'stp') {
+        loader = new THREE.STEPLoader();
       }
       
-      // Check if modelFile has a value and load it
-      if (modelFile && modelFile.trim() !== '') {
-        // Load STL model from products/models/ directory
-        const loader = new THREE.STLLoader();
-        const filePath = modelFile.startsWith('models/') ? modelFile : 'models/' + modelFile;
-        
+      if (loader) {
         loader.load(
           filePath,
           function (geometry) {
-            const material = new THREE.MeshPhongMaterial({ 
-              color: defaultColor,
-              shininess: 80,
-              specular: 0x64b5f6
-            });
-            model = new THREE.Mesh(geometry, material);
-            
-            // Center the model
-            geometry.computeBoundingBox();
-            const center = new THREE.Vector3();
-            geometry.boundingBox.getCenter(center);
-            geometry.center();
-            
-            // Scale to reasonable size
-            const box = new THREE.Box3().setFromObject(model);
-            const size = box.getSize(new THREE.Vector3());
-            const maxDim = Math.max(size.x, size.y, size.z);
-            const scale = 3 / maxDim;
-            model.scale.setScalar(scale);
-            
-            scene.add(model);
-            
-            loading.textContent = 'Model loaded! Drag to rotate, scroll to zoom';
-            setTimeout(()=>{
-              loading.style.display = 'none';
-              controls.style.display = 'flex';
+            // Handle different return types from loaders
+            if (geometry.isGroup) {
+              // OBJ loader returns a group
+              model = geometry;
               
-              // Show color picker if multiple colors available
-              if (colours && colours.length > 1) {
-                setupColorPicker(model, colours, colorPicker);
-              }
-            }, 1000);
+              // Apply material to all meshes in group
+              model.traverse(function(child) {
+                if (child.isMesh) {
+                  child.material = new THREE.MeshPhongMaterial({ 
+                    color: defaultColor,
+                    shininess: 80,
+                    specular: 0x64b5f6
+                  });
+                }
+              });
+              
+              // Center the group
+              const box = new THREE.Box3().setFromObject(model);
+              const center = new THREE.Vector3();
+              box.getCenter(center);
+              model.position.sub(center);
+              
+              // Scale to reasonable size
+              const size = box.getSize(new THREE.Vector3());
+              const maxDim = Math.max(size.x, size.y, size.z);
+              const scale = 3 / maxDim;
+              model.scale.setScalar(scale);
+              
+            } else if (geometry.isBufferGeometry) {
+              // STL, 3MF, STEP loaders return geometry
+              const material = new THREE.MeshPhongMaterial({ 
+                color: defaultColor,
+                shininess: 80,
+                specular: 0x64b5f6
+              });
+              model = new THREE.Mesh(geometry, material);
+              
+              // Center the model
+              geometry.computeBoundingBox();
+              const center = new THREE.Vector3();
+              geometry.boundingBox.getCenter(center);
+              geometry.center();
+              
+              // Scale to reasonable size
+              const box = new THREE.Box3().setFromObject(model);
+              const size = box.getSize(new THREE.Vector3());
+              const maxDim = Math.max(size.x, size.y, size.z);
+              const scale = 3 / maxDim;
+              model.scale.setScalar(scale);
+            }
+            
+            if (model) {
+              scene.add(model);
+              
+              loading.textContent = 'Model loaded! Drag to rotate, scroll to zoom';
+              setTimeout(()=>{
+                loading.style.display = 'none';
+                controls.style.display = 'flex';
+                
+                if (colours && colours.length > 1) {
+                  setupColorPicker(model, colours, colorPicker);
+                }
+              }, 1000);
+            }
           },
           function (xhr) {
             const percent = Math.round((xhr.loaded / xhr.total) * 100);
-            loading.textContent = `Loading model... ${percent}%`;
+            loading.textContent = `Loading ${fileExt.toUpperCase()} model... ${percent}%`;
           },
           function (error) {
-            loading.textContent = '3D model file could not be loaded.';
+            loading.textContent = `Failed to load ${fileExt.toUpperCase()} file.`;
             loading.style.color = '#ff5252';
-            console.error('STL loading error:', error);
+            console.error(`${fileExt.toUpperCase()} loading error:`, error);
             
-            // Don't show controls or placeholder - just show error
             setTimeout(()=>{
-              loading.textContent = '3D View Unavailable - File not found or invalid.';
+              if (fileExt === '3mf' || fileExt === 'step' || fileExt === 'stp') {
+                loading.textContent = `${fileExt.toUpperCase()} format has limited support. Please convert to STL or OBJ for best results.`;
+              } else {
+                loading.textContent = '3D View Unavailable - File not found or invalid.';
+              }
             }, 1500);
           }
         );
+      } else {
+        loading.textContent = 'Unsupported file format.';
+        loading.style.color = '#ff5252';
       }
+    }
+    
+    function setupColorPicker(modelObj, colorOptions, pickerContainer) {
+      if (!modelObj || !colorOptions || colorOptions.length <= 1) return;
       
-      function setupColorPicker(modelMesh, colorOptions, pickerContainer) {
-        if (!modelMesh || !colorOptions || colorOptions.length <= 1) return;
+      pickerContainer.style.display = 'flex';
+      pickerContainer.innerHTML = '';
+      
+      colorOptions.forEach((hexColor, index) => {
+        const swatch = document.createElement('div');
+        swatch.className = 'color-swatch' + (index === 0 ? ' active' : '');
+        swatch.style.backgroundColor = hexColor;
+        swatch.setAttribute('data-color', hexColor);
         
-        pickerContainer.style.display = 'flex';
-        pickerContainer.innerHTML = '';
-        
-        colorOptions.forEach((hexColor, index) => {
-          const swatch = document.createElement('div');
-          swatch.className = 'color-swatch' + (index === 0 ? ' active' : '');
-          swatch.style.backgroundColor = hexColor;
-          swatch.setAttribute('data-color', hexColor);
+        swatch.addEventListener('click', () => {
+          pickerContainer.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+          swatch.classList.add('active');
           
-          swatch.addEventListener('click', () => {
-            // Remove active from all swatches
-            pickerContainer.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-            // Add active to clicked swatch
-            swatch.classList.add('active');
-            
-            // Change model color
-            if (modelMesh && modelMesh.material) {
-              const newColor = parseInt(hexColor.replace('#', '0x'));
-              modelMesh.material.color.setHex(newColor);
+          const newColor = parseInt(hexColor.replace('#', '0x'));
+          
+          // Apply color to model or group
+          if (modelObj.isGroup) {
+            modelObj.traverse(function(child) {
+              if (child.isMesh && child.material) {
+                child.material.color.setHex(newColor);
+              }
+            });
+          } else if (modelObj.material) {
+            modelObj.material.color.setHex(newColor);
+          }
+        });
+        
+        pickerContainer.appendChild(swatch);
+      });
+    }
+    
+    // Mouse controls
+    canvas.addEventListener('mousedown', (e)=>{
+      isDragging = true;
+      previousMousePosition = { x: e.clientX, y: e.clientY };
+    });
+    
+    canvas.addEventListener('mousemove', (e)=>{
+      if(!isDragging || !model) return;
+      
+      const deltaX = e.clientX - previousMousePosition.x;
+      const deltaY = e.clientY - previousMousePosition.y;
+      
+      model.rotation.y += deltaX * 0.01;
+      model.rotation.x += deltaY * 0.01;
+      
+      previousMousePosition = { x: e.clientX, y: e.clientY };
+    });
+    
+    canvas.addEventListener('mouseup', ()=>{ isDragging = false; });
+    canvas.addEventListener('mouseleave', ()=>{ isDragging = false; });
+    
+    // Touch controls
+    let touchStartX = 0, touchStartY = 0;
+    canvas.addEventListener('touchstart', (e)=>{
+      const touch = e.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+    });
+    
+    canvas.addEventListener('touchmove', (e)=>{
+      if(!model || e.touches.length !== 1) return;
+      e.preventDefault();
+      
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - touchStartX;
+      const deltaY = touch.clientY - touchStartY;
+      
+      model.rotation.y += deltaX * 0.01;
+      model.rotation.x += deltaY * 0.01;
+      
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+    }, { passive: false });
+    
+    // Zoom
+    canvas.addEventListener('wheel', (e)=>{
+      e.preventDefault();
+      camera.position.z += e.deltaY * 0.01;
+      camera.position.z = Math.max(2, Math.min(15, camera.position.z));
+    }, { passive: false });
+    
+    // Control buttons
+    document.getElementById('reset-view').addEventListener('click', ()=>{
+      if(model){
+        model.rotation.set(0, 0, 0);
+        camera.position.set(0, 0, 5);
+      }
+    });
+    
+    document.getElementById('zoom-in').addEventListener('click', ()=>{
+      camera.position.z = Math.max(2, camera.position.z - 0.5);
+    });
+    
+    document.getElementById('zoom-out').addEventListener('click', ()=>{
+      camera.position.z = Math.min(15, camera.position.z + 0.5);
+    });
+    
+    // Animation loop
+    function animate(){
+      if(!document.getElementById('viewer-modal')) return;
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+    animate();
+    
+    // Handle resize
+    function onResize(){
+      if(!document.getElementById('viewer-modal')) return;
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    }
+    window.addEventListener('resize', onResize);
+    
+    viewer3D = { scene, camera, renderer, model, onResize };
+  }
+
+  function cleanup3DViewer(){
+    if(viewer3D){
+      window.removeEventListener('resize', viewer3D.onResize);
+      if(viewer3D.renderer){
+        viewer3D.renderer.dispose();
+      }
+      if(viewer3D.model){
+        if(viewer3D.model.isGroup){
+          viewer3D.model.traverse(function(child){
+            if(child.isMesh){
+              if(child.geometry) child.geometry.dispose();
+              if(child.material) child.material.dispose();
             }
           });
-          
-          pickerContainer.appendChild(swatch);
-        });
-      }
-      
-      // Mouse controls
-      canvas.addEventListener('mousedown', (e)=>{
-        isDragging = true;
-        previousMousePosition = { x: e.clientX, y: e.clientY };
-      });
-      
-      canvas.addEventListener('mousemove', (e)=>{
-        if(!isDragging || !model) return;
-        
-        const deltaX = e.clientX - previousMousePosition.x;
-        const deltaY = e.clientY - previousMousePosition.y;
-        
-        model.rotation.y += deltaX * 0.01;
-        model.rotation.x += deltaY * 0.01;
-        
-        previousMousePosition = { x: e.clientX, y: e.clientY };
-      });
-      
-      canvas.addEventListener('mouseup', ()=>{ isDragging = false; });
-      canvas.addEventListener('mouseleave', ()=>{ isDragging = false; });
-      
-      // Touch controls
-      let touchStartX = 0, touchStartY = 0;
-      canvas.addEventListener('touchstart', (e)=>{
-        const touch = e.touches[0];
-        touchStartX = touch.clientX;
-        touchStartY = touch.clientY;
-      });
-      
-      canvas.addEventListener('touchmove', (e)=>{
-        if(!model || e.touches.length !== 1) return;
-        e.preventDefault();
-        
-        const touch = e.touches[0];
-        const deltaX = touch.clientX - touchStartX;
-        const deltaY = touch.clientY - touchStartY;
-        
-        model.rotation.y += deltaX * 0.01;
-        model.rotation.x += deltaY * 0.01;
-        
-        touchStartX = touch.clientX;
-        touchStartY = touch.clientY;
-      }, { passive: false });
-      
-      // Zoom
-      canvas.addEventListener('wheel', (e)=>{
-        e.preventDefault();
-        camera.position.z += e.deltaY * 0.01;
-        camera.position.z = Math.max(2, Math.min(15, camera.position.z));
-      }, { passive: false });
-      
-      // Control buttons
-      document.getElementById('reset-view').addEventListener('click', ()=>{
-        if(model){
-          model.rotation.set(0, 0, 0);
-          camera.position.set(0, 0, 5);
+        } else {
+          if(viewer3D.model.geometry) viewer3D.model.geometry.dispose();
+          if(viewer3D.model.material) viewer3D.model.material.dispose();
         }
-      });
-      
-      document.getElementById('zoom-in').addEventListener('click', ()=>{
-        camera.position.z = Math.max(2, camera.position.z - 0.5);
-      });
-      
-      document.getElementById('zoom-out').addEventListener('click', ()=>{
-        camera.position.z = Math.min(15, camera.position.z + 0.5);
-      });
-      
-      // Animation loop
-      function animate(){
-        if(!document.getElementById('viewer-modal')) return;
-        requestAnimationFrame(animate);
-        renderer.render(scene, camera);
       }
-      animate();
-      
-      // Handle resize
-      function onResize(){
-        if(!document.getElementById('viewer-modal')) return;
-        camera.aspect = container.clientWidth / container.clientHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(container.clientWidth, container.clientHeight);
-      }
-      window.addEventListener('resize', onResize);
-      
-      viewer3D = { scene, camera, renderer, model, onResize };
+      viewer3D = null;
     }
+  }
 
-    function cleanup3DViewer(){
-      if(viewer3D){
-        window.removeEventListener('resize', viewer3D.onResize);
-        if(viewer3D.renderer){
-          viewer3D.renderer.dispose();
-        }
-        if(viewer3D.model && viewer3D.model.geometry){
-          viewer3D.model.geometry.dispose();
-        }
-        if(viewer3D.model && viewer3D.model.material){
-          viewer3D.model.material.dispose();
-        }
-        viewer3D = null;
-      }
+  async function loadAll(){
+    try {
+      const raw = await fetchProducts();
+      products = raw;
+      const types = gatherTypes(products);
+      buildChips(types);
+      applyFilters();
+    } catch (err){
+      grid.innerHTML = `<div style="color:var(--muted); padding:24px; text-align:center;">Failed to load products. Make sure products.json exists in /products folder.<br><small style="display:block;margin-top:12px;">${escapeHtml(String(err))}</small></div>`;
+      empty.style.display='none';
+      console.error(err);
     }
+  }
 
-    async function loadAll(){
-      try {
-        const raw = await fetchProducts();
-        products = raw;
-        const types = gatherTypes(products);
-        buildChips(types);
+  if(sortBtn){
+    sortBtn.addEventListener('click', ()=> sortOpts.classList.toggle('hidden'));
+    document.querySelectorAll('.custom-select-option').forEach(o=>{
+      o.addEventListener('click', ()=>{
+        sort.value = o.getAttribute('data-value');
+        sortBtn.textContent = o.textContent + ' ▾';
+        sortOpts.classList.add('hidden');
         applyFilters();
-      } catch (err){
-        grid.innerHTML = `<div style="color:var(--muted); padding:24px; text-align:center;">Failed to load products. Make sure products.json exists in /products folder.<br><small style="display:block;margin-top:12px;">${escapeHtml(String(err))}</small></div>`;
-        empty.style.display='none';
-        console.error(err);
-      }
-    }
-
-    if(sortBtn){
-      sortBtn.addEventListener('click', ()=> sortOpts.classList.toggle('hidden'));
-      document.querySelectorAll('.custom-select-option').forEach(o=>{
-        o.addEventListener('click', ()=>{
-          sort.value = o.getAttribute('data-value');
-          sortBtn.textContent = o.textContent + ' ▾';
-          sortOpts.classList.add('hidden');
-          applyFilters();
-        });
       });
-      document.addEventListener('click', (e) => {
-        if (!e.target.closest('#sort-dropdown')) {
-          sortOpts.classList.add('hidden');
-        }
-      });
-    }
-
-    let debounce;
-    q.addEventListener('input', ()=>{ 
-      clearTimeout(debounce); 
-      debounce = setTimeout(applyFilters, 200);
     });
-    sort.addEventListener('change', applyFilters);
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#sort-dropdown')) {
+        sortOpts.classList.add('hidden');
+      }
+    });
+  }
 
-    loadAll();
-  })();
-  </script>
+  let debounce;
+  q.addEventListener('input', ()=>{ 
+    clearTimeout(debounce); 
+    debounce = setTimeout(applyFilters, 200);
+  });
+  sort.addEventListener('change', applyFilters);
+
+  loadAll();
+})();
+</script>
 </body>
 </html>
