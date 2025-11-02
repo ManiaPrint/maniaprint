@@ -19,7 +19,7 @@
 /* Reset & base */
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
 html,body{height:%;margin:0;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
-.container{max-width:var(--maxw);margin:0 auto;padding:32px var(--pad)}
+.container{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad)}
 
 /* Text selection / cursor behaviour */
 h1,h2,h3,h4,h5,h6,p,span,div,a,button,label,.small,.note{user-select:none;cursor:default}
@@ -144,14 +144,14 @@ header .container{
 .card{background:var(--panel);border-radius:14px;padding:20px;border:1px solid rgba(79,195,247,0.15);box-shadow:0 4px 16px rgba(0,0,0,0.1)}
 
 /* Services */
-.services{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:24px}
+.services{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:48px}
 .service{transition:var(--transition)}
 .service:hover{transform:translateY(-2px);border-color:rgba(79,195,247,0.3);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
 .service h3{margin:0 0 10px 0;color:var(--accent-light)}
 .service p{margin:0;color:var(--muted);line-height:1.5}
 
 /* Process + quote calculator - Matched heights */
-.split{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px}
 .steps{display:flex;flex-direction:column;gap:14px;height:100%}
 .step{display:flex;gap:14px;align-items:flex-start;transition:var(--transition)}
 .step:hover{transform:translateX(4px)}
@@ -216,7 +216,7 @@ header .container{
 .price h4{margin:0 0 10px 0;color:var(--accent-light)}
 
 /* FAQ */
-.faq{margin-top:28px}
+.faq{margin-top:48px}
 .faq details{background:var(--panel);padding:18px 20px;border-radius:14px;border:1px solid rgba(79,195,247,0.15);margin-bottom:12px;transition:var(--transition)}
 .faq details:hover{background:rgba(79,195,247,0.08);border-color:rgba(79,195,247,0.25)}
 .faq summary{font-weight:700;color:var(--text);cursor:pointer;padding:4px 0}
@@ -224,7 +224,7 @@ header .container{
 .faq details .small{line-height:1.6;color:var(--muted);padding-top:8px}
 
 /* Contact & forms */
-.contact{display:grid;grid-template-columns:1fr 360px;gap:24px;margin-top:28px}
+.contact{display:grid;grid-template-columns:1fr 360px;gap:24px;margin-top:48px}
 form.fieldset{display:flex;flex-direction:column;gap:12px}
 input,textarea,select{background:rgba(79,195,247,0.03);border:1px solid rgba(79,195,247,0.15);padding:12px;border-radius:10px;color:var(--text);outline:none;resize:none;transition:var(--transition)}
 input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,195,247,0.1)}
@@ -445,7 +445,9 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
 /* Mobile & Tablet responsive */
 @media (max-width:1024px){
   :root{--pad:30px}
-  .container{padding:24px var(--pad)}
+  .container{padding:0 var(--pad)}
+  main.container > section:first-child{margin-top:24px}
+  main.container > section:not(:first-child){margin-top:48px}
   .hero{grid-template-columns:1fr;padding:32px 24px;gap:24px}
   .hero h1{font-size:2rem}
   .split{grid-template-columns:1fr}
@@ -479,7 +481,9 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
 
 @media (max-width:480px){
   :root{--pad:16px}
-  .container{padding:16px var(--pad)}
+  .container{padding:0 var(--pad)}
+  main.container > section:first-child{margin-top:12px}
+  main.container > section:not(:first-child){margin-top:28px}
   .logo{font-size:1.2rem}
   .logo-img{width:40px;height:40px}
   .hero h1{font-size:1.5rem}
