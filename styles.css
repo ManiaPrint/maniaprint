@@ -120,9 +120,9 @@ header .container{
 .cta.ghost{background:transparent;border:1px solid rgba(79,195,247,0.3);color:var(--accent-light);box-shadow:none}
 .cta.ghost:hover{background:rgba(79,195,247,0.1);border-color:var(--accent)}
 
-/* Hero - Minimal top margin */
+/* Hero - No top margin */
 .hero{
-  margin:0 auto 0;
+  margin:0 auto;
   padding:48px 36px;
   border-radius:20px;
   background:var(--panel);
