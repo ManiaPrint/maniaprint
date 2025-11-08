@@ -497,16 +497,24 @@ THREE.STLLoader.prototype = {
       1000
     );
     
-    // Camera orbit settings
+    // Camera settings - straight-on view
     let cameraDistance = 5;
-    let cameraTheta = Math.PI / 4; // Horizontal angle
-    let cameraPhi = Math.PI / 4;   // Vertical angle
+    let cameraVerticalAngle = 0; // Up/down rotation around model
+    let cameraPanX = 0; // Left/right pan offset
+    let cameraPanY = 0; // Additional up/down pan offset
     
     function updateCameraPosition() {
-      camera.position.x = cameraDistance * Math.sin(cameraPhi) * Math.cos(cameraTheta);
-      camera.position.y = cameraDistance * Math.cos(cameraPhi);
-      camera.position.z = cameraDistance * Math.sin(cameraPhi) * Math.sin(cameraTheta);
-      camera.lookAt(0, 0, 0);
+      // Start from straight-on view (0, 0, distance)
+      const baseX = 0;
+      const baseY = cameraDistance * Math.sin(cameraVerticalAngle);
+      const baseZ = cameraDistance * Math.cos(cameraVerticalAngle);
+      
+      camera.position.set(
+        baseX + cameraPanX,
+        baseY + cameraPanY,
+        baseZ
+      );
+      camera.lookAt(cameraPanX, cameraPanY, 0);
     }
     
     updateCameraPosition();
@@ -566,7 +574,7 @@ THREE.STLLoader.prototype = {
           
           scene.add(model);
           
-          loading.textContent = 'Model loaded! Drag to orbit, scroll to zoom';
+          loading.textContent = 'Model loaded! Drag up/down to orbit, left/right to pan, scroll to zoom';
           setTimeout(()=>{
             loading.style.display = 'none';
             controls.style.display = 'flex';
@@ -614,7 +622,7 @@ THREE.STLLoader.prototype = {
       });
     }
     
-    // Mouse orbit controls
+    // Mouse controls - pan left/right, rotate up/down
     canvas.addEventListener('mousedown', (e)=>{
       isDragging = true;
       previousMousePosition = { x: e.clientX, y: e.clientY };
@@ -626,8 +634,11 @@ THREE.STLLoader.prototype = {
       const deltaX = e.clientX - previousMousePosition.x;
       const deltaY = e.clientY - previousMousePosition.y;
       
-      cameraTheta -= deltaX * 0.01;
-      cameraPhi = Math.max(0.1, Math.min(Math.PI - 0.1, cameraPhi - deltaY * 0.01));
+      // Left/right = pan sideways
+      cameraPanX -= deltaX * 0.01;
+      
+      // Up/down = rotate around model
+      cameraVerticalAngle = Math.max(-Math.PI / 2 + 0.1, Math.min(Math.PI / 2 - 0.1, cameraVerticalAngle + deltaY * 0.01));
       
       updateCameraPosition();
       
@@ -637,7 +648,7 @@ THREE.STLLoader.prototype = {
     canvas.addEventListener('mouseup', ()=>{ isDragging = false; });
     canvas.addEventListener('mouseleave', ()=>{ isDragging = false; });
     
-    // Touch orbit controls
+    // Touch controls - pan left/right, rotate up/down
     let touchStartX = 0, touchStartY = 0;
     canvas.addEventListener('touchstart', (e)=>{
       const touch = e.touches[0];
@@ -654,8 +665,11 @@ THREE.STLLoader.prototype = {
       const deltaX = touch.clientX - touchStartX;
       const deltaY = touch.clientY - touchStartY;
       
-      cameraTheta -= deltaX * 0.01;
-      cameraPhi = Math.max(0.1, Math.min(Math.PI - 0.1, cameraPhi - deltaY * 0.01));
+      // Left/right = pan sideways
+      cameraPanX -= deltaX * 0.01;
+      
+      // Up/down = rotate around model
+      cameraVerticalAngle = Math.max(-Math.PI / 2 + 0.1, Math.min(Math.PI / 2 - 0.1, cameraVerticalAngle + deltaY * 0.01));
       
       updateCameraPosition();
       
@@ -676,8 +690,9 @@ THREE.STLLoader.prototype = {
     // Control buttons
     document.getElementById('reset-view').addEventListener('click', ()=>{
       cameraDistance = 5;
-      cameraTheta = Math.PI / 4;
-      cameraPhi = Math.PI / 4;
+      cameraVerticalAngle = 0;
+      cameraPanX = 0;
+      cameraPanY = 0;
       updateCameraPosition();
     });
     
