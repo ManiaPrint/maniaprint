@@ -565,7 +565,7 @@ THREE.STLLoader.prototype = {
           model.scale.setScalar(scale);
           
           scene.add(model);
-          model.rotation.x = -Math.PI / 2;
+          
           loading.textContent = 'Model loaded! Drag to orbit, scroll to zoom';
           setTimeout(()=>{
             loading.style.display = 'none';
@@ -626,8 +626,8 @@ THREE.STLLoader.prototype = {
       const deltaX = e.clientX - previousMousePosition.x;
       const deltaY = e.clientY - previousMousePosition.y;
       
-      // Orbit horizontally and vertically around center
-      cameraTheta += deltaX * 0.01;
+      // Orbit horizontally and vertically around center (inverted X for natural feel)
+      cameraTheta -= deltaX * 0.01;
       cameraPhi = Math.max(0.1, Math.min(Math.PI - 0.1, cameraPhi + deltaY * 0.01));
       
       updateCameraPosition();
@@ -655,8 +655,8 @@ THREE.STLLoader.prototype = {
       const deltaX = touch.clientX - touchStartX;
       const deltaY = touch.clientY - touchStartY;
       
-      // Orbit horizontally and vertically around center
-      cameraTheta += deltaX * 0.01;
+      // Orbit horizontally and vertically around center (inverted X for natural feel)
+      cameraTheta -= deltaX * 0.01;
       cameraPhi = Math.max(0.1, Math.min(Math.PI - 0.1, cameraPhi + deltaY * 0.01));
       
       updateCameraPosition();
