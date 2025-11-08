@@ -75,8 +75,7 @@
     </div>
   </footer>
 <script>
-// THREE.js Format Loaders
-// STL Loader (already implemented - keeping as is)
+// THREE.js STL Loader
 THREE.STLLoader = function (manager) {
   this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
 };
@@ -253,298 +252,7 @@ THREE.STLLoader.prototype = {
   }
 };
 
-// OBJ Loader Implementation
-THREE.OBJLoader = function (manager) {
-  this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
-  this.materials = null;
-};
-
-THREE.OBJLoader.prototype = {
-  constructor: THREE.OBJLoader,
-  load: function (url, onLoad, onProgress, onError) {
-    var scope = this;
-    var loader = new THREE.FileLoader(scope.manager);
-    loader.setResponseType('text');
-    loader.load(url, function (text) {
-      try {
-        onLoad(scope.parse(text));
-      } catch (e) {
-        if (onError) {
-          onError(e);
-        } else {
-          console.error(e);
-        }
-        scope.manager.itemError(url);
-      }
-    }, onProgress, onError);
-  },
-  parse: function (text) {
-    var object, objects = [];
-    var geometry, material;
-
-    function parseVertexIndex(value) {
-      var index = parseInt(value);
-      return (index >= 0 ? index - 1 : index + vertices.length / 3) * 3;
-    }
-
-    function parseNormalIndex(value) {
-      var index = parseInt(value);
-      return (index >= 0 ? index - 1 : index + normals.length / 3) * 3;
-    }
-
-    function parseUVIndex(value) {
-      var index = parseInt(value);
-      return (index >= 0 ? index - 1 : index + uvs.length / 2) * 2;
-    }
-
-    function addVertex(a, b, c) {
-      geometry.vertices.push(
-        vertices[a], vertices[a + 1], vertices[a + 2],
-        vertices[b], vertices[b + 1], vertices[b + 2],
-        vertices[c], vertices[c + 1], vertices[c + 2]
-      );
-    }
-
-    function addNormal(a, b, c) {
-      geometry.normals.push(
-        normals[a], normals[a + 1], normals[a + 2],
-        normals[b], normals[b + 1], normals[b + 2],
-        normals[c], normals[c + 1], normals[c + 2]
-      );
-    }
-
-    function addUV(a, b, c) {
-      geometry.uvs.push(
-        uvs[a], uvs[a + 1],
-        uvs[b], uvs[b + 1],
-        uvs[c], uvs[c + 1]
-      );
-    }
-
-    function addFace(a, b, c, ua, ub, uc, na, nb, nc) {
-      var ia = parseVertexIndex(a);
-      var ib = parseVertexIndex(b);
-      var ic = parseVertexIndex(c);
-
-      addVertex(ia, ib, ic);
-
-      if (na !== undefined && na !== '') {
-        var ina = parseNormalIndex(na);
-        var inb = parseNormalIndex(nb);
-        var inc = parseNormalIndex(nc);
-        addNormal(ina, inb, inc);
-      }
-
-      if (ua !== undefined && ua !== '') {
-        var iua = parseUVIndex(ua);
-        var iub = parseUVIndex(ub);
-        var iuc = parseUVIndex(uc);
-        addUV(iua, iub, iuc);
-      }
-    }
-
-    var vertices = [];
-    var normals = [];
-    var uvs = [];
-
-    var state = {
-      startObject: function (name) {
-        if (object && object.geometry.vertices.length > 0) {
-          geometry.type = object.type;
-          objects.push(object);
-        }
-        object = {
-          name: name || '',
-          geometry: {
-            vertices: [],
-            normals: [],
-            uvs: []
-          }
-        };
-        geometry = object.geometry;
-      }
-    };
-
-    state.startObject();
-
-    var lines = text.split('\n');
-
-    for (var i = 0; i < lines.length; i++) {
-      var line = lines[i].trim();
-
-      if (line.length === 0 || line.charAt(0) === '#') {
-        continue;
-      }
-
-      var lineTokens = line.split(/\s+/);
-      var lineType = lineTokens[0];
-
-      if (lineType === 'v') {
-        vertices.push(
-          parseFloat(lineTokens[1]),
-          parseFloat(lineTokens[2]),
-          parseFloat(lineTokens[3])
-        );
-      } else if (lineType === 'vn') {
-        normals.push(
-          parseFloat(lineTokens[1]),
-          parseFloat(lineTokens[2]),
-          parseFloat(lineTokens[3])
-        );
-      } else if (lineType === 'vt') {
-        uvs.push(
-          parseFloat(lineTokens[1]),
-          parseFloat(lineTokens[2])
-        );
-      } else if (lineType === 'f') {
-        var faces = [];
-        for (var j = 1; j < lineTokens.length; j++) {
-          faces.push(lineTokens[j]);
-        }
-
-        var v1 = faces[0];
-        for (var j = 1; j < faces.length - 1; j++) {
-          var v2 = faces[j];
-          var v3 = faces[j + 1];
-
-          var tokens1 = v1.split('/');
-          var tokens2 = v2.split('/');
-          var tokens3 = v3.split('/');
-
-          addFace(
-            tokens1[0], tokens2[0], tokens3[0],
-            tokens1[1], tokens2[1], tokens3[1],
-            tokens1[2], tokens2[2], tokens3[2]
-          );
-        }
-      } else if (lineType === 'o' || lineType === 'g') {
-        state.startObject(lineTokens[1]);
-      }
-    }
-
-    if (object && object.geometry.vertices.length > 0) {
-      objects.push(object);
-    }
-
-    var group = new THREE.Group();
-
-    for (var i = 0; i < objects.length; i++) {
-      var obj = objects[i];
-      var buffergeometry = new THREE.BufferGeometry();
-
-      buffergeometry.setAttribute('position', new THREE.Float32BufferAttribute(obj.geometry.vertices, 3));
-
-      if (obj.geometry.normals.length > 0) {
-        buffergeometry.setAttribute('normal', new THREE.Float32BufferAttribute(obj.geometry.normals, 3));
-      } else {
-        buffergeometry.computeVertexNormals();
-      }
-
-      if (obj.geometry.uvs.length > 0) {
-        buffergeometry.setAttribute('uv', new THREE.Float32BufferAttribute(obj.geometry.uvs, 2));
-      }
-
-      var mesh = new THREE.Mesh(buffergeometry);
-      mesh.name = obj.name;
-      group.add(mesh);
-    }
-
-    return group;
-  }
-};
-
-// 3MF Loader (Basic Implementation - converts to geometry)
-THREE.ThreeMFLoader = function (manager) {
-  this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
-};
-
-THREE.ThreeMFLoader.prototype = {
-  constructor: THREE.ThreeMFLoader,
-  load: function (url, onLoad, onProgress, onError) {
-    var scope = this;
-    var loader = new THREE.FileLoader(scope.manager);
-    loader.setResponseType('arraybuffer');
-    loader.load(url, function (data) {
-      try {
-        onLoad(scope.parse(data));
-      } catch (e) {
-        if (onError) {
-          onError(e);
-        } else {
-          console.error(e);
-        }
-      }
-    }, onProgress, onError);
-  },
-  parse: function (data) {
-    // Note: Full 3MF parsing requires ZIP decompression and XML parsing
-    // This is a simplified version that shows the structure
-    // For production use, consider using a full 3MF library
-    
-    console.warn('3MF format support is limited. For best results, convert to STL or OBJ format.');
-    
-    // Return empty geometry as placeholder
-    var geometry = new THREE.BufferGeometry();
-    var vertices = new Float32Array([
-      0, 0, 0,
-      1, 0, 0,
-      0, 1, 0
-    ]);
-    geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-    geometry.computeVertexNormals();
-    
-    return geometry;
-  }
-};
-
-// STEP Loader (Basic Implementation)
-THREE.STEPLoader = function (manager) {
-  this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
-};
-
-THREE.STEPLoader.prototype = {
-  constructor: THREE.STEPLoader,
-  load: function (url, onLoad, onProgress, onError) {
-    var scope = this;
-    var loader = new THREE.FileLoader(scope.manager);
-    loader.setResponseType('text');
-    loader.load(url, function (text) {
-      try {
-        onLoad(scope.parse(text));
-      } catch (e) {
-        if (onError) {
-          onError(e);
-        } else {
-          console.error(e);
-        }
-      }
-    }, onProgress, onError);
-  },
-  parse: function (text) {
-    // Note: Full STEP parsing is extremely complex and requires specialized libraries
-    // STEP files contain CAD data in ISO 10303-21 format
-    // This is a placeholder that shows the structure
-    
-    console.warn('STEP format support is limited. For best results, convert to STL or OBJ format in your CAD software.');
-    
-    // Return empty geometry as placeholder
-    var geometry = new THREE.BufferGeometry();
-    var vertices = new Float32Array([
-      0, 0, 0,
-      1, 0, 0,
-      0, 1, 0
-    ]);
-    geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-    geometry.computeVertexNormals();
-    
-    return geometry;
-  }
-};
-
-// ============================================
-// Main Products Script with Multi-Format Support
-// ============================================
-
+// Main Products Script
 (function(){
   const grid = document.getElementById('grid');
   const chips = document.getElementById('chips');
@@ -599,7 +307,7 @@ THREE.STEPLoader.prototype = {
 
     const has3D = item['3Dfile'] && item['3Dfile'].trim() !== '';
     const fileExt = getFileExtension(item['3Dfile']);
-    const supportedFormats = ['stl', 'obj', '3mf', 'step', 'stp'];
+    const supportedFormats = ['stl', 'obj'];
     const isSupported = supportedFormats.includes(fileExt);
     
     const viewBtn = has3D && isSupported
@@ -788,7 +496,20 @@ THREE.STEPLoader.prototype = {
       0.1,
       1000
     );
-    camera.position.set(0, 0, 5);
+    
+    // Camera orbit settings
+    let cameraDistance = 5;
+    let cameraTheta = Math.PI / 4; // Horizontal angle
+    let cameraPhi = Math.PI / 4;   // Vertical angle
+    
+    function updateCameraPosition() {
+      camera.position.x = cameraDistance * Math.sin(cameraPhi) * Math.cos(cameraTheta);
+      camera.position.y = cameraDistance * Math.cos(cameraPhi);
+      camera.position.z = cameraDistance * Math.sin(cameraPhi) * Math.sin(cameraTheta);
+      camera.lookAt(0, 0, 0);
+    }
+    
+    updateCameraPosition();
     
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
@@ -818,111 +539,53 @@ THREE.STEPLoader.prototype = {
       const fileExt = getFileExtension(modelFile);
       const filePath = modelFile.startsWith('models/') ? modelFile : 'models/' + modelFile;
       
-      let loader = null;
+      const loader = new THREE.STLLoader();
       
-      // Select appropriate loader based on file extension
-      if (fileExt === 'stl') {
-        loader = new THREE.STLLoader();
-      } else if (fileExt === 'obj') {
-        loader = new THREE.OBJLoader();
-      } else if (fileExt === '3mf') {
-        loader = new THREE.ThreeMFLoader();
-      } else if (fileExt === 'step' || fileExt === 'stp') {
-        loader = new THREE.STEPLoader();
-      }
-      
-      if (loader) {
-        loader.load(
-          filePath,
-          function (geometry) {
-            // Handle different return types from loaders
-            if (geometry.isGroup) {
-              // OBJ loader returns a group
-              model = geometry;
-              
-              // Apply material to all meshes in group
-              model.traverse(function(child) {
-                if (child.isMesh) {
-                  child.material = new THREE.MeshPhongMaterial({ 
-                    color: defaultColor,
-                    shininess: 80,
-                    specular: 0x64b5f6
-                  });
-                }
-              });
-              
-              // Center the group
-              const box = new THREE.Box3().setFromObject(model);
-              const center = new THREE.Vector3();
-              box.getCenter(center);
-              model.position.sub(center);
-              
-              // Scale to reasonable size
-              const size = box.getSize(new THREE.Vector3());
-              const maxDim = Math.max(size.x, size.y, size.z);
-              const scale = 3 / maxDim;
-              model.scale.setScalar(scale);
-              
-            } else if (geometry.isBufferGeometry) {
-              // STL, 3MF, STEP loaders return geometry
-              const material = new THREE.MeshPhongMaterial({ 
-                color: defaultColor,
-                shininess: 80,
-                specular: 0x64b5f6
-              });
-              model = new THREE.Mesh(geometry, material);
-              
-              // Center the model
-              geometry.computeBoundingBox();
-              const center = new THREE.Vector3();
-              geometry.boundingBox.getCenter(center);
-              geometry.center();
-              
-              // Scale to reasonable size
-              const box = new THREE.Box3().setFromObject(model);
-              const size = box.getSize(new THREE.Vector3());
-              const maxDim = Math.max(size.x, size.y, size.z);
-              const scale = 3 / maxDim;
-              model.scale.setScalar(scale);
-            }
+      loader.load(
+        filePath,
+        function (geometry) {
+          const material = new THREE.MeshPhongMaterial({ 
+            color: defaultColor,
+            shininess: 80,
+            specular: 0x64b5f6
+          });
+          model = new THREE.Mesh(geometry, material);
+          
+          // Center the model
+          geometry.computeBoundingBox();
+          const center = new THREE.Vector3();
+          geometry.boundingBox.getCenter(center);
+          geometry.center();
+          
+          // Scale to reasonable size
+          const box = new THREE.Box3().setFromObject(model);
+          const size = box.getSize(new THREE.Vector3());
+          const maxDim = Math.max(size.x, size.y, size.z);
+          const scale = 3 / maxDim;
+          model.scale.setScalar(scale);
+          
+          scene.add(model);
+          
+          loading.textContent = 'Model loaded! Drag to orbit, scroll to zoom';
+          setTimeout(()=>{
+            loading.style.display = 'none';
+            controls.style.display = 'flex';
             
-            if (model) {
-              model.rotation.x = -Math.PI / 2;
-              scene.add(model);
-              
-              loading.textContent = 'Model loaded! Drag to rotate, scroll to zoom';
-              setTimeout(()=>{
-                loading.style.display = 'none';
-                controls.style.display = 'flex';
-                
-                if (colours && colours.length > 1) {
-                  setupColorPicker(model, colours, colorPicker);
-                }
-              }, 1000);
+            if (colours && colours.length > 1) {
+              setupColorPicker(model, colours, colorPicker);
             }
-          },
-          function (xhr) {
-            const percent = Math.round((xhr.loaded / xhr.total) * 100);
-            loading.textContent = `Loading ${fileExt.toUpperCase()} model... ${percent}%`;
-          },
-          function (error) {
-            loading.textContent = `Failed to load ${fileExt.toUpperCase()} file.`;
-            loading.style.color = '#ff5252';
-            console.error(`${fileExt.toUpperCase()} loading error:`, error);
-            
-            setTimeout(()=>{
-              if (fileExt === '3mf' || fileExt === 'step' || fileExt === 'stp') {
-                loading.textContent = `${fileExt.toUpperCase()} format has limited support. Please convert to STL or OBJ for best results.`;
-              } else {
-                loading.textContent = '3D View Unavailable - File not found or invalid.';
-              }
-            }, 1500);
-          }
-        );
-      } else {
-        loading.textContent = 'Unsupported file format.';
-        loading.style.color = '#ff5252';
-      }
+          }, 1000);
+        },
+        function (xhr) {
+          const percent = Math.round((xhr.loaded / xhr.total) * 100);
+          loading.textContent = `Loading model... ${percent}%`;
+        },
+        function (error) {
+          loading.textContent = 'Failed to load file.';
+          loading.style.color = '#ff5252';
+          console.error('Loading error:', error);
+        }
+      );
     }
     
     function setupColorPicker(modelObj, colorOptions, pickerContainer) {
@@ -942,15 +605,7 @@ THREE.STEPLoader.prototype = {
           swatch.classList.add('active');
           
           const newColor = parseInt(hexColor.replace('#', '0x'));
-          
-          // Apply color to model or group
-          if (modelObj.isGroup) {
-            modelObj.traverse(function(child) {
-              if (child.isMesh && child.material) {
-                child.material.color.setHex(newColor);
-              }
-            });
-          } else if (modelObj.material) {
+          if (modelObj.material) {
             modelObj.material.color.setHex(newColor);
           }
         });
@@ -959,20 +614,22 @@ THREE.STEPLoader.prototype = {
       });
     }
     
-    // Mouse controls
+    // Mouse orbit controls
     canvas.addEventListener('mousedown', (e)=>{
       isDragging = true;
       previousMousePosition = { x: e.clientX, y: e.clientY };
     });
     
     canvas.addEventListener('mousemove', (e)=>{
-      if(!isDragging || !model) return;
+      if(!isDragging) return;
       
       const deltaX = e.clientX - previousMousePosition.x;
       const deltaY = e.clientY - previousMousePosition.y;
       
-      model.rotation.y += deltaX * 0.01;
-      model.rotation.x += deltaY * 0.01;
+      cameraTheta -= deltaX * 0.01;
+      cameraPhi = Math.max(0.1, Math.min(Math.PI - 0.1, cameraPhi - deltaY * 0.01));
+      
+      updateCameraPosition();
       
       previousMousePosition = { x: e.clientX, y: e.clientY };
     });
@@ -980,50 +637,58 @@ THREE.STEPLoader.prototype = {
     canvas.addEventListener('mouseup', ()=>{ isDragging = false; });
     canvas.addEventListener('mouseleave', ()=>{ isDragging = false; });
     
-    // Touch controls
+    // Touch orbit controls
     let touchStartX = 0, touchStartY = 0;
     canvas.addEventListener('touchstart', (e)=>{
       const touch = e.touches[0];
       touchStartX = touch.clientX;
       touchStartY = touch.clientY;
+      isDragging = true;
     });
     
     canvas.addEventListener('touchmove', (e)=>{
-      if(!model || e.touches.length !== 1) return;
+      if(!isDragging || e.touches.length !== 1) return;
       e.preventDefault();
       
       const touch = e.touches[0];
       const deltaX = touch.clientX - touchStartX;
       const deltaY = touch.clientY - touchStartY;
       
-      model.rotation.y += deltaX * 0.01;
-      model.rotation.x += deltaY * 0.01;
+      cameraTheta -= deltaX * 0.01;
+      cameraPhi = Math.max(0.1, Math.min(Math.PI - 0.1, cameraPhi - deltaY * 0.01));
+      
+      updateCameraPosition();
       
       touchStartX = touch.clientX;
       touchStartY = touch.clientY;
     }, { passive: false });
     
+    canvas.addEventListener('touchend', ()=>{ isDragging = false; });
+    
     // Zoom
     canvas.addEventListener('wheel', (e)=>{
       e.preventDefault();
-      camera.position.z += e.deltaY * 0.01;
-      camera.position.z = Math.max(2, Math.min(15, camera.position.z));
+      cameraDistance += e.deltaY * 0.01;
+      cameraDistance = Math.max(2, Math.min(15, cameraDistance));
+      updateCameraPosition();
     }, { passive: false });
     
     // Control buttons
     document.getElementById('reset-view').addEventListener('click', ()=>{
-      if(model){
-        model.rotation.set(0, 0, 0);
-        camera.position.set(0, 0, 5);
-      }
+      cameraDistance = 5;
+      cameraTheta = Math.PI / 4;
+      cameraPhi = Math.PI / 4;
+      updateCameraPosition();
     });
     
     document.getElementById('zoom-in').addEventListener('click', ()=>{
-      camera.position.z = Math.max(2, camera.position.z - 0.5);
+      cameraDistance = Math.max(2, cameraDistance - 0.5);
+      updateCameraPosition();
     });
     
     document.getElementById('zoom-out').addEventListener('click', ()=>{
-      camera.position.z = Math.min(15, camera.position.z + 0.5);
+      cameraDistance = Math.min(15, cameraDistance + 0.5);
+      updateCameraPosition();
     });
     
     // Animation loop
@@ -1053,17 +718,8 @@ THREE.STEPLoader.prototype = {
         viewer3D.renderer.dispose();
       }
       if(viewer3D.model){
-        if(viewer3D.model.isGroup){
-          viewer3D.model.traverse(function(child){
-            if(child.isMesh){
-              if(child.geometry) child.geometry.dispose();
-              if(child.material) child.material.dispose();
-            }
-          });
-        } else {
-          if(viewer3D.model.geometry) viewer3D.model.geometry.dispose();
-          if(viewer3D.model.material) viewer3D.model.material.dispose();
-        }
+        if(viewer3D.model.geometry) viewer3D.model.geometry.dispose();
+        if(viewer3D.model.material) viewer3D.model.material.dispose();
       }
       viewer3D = null;
     }
