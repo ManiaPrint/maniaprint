@@ -565,7 +565,7 @@ THREE.STLLoader.prototype = {
           model.scale.setScalar(scale);
           
           scene.add(model);
-          
+          model.rotation.x = -Math.PI / 2;
           loading.textContent = 'Model loaded! Drag to orbit, scroll to zoom';
           setTimeout(()=>{
             loading.style.display = 'none';
