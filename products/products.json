@@ -56,7 +56,7 @@
     "tags": ["Bag attachment", "Colourful", "Articulated"],
     "details": "Crafted from durable PLA plastic with flexible joints that move freely. 1-2 day turnaround",
     "image": "../images/minidragon.png",
-    "3Dfile": "models/dragchain.3mf",
+    "3Dfile": "models/dragchain.stl",
     "colours": ["#4fc3f7", "#ff5252", "#4caf50", "#ffc107", "#9c27b0"]
   },
   {
@@ -72,6 +72,7 @@
     "colours": ["#ffffff", "#000000", "#4fc3f7"]
   }
 ]
+
 
 
 
