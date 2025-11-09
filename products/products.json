@@ -52,7 +52,7 @@
     "title": "Mini dragon Keychain",
     "description": "Small 3D-printed flexi dragon keychain with movable joints. Fun, durable, and perfect for adding a playful touch to your keys or bag, or a cool unique gift.",
     "category": "PLA",
-    "price": 5.00,
+    "price": 7.00,
     "tags": ["Bag attachment", "Colourful", "Articulated"],
     "details": "Crafted from durable PLA plastic with flexible joints that move freely. 1-2 day turnaround",
     "image": "../images/dragchain.png",
@@ -76,7 +76,7 @@
     "title": "Articulated Cat Toy",
     "description": "Small friendly cat that sits on your desk. Can bend in all different diractions while still bing cute and cuddly!",
     "category": "PLA",
-    "price": 2.50,
+    "price": 7.50,
     "tags": ["Aesthetic", "Small", "Adorable"],
     "details": "Made from aesthetic PLA with a smooth finish to make it as adorable as possible. Great for decorations and girfts1-2 day turnaaround",
     "image": "",
@@ -88,14 +88,15 @@
     "title": "Cable Organisers",
     "description": "Easy way to sort out your cable mess. Ideal for charges and thin cables",
     "category": "PLA",
-    "price": 2.00,
-    "tags": ["Small", "Useful", "Cheap", "5 for $5"],
+    "price": 3.00,
+    "tags": ["Small", "Useful", "Cheap", "5 for $20"],
     "details": "Crafted from durable PLA plastic to last and organise cables and chargers",
     "image": "../images/RoundCableHolder.jpeg",
     "3Dfile": "1m_Apple_5layers.stl",
     "colours": ["#ffffff", "#000000", "#4fc3f7"]
   }
 ]
+
 
 
 
