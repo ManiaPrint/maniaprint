@@ -89,13 +89,14 @@
     "description": "Easy way to sort out your cable mess. Ideal for charges and thin cables",
     "category": "PLA",
     "price": 3.00,
-    "tags": ["Small", "Useful", "Cheap", "5 for $20"],
+    "tags": ["Small", "Useful", "Cheap", "5 for $10"],
     "details": "Crafted from durable PLA plastic to last and organise cables and chargers",
     "image": "",
     "3Dfile": "1m_Apple_5layers.stl",
     "colours": ["#ffffff", "#000000", "#4fc3f7"]
   }
 ]
+
 
 
 
