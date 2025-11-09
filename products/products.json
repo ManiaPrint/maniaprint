@@ -71,7 +71,32 @@
     "3Dfile": "models/magsafecharger.stl",
     "colours": ["#ffffff", "#000000", "#4fc3f7"]
   }
+  {
+    "id": "7",
+    "title": "Articulated Cat Toy",
+    "description": "Small friendly cat that sits on your desk. Can bend in all different diractions while still bing cute and cuddly!",
+    "category": "PLA",
+    "price": 2.50,
+    "tags": ["Aesthetic", "Small", "Adorable"],
+    "details": "Made from aesthetic PLA with a smooth finish to make it as adorable as possible. Great for decorations and girfts1-2 day turnaaround",
+    "image": "",
+    "3Dfile": "",
+    "colours": ["#ffffff", "#000000", "#4fc3f7"]
+  }
+  {
+    "id": "8",
+    "title": "Cable Organisers",
+    "description": "Easy way to sort out your cable mess. Ideal for charges and thin cables",
+    "category": "PLA",
+    "price": 2.00,
+    "tags": ["Small", "Useful", "Cheap", "5 for $5"],
+    "details": "Crafted from durable PLA plastic to last and organise cables and chargers",
+    "image": "",
+    "3Dfile": "",
+    "colours": ["#ffffff", "#000000", "#4fc3f7"]
+  }
 ]
+
 
 
 
