@@ -44,7 +44,7 @@
     "tags": ["Large Format", "Custom", "Special Order"],
     "details": "Contact us for custom pricing on large format prints. Various materials available. Lead time depends on project complexity.",
     "image": "",
-    "3Dfile": "",
+    "3Dfile": "Phone Stand thicker.stl",
     "colours": ["#ffffff"]
   },
   {
@@ -80,7 +80,7 @@
     "tags": ["Aesthetic", "Small", "Adorable"],
     "details": "Made from aesthetic PLA with a smooth finish to make it as adorable as possible. Great for decorations and girfts1-2 day turnaaround",
     "image": "",
-    "3Dfile": "",
+    "3Dfile": "flexi cat.stl",
     "colours": ["#ffffff", "#000000", "#4fc3f7"]
   },
   {
@@ -91,11 +91,12 @@
     "price": 2.00,
     "tags": ["Small", "Useful", "Cheap", "5 for $5"],
     "details": "Crafted from durable PLA plastic to last and organise cables and chargers",
-    "image": "",
-    "3Dfile": "",
+    "image": "RoundCableHolder.jpeg",
+    "3Dfile": "1m_Apple_5layers.stl",
     "colours": ["#ffffff", "#000000", "#4fc3f7"]
   }
 ]
+
 
 
 
