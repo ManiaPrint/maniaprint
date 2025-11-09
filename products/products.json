@@ -91,11 +91,12 @@
     "price": 3.00,
     "tags": ["Small", "Useful", "Cheap", "5 for $20"],
     "details": "Crafted from durable PLA plastic to last and organise cables and chargers",
-    "image": "../images/RoundCableHolder.jpeg",
+    "image": "",
     "3Dfile": "1m_Apple_5layers.stl",
     "colours": ["#ffffff", "#000000", "#4fc3f7"]
   }
 ]
+
 
 
 
