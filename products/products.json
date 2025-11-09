@@ -70,7 +70,7 @@
     "image": "../images/magsafecharger.png",
     "3Dfile": "models/magsafecharger.stl",
     "colours": ["#ffffff", "#000000", "#4fc3f7"]
-  }
+  },
   {
     "id": "7",
     "title": "Articulated Cat Toy",
@@ -82,7 +82,7 @@
     "image": "",
     "3Dfile": "",
     "colours": ["#ffffff", "#000000", "#4fc3f7"]
-  }
+  },
   {
     "id": "8",
     "title": "Cable Organisers",
@@ -96,6 +96,7 @@
     "colours": ["#ffffff", "#000000", "#4fc3f7"]
   }
 ]
+
 
 
 
