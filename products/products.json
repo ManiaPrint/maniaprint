@@ -72,11 +72,12 @@
     "category": "PLA",
     "price": 3.00,
     "tags": ["Small", "Useful", "Cheap", "5 for $10"],
-    "image": "../images/Cable Organisers.jpeg",
+    "image": "../images/Cable Organisers.png",
     "3Dfile": "Cable Organisers.stl",
     "colours": ["#ffffff", "#000000", "#4fc3f7"]
   }
 ]
+
 
 
 
