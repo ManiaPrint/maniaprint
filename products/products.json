@@ -1,17 +1,5 @@
 [
   {
-    "id": "1",
-    "title": "Custom PLA Print",
-    "description": "Custom 3D printing made easy. Tell us your idea, wants and needs, and we'll design and print with precision and care. Unique parts, prototypes, gifts, and more — all printed by ManiaPrint.",
-    "category": "PLA",
-    "price": "Quote",
-    "tags": ["Standard", "Unique", "Quick Turnaround"],
-    "details": "Standard PLA material in various colors with fine finishing. Typical turnaround 2-3 days.",
-    "image": "",
-    "3Dfile": "",
-    "colours": ["#4fc3f7", "#2196f3", "#ff5252", "#4caf50", "#ffc107"]
-  },
-  {
     "id": "2",
     "title": "Custom Nametags",
     "description": "Make your name stand out with a custom 3D-printed keychain! Ideal for birthdays, school bags, or team gifts. Each tag is personalized, durable, and printed locally by ManiaPrint.",
@@ -92,10 +80,11 @@
     "tags": ["Small", "Useful", "Cheap", "5 for $10"],
     "details": "Crafted from durable PLA plastic to last and organise cables and chargers",
     "image": "",
-    "3Dfile": "1m_Apple_5layers.stl",
+    "3Dfile": "cable_organiser.stl",
     "colours": ["#ffffff", "#000000", "#4fc3f7"]
   }
 ]
+
 
 
 
