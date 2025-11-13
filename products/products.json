@@ -6,7 +6,6 @@
     "category": "PLA",
     "price": 3,
     "tags": ["Long-lasting", "Affordable", "Practical", "5 for $10"],
-    "details": "Printed using a range of colors and fonts to create your unique nametag. Around 1-3 day turnaround.",
     "image": "",
     "3Dfile": "",
     "colours": ["#4fc3f7", "#ff5252", "#4caf50", "#ffc107", "#9c27b0", "#ffffff"]
@@ -18,7 +17,6 @@
     "category": "PLA",
     "price": 3,
     "tags": ["Stylish", "Pet-Friendly", "Lightweight", "5 for $10"],
-    "details": "Made from durable, lightweight PLA plastic with your choice of name and color including a keyring. 1-3 day turnaround.",
     "image": "",
     "3Dfile": "",
     "colours": ["#2196f3", "#ff5252", "#4caf50", "#ffc107"]
@@ -30,7 +28,6 @@
     "category": "PLA",
     "price": "Quote",
     "tags": ["Large Format", "Custom", "Special Order"],
-    "details": "Contact us for custom pricing on large format prints. Various materials available. Lead time depends on project complexity.",
     "image": "",
     "3Dfile": "models/Phone Stand.stl",
     "colours": ["#ffffff"]
@@ -42,33 +39,30 @@
     "category": "PLA",
     "price": 7.00,
     "tags": ["Bag attachment", "Colourful", "Articulated"],
-    "details": "Crafted from durable PLA plastic with flexible joints that move freely. 1-2 day turnaround",
-    "image": "../images/Articulated Dragon.png",
-    "3Dfile": "/models/Articulated Dragon.stl",
+    "image": "../images/Modular Dragon.png",
+    "3Dfile": "/models/Modular Dragon.stl",
     "colours": ["#4fc3f7", "#ff5252", "#4caf50", "#ffc107", "#9c27b0"]
   },
   {
     "id": "6",
     "title": "Magsafe Phone Stand",
-    "description": "iPhone magsafe phone stand to charge on your desk - charger not included.",
+    "description": "Aesthetically charge your devices on your desk, bed, office etc. Compatible with either a Magsafe or PixelSnap wireless charger - charger not included.",
     "category": "PLA",
     "price": 10.00,
     "tags": ["Aesthetic", "Useful", "Cheap"],
-    "details": "Crafted from durable PLA plastic to use easily with an apple magsafe charger. 1-2 day turnaround",
     "image": "../images/Magsafe Phone Stand.png",
     "3Dfile": "models/Magsafe Phone Stand.stl",
     "colours": ["#ffffff", "#000000", "#4fc3f7"]
   },
   {
     "id": "7",
-    "title": "Articulated Cat",
-    "description": "Small friendly cat that sits on your desk. Can bend in all different diractions while still bing cute and cuddly!",
+    "title": "Modular Cat",
+    "description": "Small friendly cat that sits on your desk. Can bend in all different directions while still being cute and cuddly!",
     "category": "PLA",
     "price": 7.50,
     "tags": ["Aesthetic", "Small", "Adorable"],
-    "details": "Made from aesthetic PLA with a smooth finish to make it as adorable as possible. Great for decorations and girfts1-2 day turnaaround",
     "image": "",
-    "3Dfile": "Articulated Cat.stl",
+    "3Dfile": "Modular Cat.stl",
     "colours": ["#ffffff", "#000000", "#4fc3f7"]
   },
   {
@@ -78,12 +72,12 @@
     "category": "PLA",
     "price": 3.00,
     "tags": ["Small", "Useful", "Cheap", "5 for $10"],
-    "details": "Crafted from durable PLA plastic to last and organise cables and chargers",
     "image": "../images/Cable Organisers.jpeg",
     "3Dfile": "Cable Organisers.stl",
     "colours": ["#ffffff", "#000000", "#4fc3f7"]
   }
 ]
+
 
 
 
