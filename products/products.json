@@ -37,7 +37,7 @@
   },
   {
     "id": "5",
-    "title": "Mini dragon Keychain",
+    "title": "Articulated Dragon",
     "description": "Small 3D-printed flexi dragon keychain with movable joints. Fun, durable, and perfect for adding a playful touch to your keys or bag, or a cool unique gift.",
     "category": "PLA",
     "price": 7.00,
@@ -84,6 +84,7 @@
     "colours": ["#ffffff", "#000000", "#4fc3f7"]
   }
 ]
+
 
 
 
