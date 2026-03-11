@@ -628,7 +628,7 @@ THREE.STLLoader.prototype = {
       
       // Orbit horizontally and vertically around center (inverted X for natural feel)
       cameraTheta -= deltaX * 0.01;
-      cameraPhi = Math.max(0.1, Math.min(Math.PI - 0.1, cameraPhi + deltaY * 0.01));
+      cameraPhi = Math.max(0.1, Math.min(Math.PI - 0.1, cameraPhi - deltaY * 0.01));
       
       updateCameraPosition();
       
@@ -657,7 +657,7 @@ THREE.STLLoader.prototype = {
       
       // Orbit horizontally and vertically around center (inverted X for natural feel)
       cameraTheta -= deltaX * 0.01;
-      cameraPhi = Math.max(0.1, Math.min(Math.PI - 0.1, cameraPhi + deltaY * 0.01));
+      cameraPhi = Math.max(0.1, Math.min(Math.PI - 0.1, cameraPhi - deltaY * 0.01));
       
       updateCameraPosition();
       
