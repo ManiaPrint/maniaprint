@@ -1,0 +1,72 @@
+{
+  "first_mine": {
+    "title": "THE GOLD RUSH",
+    "info": "In the 1850's the discovery of Australia's gold, firstly in Ophir NSW, to Ballarat and Bendigo Creek in Victoria, sent people from all over the world to explore and seek riches. From Asia to Europe people raced, transforming the Australian colonies as we know them today.",
+    "image": "First_Strike.jpg",
+    "source": "National Museum Australia. (2024). Gold Rushes | National Museum of Australia. Nma.gov.au. https://www.nma.gov.au/defining-moments/resources/gold-rushes",
+    "link": "https://www.nma.gov.au/defining-moments/resources/gold-rushes"
+  },
+  "buy_license": {
+    "title": "THE COMPULSORY LICENSE",
+    "info": "“The police charged with enforcing the license system were notorious for corruption and for their brutal methods.” They were £1.5, or ~$150 in today's money, and had to be renewed every month otherwise you could be fined or arrested.",
+    "image": "Gold_License.jpg",
+    "source": "Britannica. (n.d.). Australian gold rushes | Australian history. Encyclopedia Britannica. https://www.britannica.com/event/Australian-gold-rushes",
+    "link": "https://www.britannica.com/event/Australian-gold-rushes"
+  },
+  "jail": {
+    "title": "THE JAILS",
+    "info": "If diggers were caught without a license, they were chained together, or tied down till they were collected, led to the government camp. They were then forced to pay a £5 fine, ~1,400 AUD, otherwise they were taken to jail. The aftermath of the Eureka Stockade led to many diggers cramped into jail cells. The above image was a portable jail cell, commonly used at the time.",
+    "image": "Jail.png",
+    "source": "https://www.teachersuperstore.com.au/assets/wp-content/uploads/2012/08/The-Australian-Gold-Rushes-Law-and-Order-on-the-Goldfields-Sample-Pages.pdf",
+    "link": "https://www.teachersuperstore.com.au/assets/wp-content/uploads/2012/08/The-Australian-Gold-Rushes-Law-and-Order-on-the-Goldfields-Sample-Pages.pdf"
+  },
+  "buy_pan": {
+    "title": "TIN PAN ALLEY",
+    "info": "Panning was the simplest form of mining. Diggers swirled gravel in water, hoping heavy gold would settle at the bottom.",
+    "image": "assets/pan.jpg",
+    "source": "Museum of Australian Democracy",
+    "link": "https://example.com"
+  },
+  "buy_pickaxe": {
+    "title": "DEEP LEAD MINING",
+    "info": "As surface gold vanished, miners dug vertical shafts hundreds of feet deep. These were incredibly dangerous.",
+    "image": "assets/pick.jpg",
+    "source": "Sovereign Hill Museums",
+    "link": "https://example.com"
+  },
+  "buy_cradle": {
+    "title": "THE ROCKING CRADLE",
+    "info": "A cradle allowed a team to process ten times more dirt than a pan by washing soil through riffles.",
+    "image": "assets/cradle.jpg",
+    "source": "Gold Museum Victoria",
+    "link": "https://example.com"
+  },
+  "buy_puddling": {
+    "title": "PUDDLING MACHINES",
+    "info": "Puddling used horses to break down heavy clay, allowing for industrial-scale gold separation.",
+    "image": "assets/puddling.jpg",
+    "source": "Victorian Historical Archives",
+    "link": "https://example.com"
+  },
+  "rebellion": {
+    "title": "THE SOUTHERN CROSS OATH",
+    "info": "Miners swore to stand truly by each other and fight to defend their rights under the Southern Cross flag.",
+    "image": "assets/bakery_hill.jpg",
+    "source": "Eureka Stockade Memorial",
+    "link": "https://example.com"
+  },
+  "welcome_stranger": {
+    "title": "THE WELCOME STRANGER",
+    "info": "Discovered in 1869, this 72kg nugget is the largest ever found. It had to be broken on an anvil to be weighed.",
+    "image": "assets/welcome_stranger.jpg",
+    "source": "Royal Historical Society",
+    "link": "https://example.com"
+  },
+  "police_raid": {
+    "title": "THE LICENSE HUNTS",
+    "info": "Police (known as 'Joes') conducted aggressive hunts for licenses, often leading to violent confrontations.",
+    "image": "assets/raid.jpg",
+    "source": "Australian Dictionary of Biography",
+    "link": "https://example.com"
+  }
+}
