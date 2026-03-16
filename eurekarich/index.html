@@ -1,1 +1,548 @@
-hi
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eureka: Legacy of the Southern Cross</title>
+    <style>
+        * { user-select: none; outline: none; }
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center; 
+            background: url('background.jpg') no-repeat center center fixed; 
+            background-size: cover; background-color: #1a1a1a; color: #ffd700;
+            display: flex; flex-direction: column; align-items: center; justify-content: space-evenly;
+            height: 100vh; margin: 0; overflow: hidden; transition: filter 0.5s, background-color 2s;
+        }
+        
+        /* Interactive elements now use standard browser pointer */
+        button, #rock, .small-nugget, .welcome-stranger {
+            cursor: pointer;
+        }
+        
+        .battle-bg { background-image: linear-gradient(rgba(68, 17, 17, 0.85), rgba(68, 17, 17, 0.85)), url('background.jpg') !important; }
+        .jail-bg { filter: grayscale(90%) sepia(20%) brightness(60%); }
+        
+        #eureka-flag { 
+            position: absolute; bottom: -1000px; left: 50%; transform: translateX(-50%); 
+            transition: bottom 4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 2000; pointer-events: none; 
+        }
+
+        /* Added CSS for the flag image */
+        #eureka-flag img {
+            width: 1000px; /* Set the desired width, similar scale to previous emoji */
+            height: auto;  /* Maintain aspect ratio */
+            vertical-align: middle; /* Ensures good behavior in absolute positioning */
+        }
+
+        #eureka-flag.raised { 
+            bottom: 25%; 
+            animation: waveFlag 5s ease-in-out infinite alternate;
+        }
+        @keyframes waveFlag {
+            0% { transform: translateX(-50%) rotate(-4deg) skewX(2deg); }
+            100% { transform: translateX(-50%) rotate(4deg) skewX(-2deg); }
+        }
+
+        #battle-layer { 
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 250px; 
+            display: none; justify-content: space-around; align-items: flex-end; 
+            z-index: 100; font-size: 60px; overflow: hidden;
+            opacity: 0; transform: translateY(50px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        #battle-layer.active {
+            opacity: 1; transform: translateY(0);
+        }
+
+        .waving-sword { 
+            display: inline-block; 
+            padding-bottom: 10px;
+            transform-origin: bottom center; 
+            animation: meleeSlash 2s infinite ease-in-out;
+        }
+        
+        @keyframes meleeSlash {
+            0%, 100% { transform: translate(0, 0px) rotate(-25deg) scale(0.9); }
+            50% { transform: translate(0, -15px) rotate(25deg) scale(1.1); }
+        }
+        
+        .welcome-stranger { 
+            position: absolute; z-index: 9999; width: 220px; height: 180px;
+            background: radial-gradient(circle at 30% 30%, #fff700, #ffaa00); border-radius: 45% 55% 40% 60%;
+            box-shadow: 0 0 150px #ffd700, 0 0 80px #ffaa00; animation: superPulse 0.5s infinite alternate;
+            top: 25vh; left: 50%; transform: translateX(-50%);
+        }
+        @keyframes superPulse { 
+            from { transform: translateX(-50%) scale(1) rotate(-3deg); filter: brightness(1); } 
+            to { transform: translateX(-50%) scale(1.2) rotate(3deg); filter: brightness(1.4); } 
+        }
+
+        .small-nugget {
+            position: absolute; z-index: 50; width: 45px; height: 35px;
+            background: radial-gradient(circle at 30% 30%, #fff700, #ffaa00); border-radius: 45% 55% 40% 60%;
+            box-shadow: 0 0 15px #ffd700; 
+            animation: drift 15s linear forwards; 
+        }
+        @keyframes drift {
+            from { transform: translateX(-60px) translateY(0) rotate(0deg); opacity: 1; }
+            to { transform: translateX(115vw) translateY(60px) rotate(360deg); opacity: 0; }
+        }
+
+        #rock { width: 160px; height: 160px; background: #5d4037; border-radius: 50%; border: 8px solid #3e2723; display: flex; align-items: center; justify-content: center; font-size: 60px; z-index: 10; transition: transform 0.1s; }
+        .rock-bounce { transform: scale(1.15); }
+        
+        .ledger-box { background: rgba(20, 20, 20, 0.85); border: 3px double #ffd700; padding: 15px; border-radius: 10px; width: 420px; z-index: 10; backdrop-filter: blur(5px); }
+        
+        .progress-container { width: 100%; background: #444; height: 12px; border-radius: 6px; margin-top: 5px; border: 1px solid #ffd700; }
+        #survey-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #00ff00, #00cc00); transition: width 0.2s; border-radius: 5px; }
+
+        .shop-container { background: rgba(42, 42, 42, 0.9); padding: 15px; border: 2px solid #ffd700; border-radius: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; z-index: 10; width: 460px; }
+        button { padding: 10px; font-size: 11px; background: #ffd700; border: none; font-weight: bold; text-transform: uppercase; transition: 0.1s; }
+        button:active { transform: scale(0.95); }
+        button:disabled { background: #555 !important; color: #888 !important; border-color: #444 !important; cursor: default !important; }
+        
+        .btn-police { background: #0044ff !important; color: white; border: 1px solid #fff; }
+        .btn-politician { background: #00cc66 !important; color: white; border: 1px solid #fff; }
+        .rebel-btn { grid-column: span 2; background: #003399; color: white; border: 2px solid #fff; }
+        
+        #custom-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 30000; justify-content: center; align-items: center; }
+        #custom-modal { background: #2a2a2a; border: 4px solid #ffd700; padding: 30px; width: 450px; border-radius: 10px; text-align: center; }
+        .confetti { position: absolute; width: 7px; height: 7px; background: #ffd700; pointer-events: none; z-index: 100; border-radius: 50%; }
+        
+        #modal-img { max-width: 100%; border: 1px solid #444; margin-bottom: 15px; display: none; }
+        #modal-source { font-size: 10px; color: #888; margin-top: 10px; font-style: italic; }
+        
+        /* Hyperlink styling for the modal */
+        #modal-source a {
+            color: #00aaff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        #modal-source a:hover {
+            color: #ffd700;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="eureka-flag"><img src="southern_cross.png" alt="Eureka Flag"></div>
+    <div id="battle-layer"></div>
+
+    <div id="custom-modal-overlay">
+        <div id="custom-modal">
+            <h2 id="modal-title">PROCLAMATION</h2>
+            <img id="modal-img" src="">
+            <p id="modal-text" style="white-space: pre-wrap; line-height: 1.4; max-height: 60vh; overflow-y: auto;"></p>
+            <p id="modal-source"></p>
+            <div id="choice-box" style="display:none; margin-top: 20px;">
+                <button id="path-btn" style="width:100%; padding:15px; font-size: 14px; color: white;"></button>
+            </div>
+            <button id="modal-btn" onclick="location.reload()" style="margin: 20px auto 0; display: block; padding:15px 30px; background:#ff4444; color:white;">TRY AGAIN</button>
+        </div>
+    </div>
+
+    <div id="timer-banner" style="background: rgba(68, 0, 0, 0.85); padding: 10px; border: 2px solid #ff4444; border-radius: 5px; width: 340px; z-index: 10; font-weight: bold;">
+        <span id="timer-label">LICENSE CHECK IN:</span> <span id="timer-count">30</span>s
+    </div>
+
+    <div class="ledger-box">
+        <div style="font-size: 30px; font-weight: bold;">Wealth: <span id="wealth-display">0d</span></div>
+        <div id="career-title" style="color:#00aaff; font-size: 14px; margin-top:5px;">Status: Digger</div>
+        <div style="color:#ffd700; font-size: 13px; margin-top:5px;">Passive Mining: <span id="gps-display">0</span>/s | Multiplier: x<span id="mult-display">2.5</span></div>
+        
+        <div style="font-size: 11px; margin-top: 12px; color: #ccc; text-align: left;">MINING SKILL:</div>
+        <div class="progress-container"><div id="survey-fill"></div></div>
+    </div>
+
+    <div id="rock" onpointerdown="mine(event)">🪙</div>
+
+    <div class="shop-container" id="shop-ui">
+        <button id="buy-license" style="grid-column: span 2; background: #ff4444; color: white;" onclick="buyLicense()">Renew License (£1.5)</button>
+        <button id="buy-pan" onclick="buyUpgrade('pan')">Tin Pan</button>
+        <button id="buy-pickaxe" onclick="buyUpgrade('pickaxe')">Pickaxe</button>
+        <button id="buy-cradle" onclick="buyUpgrade('cradle')">Cradle</button>
+        <button id="buy-puddling" onclick="buyUpgrade('puddling')">Puddling Machine</button>
+        <button class="rebel-btn" id="rebel-btn" onclick="startRebellion()">Raise Southern Cross (£100)</button>
+    </div>
+
+    <script>
+        const historyData = {
+          "first_mine": {
+            "title": "THE GOLD RUSH",
+            "info": "In the 1850's the discovery of Australia's gold, firstly in Ophir NSW, to Ballarat and Bendigo Creek in Victoria, sent people from all over the world to explore and seek riches. From Asia to Europe people raced, transforming the Australian colonies as we know them today.",
+            "image": "First_Strike.jpg",
+            "source": "National Museum Australia. (2024). Gold Rushes | National Museum of Australia. Nma.gov.au. https://www.nma.gov.au/defining-moments/resources/gold-rushes",
+            "link": "https://www.nma.gov.au/defining-moments/resources/gold-rushes"
+          },
+          "buy_license": {
+            "title": "THE COMPULSORY LICENSE",
+            "info": "“The police charged with enforcing the license system were notorious for corruption and for their brutal methods.” They were £1.5, or ~$150 in today's money, and had to be renewed every month otherwise you could be fined or arrested.",
+            "image": "Gold_License.jpg",
+            "source": "Britannica. (n.d.). Australian gold rushes | Australian history. Encyclopedia Britannica. https://www.britannica.com/event/Australian-gold-rushes",
+            "link": "https://www.britannica.com/event/Australian-gold-rushes"
+          },
+          "jail": {
+            "title": "THE JAILS",
+            "info": "If diggers were caught without a license, they were chained together, or tied down till they were collected, led to the government camp. They were then forced to pay a £5 fine, ~1,400 AUD, otherwise they were taken to jail. The aftermath of the Eureka Stockade led to many diggers cramped into jail cells. The above image was a portable jail cell, commonly used at the time.",
+            "image": "Jail.png",
+            "source": "https://www.teachersuperstore.com.au/assets/wp-content/uploads/2012/08/The-Australian-Gold-Rushes-Law-and-Order-on-the-Goldfields-Sample-Pages.pdf",
+            "link": "https://www.teachersuperstore.com.au/assets/wp-content/uploads/2012/08/The-Australian-Gold-Rushes-Law-and-Order-on-the-Goldfields-Sample-Pages.pdf"
+          },
+          "buy_pan": {
+            "title": "TIN PAN ALLEY",
+            "info": "Panning was the simplest form of mining. Diggers swirled gravel in water, hoping heavy gold would settle at the bottom.",
+            "image": "assets/pan.jpg",
+            "source": "Museum of Australian Democracy",
+            "link": "https://example.com"
+          },
+          "buy_pickaxe": {
+            "title": "DEEP LEAD MINING",
+            "info": "As surface gold vanished, miners dug vertical shafts hundreds of feet deep. These were incredibly dangerous.",
+            "image": "assets/pick.jpg",
+            "source": "Sovereign Hill Museums",
+            "link": "https://example.com"
+          },
+          "buy_cradle": {
+            "title": "THE ROCKING CRADLE",
+            "info": "A cradle allowed a team to process ten times more dirt than a pan by washing soil through riffles.",
+            "image": "assets/cradle.jpg",
+            "source": "Gold Museum Victoria",
+            "link": "https://example.com"
+          },
+          "buy_puddling": {
+            "title": "PUDDLING MACHINES",
+            "info": "Puddling used horses to break down heavy clay, allowing for industrial-scale gold separation.",
+            "image": "assets/puddling.jpg",
+            "source": "Victorian Historical Archives",
+            "link": "https://example.com"
+          },
+          "rebellion": {
+            "title": "THE SOUTHERN CROSS OATH",
+            "info": "Miners swore to stand truly by each other and fight to defend their rights under the Southern Cross flag.",
+            "image": "assets/bakery_hill.jpg",
+            "source": "Eureka Stockade Memorial",
+            "link": "https://example.com"
+          },
+          "welcome_stranger": {
+            "title": "THE WELCOME STRANGER",
+            "info": "Discovered in 1869, this 72kg nugget is the largest ever found. It had to be broken on an anvil to be weighed.",
+            "image": "assets/welcome_stranger.jpg",
+            "source": "Royal Historical Society",
+            "link": "https://example.com"
+          },
+          "police_raid": {
+            "title": "THE LICENSE HUNTS",
+            "info": "Police (known as 'Joes') conducted aggressive hunts for licenses, often leading to violent confrontations.",
+            "image": "assets/raid.jpg",
+            "source": "Australian Dictionary of Biography",
+            "link": "https://example.com"
+          }
+        };
+
+        let totalPence = 0, gps = 0, timer = 30, isPaused = false, isResolving = false;
+        let nuggetMult = 2.5, status = 'digger', maxTimer = 30, skillProgress = 0;
+        let inJail = false, jailTimer = 0, preJailGps = 0, preJailMult = 0;
+        let jailCount = 0, strangerSpawned = false;
+        let seenEvents = new Set();
+        let exCosts = { raid: 48000, patrol: 120000, tax: 48000, bill: 120000 };
+
+        function triggerEvent(eventKey, callback) {
+            if (seenEvents.has(eventKey)) {
+                if (callback) callback();
+                return;
+            }
+            if (historyData[eventKey]) {
+                seenEvents.add(eventKey);
+                const wasPaused = isPaused;
+                isPaused = true;
+                const data = historyData[eventKey];
+                showChoiceModal("HISTORICAL CONTEXT", data.info, "CONTINUE", () => {
+                    document.getElementById('custom-modal-overlay').style.display = 'none';
+                    isPaused = wasPaused;
+                    if (callback) callback();
+                }, data);
+            } else {
+                if (callback) callback();
+            }
+        }
+
+        const upgrades = {
+            pan: { cost: 120, power: 5, mult: 2.5, label: 'Tin Pan', id: 'buy-pan' },
+            pickaxe: { cost: 180, power: 10, mult: 5.0, label: 'Pickaxe', id: 'buy-pickaxe' },
+            cradle: { cost: 720, power: 45, mult: 15.0, label: 'Cradle', id: 'buy-cradle' },
+            puddling: { cost: 10800, power: 800, mult: 100.0, label: 'Puddling Machine', id: 'buy-puddling' }
+        };
+
+        function formatCurrency(p) {
+            p = Math.floor(p);
+            if (p < 12) return p + "d"; 
+            if (p < 240) return (p / 12).toFixed(1) + "s"; 
+            return "£" + (p / 240).toFixed(2); 
+        }
+
+        function createConfetti(x, y) {
+            for(let i=0; i<8; i++) {
+                const c = document.createElement('div');
+                c.className = 'confetti'; c.style.left = x + 'px'; c.style.top = y + 'px';
+                document.body.appendChild(c);
+                const angle = Math.random() * Math.PI * 2, vel = 3 + Math.random() * 5;
+                let px = x, py = y, op = 1;
+                const anim = setInterval(() => {
+                    px += Math.cos(angle) * vel; py += Math.sin(angle) * vel + 2;
+                    op -= 0.04; c.style.left = px + 'px'; c.style.top = py + 'px'; c.style.opacity = op;
+                    if(op <= 0) { clearInterval(anim); c.remove(); }
+                }, 20);
+            }
+        }
+
+        function update() {
+            document.getElementById('wealth-display').innerText = formatCurrency(totalPence);
+            document.getElementById('gps-display').innerText = gps < 12 ? Math.floor(gps)+"d" : (gps/12).toFixed(1)+"s";
+            document.getElementById('mult-display').innerText = nuggetMult.toFixed(1);
+            
+            if (!inJail) {
+                document.getElementById('timer-count').innerText = Math.ceil(timer);
+                document.getElementById('timer-label').innerText = "LICENSE CHECK IN:";
+            } else {
+                document.getElementById('timer-count').innerText = Math.ceil(jailTimer);
+                document.getElementById('timer-label').innerText = "SENTENCE REMAINING:";
+            }
+            document.getElementById('survey-fill').style.width = skillProgress + "%";
+            
+            for(let key in upgrades) {
+                let btn = document.getElementById(upgrades[key].id);
+                if(btn) {
+                    btn.innerText = `${upgrades[key].label} (${formatCurrency(upgrades[key].cost)})`;
+                    btn.disabled = inJail || (totalPence < upgrades[key].cost);
+                }
+            }
+            if(status === 'digger' && document.getElementById('rebel-btn')) {
+                document.getElementById('rebel-btn').disabled = inJail || (totalPence < 24000);
+            }
+            document.getElementById('buy-license').disabled = inJail || (totalPence < 360);
+        }
+
+        function mine(e) {
+            if(isPaused || isResolving) return;
+            triggerEvent('first_mine', () => {
+                totalPence += nuggetMult;
+                if (!inJail && skillProgress < 100) {
+                    skillProgress += (100 / 7500); 
+                    if (skillProgress >= 100) {
+                        skillProgress = 100;
+                        if(!strangerSpawned) {
+                            strangerSpawned = true;
+                            const ws = document.createElement('div');
+                            ws.className = 'welcome-stranger';
+                            ws.onclick = (ev) => {
+                                ev.stopPropagation();
+                                createConfetti(ev.clientX, ev.clientY);
+                                ws.remove(); 
+                                triggerEvent('welcome_stranger', () => {
+                                    isPaused = true; isResolving = true;
+                                    showChoiceModal("MONUMENTAL STRIKE!", "You discovered the Welcome Stranger! You are rich beyond measure and win the game.", "PLAY AGAIN", () => location.reload());
+                                });
+                            };
+                            document.body.appendChild(ws);
+                        }
+                    }
+                }
+                document.getElementById('rock').classList.add('rock-bounce');
+                setTimeout(() => document.getElementById('rock').classList.remove('rock-bounce'), 100);
+                createConfetti(e.clientX, e.clientY); update();
+            });
+        }
+
+        setInterval(() => {
+            if (isPaused || isResolving) return;
+            const sn = document.createElement('div');
+            sn.className = 'small-nugget'; 
+            sn.style.top = (15 + Math.random() * 70) + "vh";
+            sn.style.left = "-60px";
+            sn.onclick = (e) => {
+                e.stopPropagation();
+                const payout = (gps * 10) + (nuggetMult * 20);
+                totalPence += payout;
+                createConfetti(e.clientX, e.clientY); sn.remove(); update();
+            };
+            document.body.appendChild(sn);
+            setTimeout(() => { if(sn.parentNode) sn.remove(); }, 15000);
+        }, 15000);
+
+        function buyUpgrade(type) {
+            if(inJail) return;
+            let u = upgrades[type];
+            if(totalPence >= u.cost) { 
+                triggerEvent('buy_' + type, () => {
+                    totalPence -= u.cost; gps += u.power; nuggetMult += u.mult; 
+                    u.cost = Math.floor(u.cost * 1.5); update(); 
+                });
+            }
+        }
+        
+        function buyLicense() { 
+            if(totalPence >= 360 && !inJail) { 
+                triggerEvent('buy_license', () => {
+                    totalPence -= 360; timer = maxTimer; update(); 
+                });
+            } 
+        }
+
+        function startRebellion() {
+            if(totalPence < 24000 || inJail) return;
+            triggerEvent('rebellion', () => {
+                totalPence -= 24000; update();
+                isResolving = true; isPaused = true;
+                document.body.classList.add('battle-bg');
+                const bl = document.getElementById('battle-layer');
+                bl.style.display = 'flex'; bl.innerHTML = '';
+                void bl.offsetWidth;
+                bl.classList.add('active'); 
+                for(let i=0; i<45; i++) {
+                    const s = document.createElement('div'); s.className = 'waving-sword'; s.innerText = '⚔️';
+                    s.style.animationDelay = (Math.random() * -2) + 's'; 
+                    s.style.animationDuration = (1.2 + Math.random() * 1.5) + 's';
+                    s.style.fontSize = (40 + Math.random() * 35) + 'px';
+                    s.style.marginLeft = (Math.random() * 20 - 10) + 'px'; 
+                    bl.appendChild(s);
+                }
+                setTimeout(() => {
+                    document.getElementById('eureka-flag').classList.add('raised'); 
+                    setTimeout(() => {
+                        const win = Math.random() < 0.75;
+                        bl.classList.remove('active');
+                        setTimeout(() => {
+                            bl.style.display = 'none';
+                            if(win) {
+                                isResolving = false; document.body.classList.remove('battle-bg'); 
+                                showChoiceModal("VICTORY!", "The Stockade holds! You are now a free Citizen.", "BECOME CITIZEN", () => setupPathwayChoice()); 
+                            } else { 
+                                sendToJail("Rebellion Crushed"); 
+                            }
+                        }, 800);
+                        setTimeout(() => {
+                            document.getElementById('eureka-flag').classList.remove('raised'); 
+                        }, 1000);
+                    }, 6000); 
+                }, 500);
+            });
+        }
+
+        function sendToJail(reason) {
+            jailCount++;
+            if (jailCount > 2) {
+                isPaused = true; isResolving = true;
+                showChoiceModal("BANNED", "3 strikes. You're out.", "RESTART", () => location.reload());
+                return;
+            }
+
+            isResolving = false; isPaused = true;
+            document.body.classList.remove('battle-bg');
+            document.getElementById('battle-layer').style.display = 'none';
+            inJail = true; jailTimer = 30;
+            preJailGps = gps; preJailMult = nuggetMult;
+            gps = 0; nuggetMult = 0.1; 
+            document.body.classList.add('jail-bg');
+            document.getElementById('career-title').innerText = "Status: IN JAIL (" + reason + ")";
+            document.getElementById('career-title').style.color = "#ff4444";
+            document.getElementById('rock').innerText = '🔒';
+
+            let msg = `Reason: ${reason}\n\nYou have been locked up for 30 seconds. While serving your time:\n\n• Multiplier reduced to 0.1d\n• Passive income halted\n• Mining skill frozen\n• Shop closed`;
+            
+            showChoiceModal("ARRESTED!", msg, "SERVE SENTENCE", () => {
+                triggerEvent('jail', () => {
+                    document.getElementById('custom-modal-overlay').style.display = 'none';
+                    isPaused = false;
+                });
+            });
+            
+            update();
+        }
+
+        function releaseFromJail() {
+            inJail = false;
+            gps = preJailGps; nuggetMult = preJailMult; timer = maxTimer;
+            document.body.classList.remove('jail-bg');
+            document.getElementById('career-title').innerText = "Status: " + status.charAt(0).toUpperCase() + status.slice(1);
+            document.getElementById('career-title').style.color = "#00aaff";
+            document.getElementById('rock').innerText = '🪙';
+            update();
+        }
+
+        function showChoiceModal(title, text, btnText, action, optionalHistoryData = null) {
+            document.getElementById('choice-box').innerHTML = '<button id="path-btn" style="width:100%; padding:15px; font-size: 14px; color: white;"></button>';
+            document.getElementById('custom-modal-overlay').style.display = 'flex';
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-text').innerText = text;
+            const mImg = document.getElementById('modal-img');
+            const mSrc = document.getElementById('modal-source');
+            
+            if(optionalHistoryData) {
+                if(optionalHistoryData.image) { mImg.src = optionalHistoryData.image; mImg.style.display = 'block'; }
+                else { mImg.style.display = 'none'; }
+                
+                // Hyperlink logic added here
+                if(optionalHistoryData.link) {
+                    mSrc.innerHTML = `Source: <a href="${optionalHistoryData.link}" target="_blank">${optionalHistoryData.source}</a>`;
+                } else {
+                    mSrc.innerText = "Source: " + optionalHistoryData.source;
+                }
+            } else { mImg.style.display = 'none'; mSrc.innerHTML = ""; }
+            
+            document.getElementById('choice-box').style.display = 'block';
+            document.getElementById('modal-btn').style.display = 'none';
+            const pBtn = document.getElementById('path-btn'); 
+            pBtn.innerText = btnText; pBtn.onclick = action;
+            pBtn.style.background = (title === "VICTORY!" || title === "HISTORICAL CONTEXT" || title === "MONUMENTAL STRIKE!") ? "#00aaff" : "#ff4444";
+        }
+
+        function setupPathwayChoice() {
+            status = 'citizen'; 
+            document.getElementById('modal-text').innerText = "How will you serve the colony?";
+            document.getElementById('choice-box').innerHTML = `
+                <button class="btn-police" onclick="setCareer('police')" style="width:100%; padding:15px; margin-bottom:10px; font-size:14px;">POLICE FORCE (Mining Power)</button>
+                <button class="btn-politician" onclick="setCareer('politician')" style="width:100%; padding:15px; font-size:14px;">PARLIAMENT (Multiplier)</button>
+            `;
+        }
+
+        function setCareer(type) {
+            status = type; maxTimer = (type === 'police') ? 45 : 30; timer = maxTimer;
+            document.getElementById('career-title').innerText = "Status: " + type.toUpperCase();
+            document.getElementById('custom-modal-overlay').style.display = 'none';
+            const shop = document.getElementById('shop-ui'); 
+            if(document.getElementById('rebel-btn')) document.getElementById('rebel-btn').remove();
+            const b1 = document.createElement('button'); const b2 = document.createElement('button');
+            if(type === 'police') {
+                b1.className = 'btn-police'; b1.innerText = `RAID CLAIM (${formatCurrency(exCosts.raid)})`;
+                b1.onclick = () => { if(totalPence >= exCosts.raid && !inJail) { triggerEvent('police_raid', () => { totalPence -= exCosts.raid; gps += 1200; exCosts.raid *= 1.5; b1.innerText = `RAID CLAIM (${formatCurrency(exCosts.raid)})`; update(); }); } };
+                b2.className = 'btn-police'; b2.innerText = `BORDER PATROL (${formatCurrency(exCosts.patrol)})`;
+                b2.onclick = () => { if(totalPence >= exCosts.patrol && !inJail) { triggerEvent('police_patrol', () => { totalPence -= exCosts.patrol; gps += 3500; exCosts.patrol *= 1.5; b2.innerText = `BORDER PATROL (${formatCurrency(exCosts.patrol)})`; update(); }); } };
+            } else {
+                b1.className = 'btn-politician'; b1.innerText = `TAX REFORM (${formatCurrency(exCosts.tax)})`;
+                b1.onclick = () => { if(totalPence >= exCosts.tax && !inJail) { triggerEvent('pol_tax', () => { totalPence -= exCosts.tax; nuggetMult += 80; exCosts.tax *= 1.5; b1.innerText = `TAX REFORM (${formatCurrency(exCosts.tax)})`; update(); }); } };
+                b2.className = 'btn-politician'; b2.innerText = `PASS BILL (${formatCurrency(exCosts.bill)})`;
+                b2.onclick = () => { if(totalPence >= exCosts.bill && !inJail) { triggerEvent('pol_bill', () => { totalPence -= exCosts.bill; nuggetMult += 300; exCosts.bill *= 1.5; b2.innerText = `PASS BILL (${formatCurrency(exCosts.bill)})`; update(); }); } };
+            }
+            shop.appendChild(b1); shop.appendChild(b2);
+            isPaused = false; update();
+        }
+
+        setInterval(() => {
+            if(!isPaused && !isResolving) {
+                totalPence += (gps / 10); 
+                if (inJail) {
+                    jailTimer -= 0.1;
+                    if (jailTimer <= 0) releaseFromJail();
+                } else {
+                    timer -= 0.1;
+                    if(timer <= 0) sendToJail("Failure to Produce License");
+                }
+                update();
+            }
+        }, 100);
+    </script>
+</body>
+</html>
